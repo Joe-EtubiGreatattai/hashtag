@@ -2,38 +2,114 @@ import React from 'react';
 import { Share } from 'lucide-react';
 
 const ReferralCard = () => {
+  const cardStyle = {
+    background: 'linear-gradient(to bottom right, #e0f7ff, #a6c8ff)',
+    margin: '1.5rem 0',
+    borderRadius: '1.5rem',
+    padding: '1.5rem',
+    position: 'relative',
+    overflow: 'hidden',
+  };
+
+  const iconContainerStyle = {
+    position: 'absolute',
+    top: '1.5rem',
+    left: '1.5rem',
+  };
+
+  const contentStyle = {
+    marginTop: '2rem',
+  };
+
+  const referralTextStyle = {
+    display: 'flex',
+    alignItems: 'baseline',
+  };
+
+  const referralCountStyle = {
+    fontSize: '3rem',
+    fontWeight: '700',
+    color: '#1a3d73',
+  };
+
+  const totalReferralsStyle = {
+    fontSize: '1.25rem',
+    color: '#1a3d73',
+    marginLeft: '0.25rem',
+  };
+
+  const bonusTextStyle = {
+    marginTop: '0.25rem',
+    fontSize: '1.125rem',
+    fontWeight: '500',
+    color: '#e91e63',
+  };
+
+  const buttonStyle = {
+    marginTop: '1rem',
+    backgroundColor: '#1a3d73',
+    color: 'white',
+    padding: '0.75rem 1.5rem',
+    borderRadius: '1.25rem',
+    fontWeight: '500',
+    fontSize: '1.125rem',
+    cursor: 'pointer',
+    border: 'none',
+  };
+
+  const avatarContainerStyle = {
+    position: 'absolute',
+    right: '1.5rem',
+    top: '50%',
+    transform: 'translateY(-50%)',
+  };
+
+  const avatarStyle = {
+    width: '8.5rem',
+    height: '8.5rem',
+    borderRadius: '9999px',
+    backgroundColor: '#f3e8ff',
+    overflow: 'hidden',
+  };
+
+  const avatarImageStyle = {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  };
+
   return (
-    <div className="bg-gradient-to-br my-6 from-blue-50 to-blue-100 rounded-3xl p-6 relative overflow-hidden">
+    <div style={cardStyle}>
       {/* Share icon in top-left */}
-      <div className="absolute top-6 left-6">
+      <div style={iconContainerStyle}>
         <Share className="text-blue-900" size={24} />
       </div>
 
       {/* Main content */}
-      <div className="mt-8">
+      <div style={contentStyle}>
         {/* Referral count */}
-        <div className="flex items-baseline">
-          <span className="text-blue-900 text-5xl font-bold">24</span>
-          <span className="text-blue-900 text-xl ml-1">Total Referrals</span>
+        <div style={referralTextStyle}>
+          <span style={referralCountStyle}>24</span>
+          <span style={totalReferralsStyle}>Total Referrals</span>
         </div>
 
         {/* Hashtag bonus text */}
-        <div className="mt-1">
-          <span className="text-pink-500 text-lg font-medium">+500 Hashtag per invite</span>
+        <div style={bonusTextStyle}>
+          <span>+500 Hashtag per invite</span>
         </div>
 
         {/* Copy Link button */}
-        <button className="mt-4 bg-blue-900 text-white px-6 py-3 rounded-xl font-medium text-lg">
+        <button style={buttonStyle}>
           Copy Link
         </button>
 
         {/* Avatar image */}
-        <div className="absolute right-6 top-1/2 -translate-y-1/2">
-          <div className="w-34 h-34 rounded-full bg-purple-100 overflow-hidden">
+        <div style={avatarContainerStyle}>
+          <div style={avatarStyle}>
             <img
               src={require('./../assets/user2.png')}
               alt="Avatar"
-              className="w-full h-full object-cover"
+              style={avatarImageStyle}
             />
           </div>
         </div>
