@@ -1,5 +1,5 @@
 import React from 'react';
-import { Share } from 'lucide-react';
+import { FaShareAlt } from 'react-icons/fa'; // Import new share icon
 
 const ReferralCard = () => {
   const cardStyle = {
@@ -33,14 +33,14 @@ const ReferralCard = () => {
   };
 
   const totalReferralsStyle = {
-    fontSize: '1.25rem',
+    fontSize: '1rem',
     color: '#1a3d73',
     marginLeft: '0.25rem',
   };
 
   const bonusTextStyle = {
     marginTop: '0.25rem',
-    fontSize: '1.125rem',
+    fontSize: '.9rem',
     fontWeight: '500',
     color: '#e91e63',
   };
@@ -52,14 +52,14 @@ const ReferralCard = () => {
     padding: '0.75rem 1.5rem',
     borderRadius: '1.25rem',
     fontWeight: '500',
-    fontSize: '1.125rem',
+    fontSize: '.9rem',
     cursor: 'pointer',
     border: 'none',
   };
 
   const avatarContainerStyle = {
     position: 'absolute',
-    right: '1.5rem',
+    right: '.5rem',
     top: '50%',
     transform: 'translateY(-50%)',
   };
@@ -80,9 +80,9 @@ const ReferralCard = () => {
 
   return (
     <div style={cardStyle}>
-      {/* Share icon in top-left */}
+      {/* New Share icon in top-left */}
       <div style={iconContainerStyle}>
-        <Share className="text-blue-900" size={24} />
+        <FaShareAlt className="text-blue-900" size={24} /> {/* Using FaShareAlt */}
       </div>
 
       {/* Main content */}
