@@ -1,0 +1,67 @@
+/* Main card styles */
+.hashtag-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Content layout */
+  .hashtag-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  /* Left section: coin icon and text */
+  .hashtag-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .coin-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+  
+  .hashtag-text {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .hashtag-label {
+    font-size: 14px;
+    color: #002681;
+  }
+  
+  .hashtag-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #002681; /* Equivalent to blue-700 */
+  }
+  
+  /* Right section: button */
+  .daily-bonus-button {
+    background-color: #002681; /* Blue */
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .daily-bonus-button:hover {
+    background-color: #002681; /* Darker blue for hover */
+  }
+  

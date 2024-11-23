@@ -1,0 +1,149 @@
+
+  .header {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100vw;
+  }
+  
+  .back-button {
+    color: white;
+    font-size: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 auto;
+  }
+  
+  .tabs-container {
+    margin: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    display: flex;
+    padding: 4px;
+    width: 90vw;
+  }
+  
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    border: none;
+  }
+  
+  .tab.active {
+    background: #002681; /* Active blue */
+    color: white;
+  }
+  
+  .content {
+    width: 90vw;
+    min-height: 60vh;
+  }
+  
+  .wallet-section,
+  .daily-task-section {
+    margin-top: 20px;
+  }
+  
+  .wallet-card,
+  .gamify-card,
+  .referral-card {
+    background: rgba(255, 255, 255, 0.2);;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .wallet-details {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .wallet-icon {
+    font-size: 24px;
+  }
+  
+  .wallet-name {
+    font-weight:400;
+  }
+  
+  .wallet-hashtags {
+    color: #d1d5db; /* Gray text */
+  }
+  
+  .go-button,
+  .play-button,
+  .copy-link-button {
+    background: #002681; /* Bright blue */
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+    height: max-content;
+  }
+  .go-button{
+    background: #fff;
+    color: #002681;
+  }
+  
+  .go-button:hover,
+  .play-button:hover,
+  .copy-link-button:hover {
+    background: #002681; /* Darker blue on hover */
+    color: #fff;
+  }
+
+  /* Daily Task Section */
+.daily-task-section {
+    margin-top: 20px;
+    padding: 16px;
+  }
+
+  .daily-task-section h2{
+    margin-bottom: 20px;
+  }
+  
+  .daily-task-video {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .youtube-follow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .youtube-image {
+    width: 104px;
+    height: 79px;
+    border-radius:12px ;
+  }
+  
+  .youtube-text {
+    font-size: 16px;
+    color: #fff;
+  }
+  
+  
