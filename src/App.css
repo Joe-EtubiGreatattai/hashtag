@@ -20,7 +20,8 @@
   align-items: center;
   color: white;
   font-family: Arial, sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 @keyframes fadeUp {
