@@ -64,7 +64,7 @@ const styles = {
     justifyContent: 'space-around',
     alignItems: 'center',
     padding: '20px 0',
-    backgroundColor: '#022B8961',
+    backgroundColor: '#022B89',
     marginBottom: '10px',
     borderRadius: '10px',
     position:'fixed',

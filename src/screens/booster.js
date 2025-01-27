@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../App.css";
 import FixedLogo from '../components/fixedLogo';
 import "../assets/styles/TaskAreaScreen.css"; 
-import RewardModal from './../components/BoostModal';
+import BoostModal from './../components/BoostModal';
 import BottomSpacer from '../components/BottomSpacer';
 
 const BoosterScreen = () => {
@@ -47,20 +47,22 @@ const BoosterScreen = () => {
     ];
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedBooster, setSelectedBooster] = useState(null);
 
     // Handle modal opening
-    const handleModalOpen = () => {
-        setIsModalOpen(true);
+    const handleModalOpen = (booster) => {
+        setSelectedBooster(booster); // Set the selected booster
+        setIsModalOpen(true); // Open the modal
     };
 
     // Handle modal closing
     const handleModalClose = () => {
         setIsModalOpen(false);
+        setSelectedBooster(null); // Reset the selected booster
     };
 
     return (
         <div className="app">
-          
             {/* Header */}
             <div className="header">
                 <button className="back-button">←</button>
@@ -77,7 +79,7 @@ const BoosterScreen = () => {
                             <h3 className="booster-title">{booster.title}</h3>
                             <p className="booster-text">{booster.text}</p>
                         </div>
-                        <button className="booster-button" onClick={handleModalOpen}>
+                        <button className="booster-button" onClick={() => handleModalOpen(booster)}>
                             {booster.buttonText}
                         </button>
                     </div>
@@ -85,7 +87,12 @@ const BoosterScreen = () => {
             </div>
 
             {/* Reward Modal */}
-            {isModalOpen && <RewardModal onClose={handleModalClose} />}
+            {isModalOpen && (
+                <BoostModal
+                    onClose={handleModalClose}
+                    booster={selectedBooster} // Pass the selected booster data
+                />
+            )}
 
             <BottomSpacer />
         </div>

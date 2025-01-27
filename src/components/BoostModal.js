@@ -2,7 +2,7 @@ import React from 'react';
 import { X } from 'lucide-react';
 import '../assets/styles/BoostModal.css'; // Import the CSS for styling
 
-const BoostModal = ({ onClose }) => {
+const BoostModal = ({ onClose, booster }) => {
   return (
     <div className="boost-modal-overlay">
       <div className="boost-modal">
@@ -10,10 +10,10 @@ const BoostModal = ({ onClose }) => {
           <X className="close-icon" />
         </button>
 
-        <h1 className="boost-modal-title">BoostMe</h1>
+        <h1 className="boost-modal-title">{booster?.title}</h1>
 
         <p className="boost-modal-description">
-          Activate BoostMe to Increase your farming rate and earn more rewards. Instantly earn 3000 $HTC every 8hrs.
+          Activate {booster?.title} to Increase your farming rate and earn more rewards. Instantly earn {booster?.text}.
         </p>
 
         <div className="boost-modal-buttons">

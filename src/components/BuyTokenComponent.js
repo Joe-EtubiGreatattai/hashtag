@@ -122,7 +122,7 @@ const BuyTokenComponent = ({ onBack }) => {
           BUY
         </button>
       </div>
-    
+      <FixedLogo top='68%'/>
     </div>
   );
 };
