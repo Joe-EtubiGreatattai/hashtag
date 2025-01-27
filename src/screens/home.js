@@ -19,7 +19,9 @@ const App = () => {
   const handleClaimClick = () => {
     setShowRewardModal(true); // Show RewardModal
   };
-
+  const handleBackFromBuy = () => {
+    setShowBuyToken(false);
+  };
   const handleCloseRewardModal = () => {
     setShowRewardModal(false); // Hide RewardModal
   };
@@ -50,7 +52,7 @@ const App = () => {
       )}
 
       {/* Conditionally render BuyTokenComponent */}
-      {showBuyToken && <BuyTokenComponent />}
+      {showBuyToken &&  <BuyTokenComponent onBack={handleBackFromBuy} />}
       {/* Conditionally render RewardModal */}
       {showRewardModal && <RewardModal onClose={handleCloseRewardModal} />}
 

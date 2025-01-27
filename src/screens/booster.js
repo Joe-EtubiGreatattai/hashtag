@@ -60,7 +60,7 @@ const BoosterScreen = () => {
 
     return (
         <div className="app">
-            <FixedLogo />
+          
             {/* Header */}
             <div className="header">
                 <button className="back-button">←</button>

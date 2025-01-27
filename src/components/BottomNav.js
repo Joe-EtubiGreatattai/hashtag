@@ -68,7 +68,7 @@ const styles = {
     marginBottom: '10px',
     borderRadius: '10px',
     position:'fixed',
-    zIndex:999999999,
+    zIndex:999999,
     bottom:'0px'
   },
   tab: {
