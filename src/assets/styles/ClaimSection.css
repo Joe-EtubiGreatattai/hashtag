@@ -1,0 +1,47 @@
+.claim-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  .heading {
+    text-align: center;
+    font-size: 2.25rem; /* Equivalent to text-4xl */
+    font-weight: bold;
+    background: linear-gradient(86.92deg, #FFCFF1 19.67%, #00F2EA 96.33%);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  
+  .time-text {
+    text-align: center;
+    font-size: 1.25rem; /* Equivalent to text-xl */
+    margin-top: 0.5rem;
+    color: #FBBF24; /* Equivalent to text-yellow-400 */
+  }
+  
+  .button-container {
+    text-align: center;
+  }
+  
+  .claim-button {
+    margin-top: 1rem;
+    background-color: black;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem; /* Equivalent to rounded-lg */
+    font-size: 1.125rem; /* Equivalent to text-lg */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .claim-button:hover {
+    background-color: #3B82F6; /* Equivalent to hover:bg-blue-600 */
+  }
+  
+  .highlight {
+    color: #FBBF24; /* Equivalent to text-yellow-500 */
+  }
+  

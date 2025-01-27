@@ -2,31 +2,58 @@ import React, { useState } from 'react';
 import '../App.css';
 import Header from '../components/Header';
 import AvatarCard from '../components/AvatarCard';
-import TimerProgress from '../components/TimerProgress';
-import HashtagCard from "../components/HashtagCard";
+import RewardModal from '../components/RewardModal';
+import ClaimSection from '../components/ClaimSection';
+import GamifySystemCard from "../components/GamifySystemCard";
+import BuyTokenComponent from '../components/BuyTokenComponent';
 import BottomSpacer from '../components/BottomSpacer';
 
 const App = () => {
-  const [timerKey, setTimerKey] = useState(0);
+  const [showBuyToken, setShowBuyToken] = useState(false);
+  const [showRewardModal, setShowRewardModal] = useState(false);
 
-  const handleClaim = () => {
-    // Reset timer by updating its key
-    setTimerKey(prev => prev + 1);
+  const handleBuyHTCClick = () => {
+    setShowBuyToken(true); // Hide other components and show BuyTokenComponent
+  };
+
+  const handleClaimClick = () => {
+    setShowRewardModal(true); // Show RewardModal
+  };
+
+  const handleCloseRewardModal = () => {
+    setShowRewardModal(false); // Hide RewardModal
   };
 
   return (
     <div className="app">
-      <Header 
-        username="slackecy" 
-        level="LV 1" 
-        profilePhoto="https://via.placeholder.com/50" 
+      <Header
+        username="slackecy"
+        level="LV 1"
+        profilePhoto="https://via.placeholder.com/50"
       />
-      <HashtagCard 
-        hashtag="755670" 
-        dailyBonusText="Daily Bonus" 
-      />
-      <AvatarCard onClaim={handleClaim} />
-      <TimerProgress key={timerKey} />
+      {/* Conditionally render AvatarCard and GamifySystemCard */}
+      {!showBuyToken && (
+        <>
+          <ClaimSection onClaimClick={handleClaimClick} />
+          <AvatarCard />
+          <GamifySystemCard
+            title=""
+            cardText="Claim Your"
+            buttonLabel="Daily Bonus"
+            onButtonClick={handleClaimClick} // Pass the handler for Daily Bonus
+            button1Label="Start Farming"
+            button2Label="Buy $HTC"
+            onButton1Click={() => alert('Start Farming button clicked!')}
+            onButton2Click={handleBuyHTCClick} // Use the handler for Button 2
+          />
+        </>
+      )}
+
+      {/* Conditionally render BuyTokenComponent */}
+      {showBuyToken && <BuyTokenComponent />}
+      {/* Conditionally render RewardModal */}
+      {showRewardModal && <RewardModal onClose={handleCloseRewardModal} />}
+
       <BottomSpacer />
     </div>
   );

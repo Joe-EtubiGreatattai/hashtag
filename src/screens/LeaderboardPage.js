@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Header from "../components/Header";
+import Header from "../components/header2";
 import "../App.css";
 import Leaderboard from "../components/Leaderboard";
 import "../assets/styles/LeaderboardPage.css";  // Import the new CSS file

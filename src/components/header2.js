@@ -4,11 +4,7 @@ import logo from '../assets/logo.png'; // Import the logo image
 const Header = ({ username, level, profilePhoto }) => {
   return (
     <div style={styles.container}>
-      {/* Logo */}
-      <div style={styles.logoContainer}>
-        <img src={logo} alt="Logo" style={styles.logo} />
-      </div>
-
+     
       {/* Header */}
       <div style={styles.header}>
         <div style={styles.profileContainer}>
@@ -23,8 +19,7 @@ const Header = ({ username, level, profilePhoto }) => {
           </div>
         </div>
 
-        <button style={styles.connect}>Connect Wallet</button>
-      </div>
+        </div>
     </div>
   );
 };
@@ -37,13 +32,6 @@ const styles = {
     alignItems: 'center',
     gap: '20px', // Space between logo and header
   },
-  logoContainer: {
-    textAlign: 'center',
-  },
-  logo: {
-    width: '103px',
-    height: 'auto',
-  },
   header: {
     width: '100%',
     display: 'flex',
@@ -54,6 +42,7 @@ const styles = {
   },
   profileContainer: {
     display: 'flex',
+    marginTop:'20px',
     alignItems: 'center',
   },
   profilePhoto: {

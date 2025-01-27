@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
-const AvatarCard = ({ onClaim }) => {
-
+const FixedLogo = ({ top = "35%" }) => {
   return (
-    <div className="avatar-card-container">
+    <div className="avatar-card-container" style={{ top }}>
       {/* Avatar Card */}
       <div className="avatar-card">
         <img
@@ -17,7 +16,9 @@ const AvatarCard = ({ onClaim }) => {
       <style>
         {`
           .avatar-card-container {
-            position: relative;
+            position: fixed;
+            top: ${top};  /* dynamic top value */
+            z-index: 2;
           }
 
           .avatar-card {
@@ -60,4 +61,4 @@ const AvatarCard = ({ onClaim }) => {
   );
 };
 
-export default AvatarCard;
+export default FixedLogo;

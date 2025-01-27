@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import "../App.css";
 import ReferralCard from "../components/ReferralCard";
-import GamifySystemCard from "../components/GamifySystemCard";
+import FixedLogo from '../components/fixedLogo';
 import "../assets/styles/TaskAreaScreen.css"; // Import TaskAreaScreen-specific CSS
 import BottomSpacer from '../components/BottomSpacer';
 
 const TaskAreaScreen = () => {
   const [activeTab, setActiveTab] = useState("Hashtag");
 
-  const tabs = ["Hashtag", "Partners", "Daily Task"];
+  const tabs = ["Hashtag", "Partners", "Daily Task", "Update"]; // Added Update tab
 
   const walletData = {
     Hashtag: [
-      { icon: "💎", name: "Connect TON Wallet", hashtags: "49,000 Hashtags" },
-      { icon: "🐕", name: "Connect Doge Wallet", hashtags: "49,000 Hashtags" },
-      { type: "tonic" },
       { type: "referral" },
+      { name: "Connect TON Wallet", hashtags: "49,000 Hashtags", buttonText: 'Go' },
+      { name: "Connect Doge Wallet", hashtags: "49,000 Hashtags", buttonText: 'Claim' },
+      { name: "Connect Doge Wallet", hashtags: "49,000 Hashtags", buttonText: 'Claim' },
+      { name: "Connect Doge Wallet", hashtags: "49,000 Hashtags", buttonText: 'Claim' },
     ],
     Partners: [
       { icon: "₿", name: "BTC", hashtags: "49,000 Hashtags" },
@@ -33,15 +34,37 @@ const TaskAreaScreen = () => {
         subtitle: "YouTube channel.",
         image: "https://via.placeholder.com/40", // Example image
       },
+      {
+        type: "card",
+        image: "https://via.placeholder.com/100",
+        title: "Follow HashTag on Facebook",
+        text: "Reward: +1000 $HTC",
+        buttonText: "go",
+      },
     ],
+    Update: [
+      {
+        title: "Connect TON Wallet",
+        content: "49,000 Hashtags",
+        buttonText: "Coming soon",
+        image: "https://via.placeholder.com/100",
+      },
+      {
+        title: "Connect Doge Wallet",
+        content: "49,000 Hashtags",
+        buttonText: "Coming soon",
+        image: "https://via.placeholder.com/100",
+      },
+    ]
   };
 
   return (
     <div className="app">
+      <FixedLogo />
       {/* Header */}
       <div className="header">
         <button className="back-button">←</button>
-        <h1 className="title">Task Area</h1>
+        <h1 className="title">{activeTab}</h1> {/* Dynamic Title */}
       </div>
 
       {/* Tabs */}
@@ -62,22 +85,18 @@ const TaskAreaScreen = () => {
         {activeTab === "Hashtag" && (
           <div className="hashtag-section">
             {walletData["Hashtag"].map((item, index) => {
-              if (item.type === "tonic") {
-                return <GamifySystemCard />;
-              }
               if (item.type === "referral") {
-                return <ReferralCard />;
+                return <ReferralCard key={index} />;
               }
               return (
                 <div key={index} className="wallet-card">
                   <div className="wallet-details">
-                    <span className="wallet-icon">{item.icon}</span>
                     <div>
                       <p className="wallet-name">{item.name}</p>
                       <p className="wallet-hashtags">{item.hashtags}</p>
                     </div>
                   </div>
-                  <button className="go-button">GO</button>
+                  <button className="go-button">{item.buttonText}</button>
                 </div>
               );
             })}
@@ -107,6 +126,20 @@ const TaskAreaScreen = () => {
                 <p>Follow our Artist YouTube channel.</p>
               </div>
             </div>
+
+            {/* Task Cards */}
+            <div className="task-cards">
+              {walletData["Daily Task"].slice(2).map((task, index) => (
+                <div key={index} className="task-card">
+                  <img src={task.image} alt={task.title} className="task-image" />
+                  <div className="task-text">
+                    <h3>{task.title}</h3>
+                    <p>{task.text}</p>
+                  </div>
+                  <button className="task-button">{task.buttonText}</button>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -115,21 +148,40 @@ const TaskAreaScreen = () => {
             <h2>Wallets</h2>
             {walletData["Partners"].map((wallet, index) => (
               <div key={index} className="wallet-card">
-                <div className="wallet-details">
+                <div className="wallet-details-2">
                   <span className="wallet-icon">{wallet.icon}</span>
                   <div>
                     <p className="wallet-name">{wallet.name}</p>
                     <p className="wallet-hashtags">{wallet.hashtags}</p>
                   </div>
+                  <button className="go-button">GO</button>
                 </div>
-                <button className="go-button">GO</button>
               </div>
             ))}
+            <button className="buy-button">Buy $HTC</button> {/* Buy Button */}
+          </div>
+        )}
+
+        {activeTab === "Update" && (
+          <div className="update-section">
+            <h2>Wallets</h2>
+            {walletData.Update.map((update, index) => (
+              <div key={index} className="wallet-card">
+                  <img src={update.image} alt={update.title} className="booster-icon" />
+                <div className="wallet-details">
+                  <h3 className="wallet-name">{update.title}</h3>
+                  <p className="wallet-hashtags">{update.content}</p>
+                </div>
+                <button className="go-button">{update.buttonText}</button>
+              </div>
+            ))}
+            <ReferralCard /> {/* Referral Card at the bottom */}
           </div>
         )}
       </div>
+
       <BottomSpacer />
-      </div>
+    </div>
   );
 };
 

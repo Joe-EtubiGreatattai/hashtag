@@ -1,0 +1,98 @@
+/* Overlay to cover the entire screen */
+.boost-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items:flex-end;
+    justify-content: center;
+    z-index: 9999;
+  }
+  
+  /* Modal container */
+  .boost-modal {
+    background-color: black;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 480px;
+    padding: 32px;
+    position: relative;
+  }
+  
+  /* Close button style */
+  .close-button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .close-icon {
+    color: white;
+    width: 32px;
+    height: 32px;
+  }
+  
+  /* Title text */
+  .boost-modal-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  /* Description text */
+  .boost-modal-description {
+    color: white;
+    font-size: 20px;
+    margin-bottom: 48px;
+    text-align: center;
+    line-height: 1.6;
+  }
+  
+  /* Button container */
+  .boost-modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  /* Button base style */
+  .boost-modal-button {
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  /* Button for HTC boost */
+  .boost-htc-button {
+    background-color: #6C5DD3;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .boost-htc-button:hover {
+    background-color: #5d4fc7;
+  }
+  
+  /* Button for TON boost */
+  .boost-ton-button {
+    background-color: #002379;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .boost-ton-button:hover {
+    background-color: #001d66;
+  }
+  

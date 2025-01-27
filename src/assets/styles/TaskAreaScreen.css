@@ -1,149 +1,302 @@
+.header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100vw;
+}
 
-  .header {
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100vw;
-  }
-  
-  .back-button {
-    color: white;
-    font-size: 18px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .title {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 0 auto;
-  }
-  
-  .tabs-container {
-    margin: 16px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    display: flex;
-    padding: 4px;
-    width: 90vw;
-  }
-  
-  .tab {
-    flex: 1;
-    text-align: center;
-    padding: 8px 12px;
-    border-radius: 6px;
-    background: transparent;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s;
-    border: none;
-  }
-  
-  .tab.active {
-    background: #002681; /* Active blue */
-    color: white;
-  }
-  
-  .content {
-    width: 90vw;
-    min-height: 60vh;
-  }
-  
-  .wallet-section,
-  .daily-task-section {
-    margin-top: 20px;
-  }
-  
-  .wallet-card,
-  .gamify-card,
-  .referral-card {
-    background: rgba(255, 255, 255, 0.2);;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .wallet-details {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .wallet-icon {
-    font-size: 24px;
-  }
-  
-  .wallet-name {
-    font-weight:400;
-  }
-  
-  .wallet-hashtags {
-    color: #d1d5db; /* Gray text */
-  }
-  
-  .go-button,
-  .play-button,
-  .copy-link-button {
-    background: #002681; /* Bright blue */
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s;
-    height: max-content;
-  }
-  .go-button{
-    background: #fff;
-    color: #002681;
-  }
-  
-  .go-button:hover,
-  .play-button:hover,
-  .copy-link-button:hover {
-    background: #002681; /* Darker blue on hover */
-    color: #fff;
-  }
+.back-button {
+  color: white;
+  font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
 
-  /* Daily Task Section */
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 auto;
+}
+
+.tabs-container {
+  margin: 16px;
+  background: '#002681';
+  border-radius: 8px;
+  display: flex;
+  padding: 4px;
+  width: 99vw;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 8px 5px;
+  border-radius: 6px;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+  border: none;
+}
+
+.tab.active {
+  background: #1B44A4;
+  /* Active blue */
+  color: white;
+}
+
+.content {
+  width: 90vw;
+  min-height: 60vh;
+  z-index: 999999;
+}
+
+.wallet-section,
 .daily-task-section {
-    margin-top: 20px;
-    padding: 16px;
-  }
+  margin-top: 20px;
+}
 
-  .daily-task-section h2{
-    margin-bottom: 20px;
+.wallet-card,
+.gamify-card,
+.referral-card {
+  background: rgba(255, 255, 255, 0.2);
+  ;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.wallet-details {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+}
+
+.wallet-details-2 {
+  display: flex;
+  gap: 22px;
+  flex-direction: row;
+  align-items: center;
+}
+
+.wallet-icon {
+  font-size: 24px;
+}
+
+.wallet-name {
+  font-weight: 400;
+}
+
+.wallet-hashtags {
+  color: #d1d5db;
+  /* Gray text */
+}
+
+.go-button,
+.play-button,
+.copy-link-button {
+  background: #002681;
+  /* Bright blue */
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+  height: max-content;
+}
+
+.go-button {
+  background: #fff;
+  color: #002681;
+  min-width: 6rem;
+}
+
+.go-button:hover,
+.play-button:hover,
+.copy-link-button:hover {
+  background: #002681;
+  /* Darker blue on hover */
+  color: #fff;
+}
+
+/* Daily Task Section */
+.daily-task-section {
+  margin-top: 20px;
+  padding: 16px;
+}
+
+.daily-task-section h2 {
+  margin-bottom: 20px;
+}
+
+.daily-task-video {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.youtube-follow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.youtube-image {
+  width: 104px;
+  height: 79px;
+  border-radius: 12px;
+}
+
+.youtube-text {
+  font-size: 16px;
+  color: #fff;
+}
+
+.booster-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+}
+
+.booster-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color:  rgba(2555, 2555, 255, 0.1);
+  width: 90vw;
+}
+
+.booster-card-header {
+  align-items: center;
+  gap: 10px;
+}
+
+.booster-icon {
+ width: 40px;
+ height: 40px;
+}
+
+.booster-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.booster-text {
+  font-size: 12px;
+}
+
+.booster-button {
+  align-self: flex-start;
+  background-color: #fff;
+  color: #002681;
+  padding: 10px 15px;
+  font-size: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.booster-title-header{
+  text-align: left;
+  width: 90%;
+}
+
+/* Task Card Styles */
+.task-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.task-card {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 90vw; /* Adjust width to fit 3 cards per row */
+  padding: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  transition: transform 0.2s ease-in-out;
+  color: #fff;
+}
+
+.task-card:hover {
+  transform: translateY(-8px);
+}
+
+.task-image {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.task-text {
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.task-text h3 {
+  font-size: 16px;
+  font-weight:400;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.task-text p {
+  font-size: 12px;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.task-button {
+  background-color: #fff;
+  color: #002681;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.task-button:hover {
+  background-color: #0056b3;
+}
+
+.buy-button{
+  background: #000;
+  width: 100%;
+  padding: .5rem;
+  border-radius: 10px;
+  margin-top: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .task-card {
+    width: calc(50% - 16px); /* Adjust width for tablets */
   }
-  
-  .daily-task-video {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 480px) {
+  .task-card {
+    width: 100%; /* Adjust width for mobile */
   }
-  
-  .youtube-follow {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    border-radius: 8px;
-  }
-  
-  .youtube-image {
-    width: 104px;
-    height: 79px;
-    border-radius:12px ;
-  }
-  
-  .youtube-text {
-    font-size: 16px;
-    color: #fff;
-  }
-  
-  
+}

@@ -24,6 +24,7 @@ const ReferralCard = () => {
   const referralTextStyle = {
     display: 'flex',
     alignItems: 'baseline',
+    marginBottom: '0.5rem', // Added space between count and total referrals text
   };
 
   const referralCountStyle = {
@@ -33,28 +34,29 @@ const ReferralCard = () => {
   };
 
   const totalReferralsStyle = {
-    fontSize: '1rem',
+    fontSize: '1.2rem',
     color: '#1a3d73',
     marginLeft: '0.25rem',
   };
 
   const bonusTextStyle = {
-    marginTop: '0.25rem',
+    marginTop: '0.5rem', // Added more space
     fontSize: '.9rem',
     fontWeight: '500',
     color: '#e91e63',
   };
 
   const buttonStyle = {
-    marginTop: '1rem',
+    marginTop: '1.5rem', // Increased top margin for better spacing
     backgroundColor: '#1a3d73',
     color: 'white',
     padding: '0.75rem 1.5rem',
     borderRadius: '1.25rem',
     fontWeight: '500',
-    fontSize: '.9rem',
+    fontSize: '1rem', // Slightly larger text
     cursor: 'pointer',
     border: 'none',
+    transition: 'background-color 0.3s',
   };
 
   const avatarContainerStyle = {
@@ -79,43 +81,53 @@ const ReferralCard = () => {
   };
 
   return (
-    <div style={cardStyle}>
-      {/* New Share icon in top-left */}
-      <div style={iconContainerStyle}>
-        <FaShareAlt className="text-blue-900" size={24} /> {/* Using FaShareAlt */}
-      </div>
-
-      {/* Main content */}
-      <div style={contentStyle}>
-        {/* Referral count */}
-        <div style={referralTextStyle}>
-          <span style={referralCountStyle}>24</span>
-          <span style={totalReferralsStyle}>Total Referrals</span>
+    <>
+      <h2 style={headingStyle}>Invite friends</h2>
+      <div style={cardStyle}>
+        {/* New Share icon in top-left */}
+        <div style={iconContainerStyle}>
+          <FaShareAlt className="text-blue-900" size={24} /> {/* Using FaShareAlt */}
         </div>
 
-        {/* Hashtag bonus text */}
-        <div style={bonusTextStyle}>
-          <span>+500 Hashtag per invite</span>
-        </div>
+        {/* Main content */}
+        <div style={contentStyle}>
+          {/* Referral count */}
+          <div style={referralTextStyle}>
+            <span style={referralCountStyle}>24</span>
+            <span style={totalReferralsStyle}>Total Referrals</span>
+          </div>
 
-        {/* Copy Link button */}
-        <button style={buttonStyle}>
-          Copy Link
-        </button>
+          {/* Hashtag bonus text */}
+          <div style={bonusTextStyle}>
+            <span>+500 Hashtag per invite</span>
+          </div>
 
-        {/* Avatar image */}
-        <div style={avatarContainerStyle}>
-          <div style={avatarStyle}>
-            <img
-              src={require('./../assets/user2.png')}
-              alt="Avatar"
-              style={avatarImageStyle}
-            />
+          {/* Copy Link button */}
+          <button style={buttonStyle}>
+            Copy Link
+          </button>
+
+          {/* Avatar image */}
+          <div style={avatarContainerStyle}>
+            <div style={avatarStyle}>
+              <img
+                src={require('./../assets/user2.png')}
+                alt="Avatar"
+                style={avatarImageStyle}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
+};
+
+const headingStyle = {
+  fontSize: '16px', // Larger font size for the heading
+  fontWeight: '600',
+  color: '#fff',
+  marginBottom: '-22px', // Bottom margin to give space from the card
 };
 
 export default ReferralCard;
