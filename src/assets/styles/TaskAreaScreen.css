@@ -20,6 +20,11 @@
   margin: 0 auto;
 }
 
+.title-ii{
+  width: 100vw;
+  text-align: left;
+}
+
 .tabs-container {
   margin: 16px;
   background: '#002681';

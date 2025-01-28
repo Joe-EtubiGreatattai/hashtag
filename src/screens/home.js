@@ -27,7 +27,7 @@ const App = () => {
   };
 
   return (
-    <div className="app">
+    <div className="appII">
       <Header
         username="slackecy"
         level="LV 1"

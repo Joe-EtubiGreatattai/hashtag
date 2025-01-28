@@ -82,7 +82,7 @@ const ReferralCard = () => {
 
   return (
     <>
-      <h2 style={headingStyle}>Invite friends</h2>
+      <h2 className="title-ii" style={headingStyle}>Invite friends</h2>
       <div style={cardStyle}>
         {/* New Share icon in top-left */}
         <div style={iconContainerStyle}>
@@ -125,7 +125,6 @@ const ReferralCard = () => {
 
 const headingStyle = {
   fontSize: '16px', // Larger font size for the heading
-  fontWeight: '600',
   color: '#fff',
   marginBottom: '-22px', // Bottom margin to give space from the card
 };

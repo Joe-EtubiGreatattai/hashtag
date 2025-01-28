@@ -16,7 +16,6 @@ const TaskAreaScreen = () => {
       { name: "Connect TON Wallet", hashtags: "49,000 Hashtags", buttonText: 'Go' },
       { name: "Connect Doge Wallet", hashtags: "49,000 Hashtags", buttonText: 'Claim' },
       { name: "Connect Doge Wallet", hashtags: "49,000 Hashtags", buttonText: 'Claim' },
-      { name: "Connect Doge Wallet", hashtags: "49,000 Hashtags", buttonText: 'Claim' },
     ],
     Partners: [
       { icon: "₿", name: "BTC", hashtags: "49,000 Hashtags" },
@@ -106,7 +105,7 @@ const TaskAreaScreen = () => {
         {activeTab === "Daily Task" && (
           <div className="daily-task-section">
             {/* Video Section */}
-            <h2>Videos</h2>
+            <h2 className="title-ii">Videos</h2>
             <video className="daily-task-video" controls>
               <source
                 src={walletData["Daily Task"][0].videoUrl}
@@ -145,7 +144,7 @@ const TaskAreaScreen = () => {
 
         {activeTab === "Partners" && (
           <div className="wallet-section">
-            <h2>Wallets</h2>
+            <h2 className="title-ii">Wallets</h2>
             {walletData["Partners"].map((wallet, index) => (
               <div key={index} className="wallet-card">
                 <div className="wallet-details-2">
@@ -164,7 +163,7 @@ const TaskAreaScreen = () => {
 
         {activeTab === "Update" && (
           <div className="update-section">
-            <h2>Wallets</h2>
+            <h2 className="title-ii">Wallets</h2>
             {walletData.Update.map((update, index) => (
               <div key={index} className="wallet-card">
                   <img src={update.image} alt={update.title} className="booster-icon" />
