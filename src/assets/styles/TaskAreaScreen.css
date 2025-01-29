@@ -88,6 +88,11 @@
   align-items: center;
 }
 
+.wallet-details-2 div p{
+width: 100%;
+text-align: left;
+}
+
 .wallet-icon {
   font-size: 24px;
 }
@@ -113,6 +118,7 @@
   cursor: pointer;
   transition: background 0.3s;
   height: max-content;
+  margin-left: auto;
 }
 
 .go-button {
@@ -149,26 +155,25 @@
 .youtube-follow {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
+  gap: 0px;
   border-radius: 8px;
 }
 
 .youtube-image {
-  width: 104px;
+  width: 90px;
   height: 79px;
   border-radius: 12px;
 }
 
 .youtube-text {
-  font-size: 16px;
+  font-size: 14px;
   color: #fff;
 }
 
 .booster-cards-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   padding: 10px;
 }
 

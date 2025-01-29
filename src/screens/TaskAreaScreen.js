@@ -31,11 +31,11 @@ const TaskAreaScreen = () => {
         type: "channel",
         title: "Follow our Artist",
         subtitle: "YouTube channel.",
-        image: "https://via.placeholder.com/40", // Example image
+        image: "https://www.svgrepo.com/show/508699/landscape-placeholder.svg", // Example image
       },
       {
         type: "card",
-        image: "https://via.placeholder.com/100",
+        image: "https://www.svgrepo.com/show/508699/landscape-placeholder.svg",
         title: "Follow HashTag on Facebook",
         text: "Reward: +1000 $HTC",
         buttonText: "go",
@@ -46,13 +46,13 @@ const TaskAreaScreen = () => {
         title: "Connect TON Wallet",
         content: "49,000 Hashtags",
         buttonText: "Coming soon",
-        image: "https://via.placeholder.com/100",
+        image: "https://www.svgrepo.com/show/508699/landscape-placeholder.svg",
       },
       {
         title: "Connect Doge Wallet",
         content: "49,000 Hashtags",
         buttonText: "Coming soon",
-        image: "https://via.placeholder.com/100",
+        image: "https://www.svgrepo.com/show/508699/landscape-placeholder.svg",
       },
     ]
   };

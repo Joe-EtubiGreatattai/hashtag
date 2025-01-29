@@ -9,37 +9,37 @@ const BoosterScreen = () => {
     // Sample list data for boosters with image paths
     const boosterData = [
         {
-            image: "path_to_image/double_points.png",  // Replace with actual image path
+            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
             title: "Double Points",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me"
         },
         {
-            image: "path_to_image/speed_boost.png",  // Replace with actual image path
+            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
             title: "Speed Boost",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me"
         },
         {
-            image: "path_to_image/hot_streak.png",  // Replace with actual image path
+            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
             title: "Hot Streak",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me"
         },
         {
-            image: "path_to_image/hot_streak.png",  // Replace with actual image path
+            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
             title: "Hot Streak",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me"
         },
         {
-            image: "path_to_image/hot_streak.png",  // Replace with actual image path
+            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
             title: "Hot Streak",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me"
         },
         {
-            image: "path_to_image/hot_streak.png",  // Replace with actual image path
+            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
             title: "Hot Streak",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me"

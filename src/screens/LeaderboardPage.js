@@ -30,7 +30,7 @@ const LeaderboardPage = () => {
 
   return (
     <>
-      <div className="appII">
+      <div className="appIII">
         <Header
           username="slackecy"
           level="LV 1"
