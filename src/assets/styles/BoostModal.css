@@ -30,17 +30,21 @@
     background: none;
     border: none;
     cursor: pointer;
+    background: #F4FDFF;
+    border-radius: 50%;
+    padding: 8px;
+
   }
   
   .close-icon {
-    color: white;
+    color: black;
     width: 32px;
     height: 32px;
   }
   
   /* Title text */
   .boost-modal-title {
-    font-size: 32px;
+    font-size: 24px;
     font-weight: bold;
     color: white;
     text-align: center;
@@ -50,7 +54,7 @@
   /* Description text */
   .boost-modal-description {
     color: white;
-    font-size: 20px;
+    font-size: 16px;
     margin-bottom: 48px;
     text-align: center;
     line-height: 1.6;
@@ -76,8 +80,14 @@
   
   /* Button for HTC boost */
   .boost-htc-button {
-    background-color: #6C5DD3;
-    color: white;
+    background-color: #FEC001;
+    color: #FF29C2;
+    transition: background-color 0.3s ease;
+  }
+
+  .boost-star-button{
+    background-color: #6E6EFF;
+    color: #FEC001;
     transition: background-color 0.3s ease;
   }
   
@@ -87,8 +97,8 @@
   
   /* Button for TON boost */
   .boost-ton-button {
-    background-color: #002379;
-    color: white;
+    background-color: #F4FDFF;
+    color: #3772FF;
     transition: background-color 0.3s ease;
   }
   

@@ -38,35 +38,26 @@ const Leaderboard = () => {
       </div>
 
       {/* Leaderboard Title */}
-      <h2 className="leaderboard-title">LEADERBOARD</h2>
-
-      {/* Snowflake decorations */}
-      <div className="snowflakes">
-        <div className="snowflake snowflake-1">❄</div>
-        <div className="snowflake snowflake-2">❄</div>
-        <div className="snowflake snowflake-3">❄</div>
-      </div>
-
+      <h2 className="leaderboard-title">TOP HASHTAGGERS</h2>
+  
       {/* Leaders Display */}
       <div className="leaders-display">
         {leaderboardData.map((leader) => (
           <div
             key={leader.id}
-            className={`leader-item ${
-              leader.position === 'center'
+            className={`leader-item ${leader.position === 'center'
                 ? 'leader-center'
                 : leader.position === 'left'
-                ? 'leader-left'
-                : 'leader-right'
-            }`}
+                  ? 'leader-left'
+                  : 'leader-right'
+              }`}
           >
             <div className="avatar-container">
               <img
                 src={leader.image} // Use unique image for each leader
                 alt={leader.name}
-                className={`avatar ${
-                  leader.position === 'center' ? 'avatar-center' : 'avatar-default'
-                }`}
+                className={`avatar ${leader.position === 'center' ? 'avatar-center' : 'avatar-default'
+                  }`}
               />
               <div className="leader-rank">{leader.id}</div>
             </div>

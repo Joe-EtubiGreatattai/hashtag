@@ -4,42 +4,25 @@ import FixedLogo from '../components/fixedLogo';
 import "../assets/styles/TaskAreaScreen.css"; 
 import BoostModal from './../components/BoostModal';
 import BottomSpacer from '../components/BottomSpacer';
+import ReferralCard from './../components/ReferralCard';
 
 const BoosterScreen = () => {
     // Sample list data for boosters with image paths
     const boosterData = [
         {
-            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
+            image: require("../assets/crypto.png"),
             title: "Double Points",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me"
         },
         {
-            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
+            image: require("../assets/crypto.png"),
             title: "Speed Boost",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me"
         },
         {
-            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
-            title: "Hot Streak",
-            text: "3000 $HTC in 8hrs",
-            buttonText: "Activate me"
-        },
-        {
-            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
-            title: "Hot Streak",
-            text: "3000 $HTC in 8hrs",
-            buttonText: "Activate me"
-        },
-        {
-            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
-            title: "Hot Streak",
-            text: "3000 $HTC in 8hrs",
-            buttonText: "Activate me"
-        },
-        {
-            image: "https://static.vecteezy.com/system/resources/previews/040/159/435/non_2x/dollar-coin-with-placeholder-showing-concept-icon-of-business-location-bank-location-design-vector.jpg",  // Replace with actual image path
+            image: require("../assets/crypto.png"),
             title: "Hot Streak",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me"
@@ -51,14 +34,14 @@ const BoosterScreen = () => {
 
     // Handle modal opening
     const handleModalOpen = (booster) => {
-        setSelectedBooster(booster); // Set the selected booster
-        setIsModalOpen(true); // Open the modal
+        setSelectedBooster(booster);
+        setIsModalOpen(true);
     };
 
     // Handle modal closing
     const handleModalClose = () => {
         setIsModalOpen(false);
-        setSelectedBooster(null); // Reset the selected booster
+        setSelectedBooster(null);
     };
 
     return (
@@ -86,11 +69,16 @@ const BoosterScreen = () => {
                 ))}
             </div>
 
+            {/* Add ReferralCard component */}
+            <div className="referral-section">
+                <ReferralCard showHeader={false} />
+            </div>
+
             {/* Reward Modal */}
             {isModalOpen && (
                 <BoostModal
                     onClose={handleModalClose}
-                    booster={selectedBooster} // Pass the selected booster data
+                    booster={selectedBooster}
                 />
             )}
 

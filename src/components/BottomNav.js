@@ -59,17 +59,16 @@ const BottomNav = ({ activeTab, onTabClick }) => {
 
 const styles = {
   nav: {
-    width: '90%',
+    width: '100%',
     display: 'flex',
     justifyContent: 'space-around',
     alignItems: 'center',
     padding: '20px 0',
     backgroundColor: '#022B89',
-    marginBottom: '10px',
-    borderRadius: '10px',
+    marginBottom: '0',
     position:'fixed',
     zIndex:999999,
-    bottom:'0px'
+    bottom:'0'
   },
   tab: {
     display: 'flex',

@@ -19,7 +19,6 @@ const Header = ({ username, level, profilePhoto }) => {
           />
           <div style={styles.textContainer}>
             <span style={styles.username}>{username}</span>
-            <span style={styles.level}>{level}</span>
           </div>
         </div>
 

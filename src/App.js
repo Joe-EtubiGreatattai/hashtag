@@ -61,8 +61,8 @@ const Navigation = () => {
   return (
     <div className="app">
       <Routes>
-        <Route path="/" element={<TaskAreaScreen />} />
-        <Route path="/tasks" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/tasks" element={<TaskAreaScreen />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route path="/profile" element={<div>Profile Page (To be implemented)</div>} />
         <Route path="/friends" element={<div>Friends Page (To be implemented)</div>} />
