@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import '../assets/styles/BoostModal.css'; // Import the CSS for styling
+import '../assets/styles/BoostModal.css';
 
 const BoostModal = ({ onClose, booster }) => {
   return (
@@ -21,10 +21,10 @@ const BoostModal = ({ onClose, booster }) => {
             Boost with 50,000 $HTC
           </button>
           <button className="boost-modal-button boost-star-button">
-          Boost with 65 Stars
+            Boost with 65 Stars
           </button>
           <button className="boost-modal-button boost-ton-button">
-            Boost with 0.25 TON
+            Boost with {booster?.tonPrice} TON
           </button>
         </div>
       </div>

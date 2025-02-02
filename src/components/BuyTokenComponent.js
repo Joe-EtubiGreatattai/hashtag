@@ -5,14 +5,23 @@ const BuyTokenComponent = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('ton');
   const [tonAmount, setTonAmount] = useState('');
   const [htcAmount, setHtcAmount] = useState('');
-  const HTC_PRICE = 0.35; // 1 HTC = 0.35 TON
+  
+  // Updated conversion rates
+  const TON_TO_HTC_RATE = 13.0571; // 1 TON = 13.0571 HTC
+  const STARS_TO_HTC_RATE = 13.0571 / 250; // 250 Stars = 13.0571 HTC
 
   const handleTonChange = (value) => {
     setTonAmount(value);
     if (value && !isNaN(value)) {
-      // Calculate HTC amount: TON ÷ 0.35 = HTC
-      const htcValue = (parseFloat(value) / HTC_PRICE).toFixed(4);
-      setHtcAmount(htcValue);
+      if (activeTab === 'ton') {
+        // Calculate HTC amount: TON × 13.0571 = HTC
+        const htcValue = (parseFloat(value) * TON_TO_HTC_RATE).toFixed(4);
+        setHtcAmount(htcValue);
+      } else {
+        // Calculate HTC amount for Stars: Stars × (13.0571/250) = HTC
+        const htcValue = (parseFloat(value) * STARS_TO_HTC_RATE).toFixed(4);
+        setHtcAmount(htcValue);
+      }
     } else {
       setHtcAmount('');
     }
@@ -21,9 +30,15 @@ const BuyTokenComponent = ({ onBack }) => {
   const handleHtcChange = (value) => {
     setHtcAmount(value);
     if (value && !isNaN(value)) {
-      // Calculate TON amount: HTC × 0.35 = TON
-      const tonValue = (parseFloat(value) * HTC_PRICE).toFixed(4);
-      setTonAmount(tonValue);
+      if (activeTab === 'ton') {
+        // Calculate TON amount: HTC ÷ 13.0571 = TON
+        const tonValue = (parseFloat(value) / TON_TO_HTC_RATE).toFixed(4);
+        setTonAmount(tonValue);
+      } else {
+        // Calculate Stars amount: HTC ÷ (13.0571/250) = Stars
+        const tonValue = (parseFloat(value) / STARS_TO_HTC_RATE).toFixed(4);
+        setTonAmount(tonValue);
+      }
     } else {
       setTonAmount('');
     }
@@ -34,7 +49,7 @@ const BuyTokenComponent = ({ onBack }) => {
       return {
         tonLabel: 'Enter amount in TON',
         htcLabel: 'Amount in $HTC',
-        tonPlaceholder: '4.57',
+        tonPlaceholder: '1.0',
         htcPlaceholder: '13.0571',
         tonSuffix: 'TON',
         htcSuffix: '$HTC',
@@ -43,8 +58,8 @@ const BuyTokenComponent = ({ onBack }) => {
       return {
         tonLabel: 'Enter amount in Stars',
         htcLabel: 'Amount in $HTC',
-        tonPlaceholder: '0.0',
-        htcPlaceholder: '0.0',
+        tonPlaceholder: '250',
+        htcPlaceholder: '13.0571',
         tonSuffix: 'Stars',
         htcSuffix: '$HTC',
       };

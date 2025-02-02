@@ -1,3 +1,4 @@
+// booster.js
 import React, { useState } from "react";
 import "../App.css";
 import FixedLogo from '../components/fixedLogo';
@@ -7,38 +8,39 @@ import BottomSpacer from '../components/BottomSpacer';
 import ReferralCard from './../components/ReferralCard';
 
 const BoosterScreen = () => {
-    // Sample list data for boosters with image paths
+    // Updated booster data with TON prices
     const boosterData = [
         {
             image: require("../assets/crypto.png"),
             title: "Double Points",
             text: "3000 $HTC in 8hrs",
-            buttonText: "Activate me"
+            buttonText: "Activate me",
+            tonPrice: 0.25
         },
         {
             image: require("../assets/crypto.png"),
             title: "Speed Boost",
             text: "3000 $HTC in 8hrs",
-            buttonText: "Activate me"
+            buttonText: "Activate me",
+            tonPrice: 0.5
         },
         {
             image: require("../assets/crypto.png"),
             title: "Hot Streak",
             text: "3000 $HTC in 8hrs",
-            buttonText: "Activate me"
+            buttonText: "Activate me",
+            tonPrice: 1.0
         },
     ];
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBooster, setSelectedBooster] = useState(null);
 
-    // Handle modal opening
     const handleModalOpen = (booster) => {
         setSelectedBooster(booster);
         setIsModalOpen(true);
     };
 
-    // Handle modal closing
     const handleModalClose = () => {
         setIsModalOpen(false);
         setSelectedBooster(null);
@@ -46,13 +48,11 @@ const BoosterScreen = () => {
 
     return (
         <div className="app">
-            {/* Header */}
             <div className="header">
                 <button className="back-button">←</button>
                 <h1 className="title">Boosters</h1>
             </div>
 
-            {/* Booster Cards */}
             <div className="booster-cards-container">
                 <h2 className="booster-title-header">Boost To Earn More Points</h2>
                 {boosterData.map((booster, index) => (
@@ -69,12 +69,10 @@ const BoosterScreen = () => {
                 ))}
             </div>
 
-            {/* Add ReferralCard component */}
             <div className="referral-section">
                 <ReferralCard showHeader={false} />
             </div>
 
-            {/* Reward Modal */}
             {isModalOpen && (
                 <BoostModal
                     onClose={handleModalClose}
