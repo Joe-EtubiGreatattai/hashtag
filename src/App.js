@@ -4,6 +4,7 @@ import HomePage from './screens/home';
 import LoadingScreen from './screens/loading';
 import LeaderboardPage from './screens/LeaderboardPage';
 import Booster from './screens/booster';  // Import Booster page
+import FriendScreen from './screens/frends';
 import TaskAreaScreen from './screens/TaskAreaScreen';
 import BottomNav from './components/BottomNav';
 
@@ -65,7 +66,7 @@ const Navigation = () => {
         <Route path="/tasks" element={<TaskAreaScreen />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route path="/profile" element={<div>Profile Page (To be implemented)</div>} />
-        <Route path="/friends" element={<div>Friends Page (To be implemented)</div>} />
+        <Route path="/friends" element={<FriendScreen />} />
         <Route path="/booster" element={<Booster />} />  {/* Add Booster Route */}
       </Routes>
       <BottomNav activeTab={getActiveTab()} onTabClick={handleTabClick} />

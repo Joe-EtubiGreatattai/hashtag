@@ -6,6 +6,56 @@
   width: 100vw;
 }
 
+.friend-logo {
+  width: 100vw;
+  display: flex;
+  object-fit: cover;
+  justify-content: center;
+}
+
+.friend-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 auto;
+}
+
+.friend-sub {
+  font-size: 16px;
+  font-weight: 400;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 10px;
+}
+
+.button-container button {
+  background: #F4FDFF;
+  color: white;
+  padding: 10px 9px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: #002681;
+  font-size: 14px;
+}
+
+
+.friend-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 10px;
+  width: 70%;
+  text-align: center;
+}
+
 .back-button {
   color: white;
   font-size: 18px;
@@ -20,7 +70,7 @@
   margin: 0 auto;
 }
 
-.title-ii{
+.title-ii {
   width: 100vw;
   text-align: left;
 }
@@ -88,9 +138,9 @@
   align-items: center;
 }
 
-.wallet-details-2 div p{
-width: 100%;
-text-align: left;
+.wallet-details-2 div p {
+  width: 100%;
+  text-align: left;
 }
 
 .wallet-icon {
@@ -165,8 +215,8 @@ text-align: left;
   border-radius: 12px;
 }
 
-.referral-section{
-width: 90%;
+.referral-section {
+  width: 90%;
 }
 
 .youtube-text {
@@ -189,7 +239,7 @@ width: 90%;
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  background-color:  rgba(2555, 2555, 255, 0.1);
+  background-color: rgba(2555, 2555, 255, 0.1);
   width: 90vw;
 }
 
@@ -199,8 +249,8 @@ width: 90%;
 }
 
 .booster-icon {
- width: 40px;
- height: 40px;
+  width: 40px;
+  height: 40px;
 }
 
 .booster-title {
@@ -223,7 +273,7 @@ width: 90%;
   cursor: pointer;
 }
 
-.booster-title-header{
+.booster-title-header {
   text-align: left;
   width: 90%;
 }
@@ -241,7 +291,8 @@ width: 90%;
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 90vw; /* Adjust width to fit 3 cards per row */
+  width: 90vw;
+  /* Adjust width to fit 3 cards per row */
   padding: 16px;
   display: flex;
   flex-direction: row;
@@ -269,7 +320,7 @@ width: 90%;
 
 .task-text h3 {
   font-size: 16px;
-  font-weight:400;
+  font-weight: 400;
   margin-bottom: 8px;
   color: #fff;
 }
@@ -295,7 +346,7 @@ width: 90%;
   background-color: #0056b3;
 }
 
-.buy-button{
+.buy-button {
   background: #000;
   width: 100%;
   padding: .5rem;
@@ -305,12 +356,14 @@ width: 90%;
 
 @media screen and (max-width: 768px) {
   .task-card {
-    width: calc(50% - 16px); /* Adjust width for tablets */
+    width: calc(50% - 16px);
+    /* Adjust width for tablets */
   }
 }
 
 @media screen and (max-width: 480px) {
   .task-card {
-    width: 100%; /* Adjust width for mobile */
+    width: 100%;
+    /* Adjust width for mobile */
   }
 }

@@ -5,12 +5,14 @@ const BuyTokenComponent = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('ton');
   const [tonAmount, setTonAmount] = useState('');
   const [htcAmount, setHtcAmount] = useState('');
-  const HTC_PRICE = 0.35;
+  const HTC_PRICE = 0.35; // 1 HTC = 0.35 TON
 
   const handleTonChange = (value) => {
     setTonAmount(value);
     if (value && !isNaN(value)) {
-      setHtcAmount((parseFloat(value) / HTC_PRICE).toFixed(2));
+      // Calculate HTC amount: TON ÷ 0.35 = HTC
+      const htcValue = (parseFloat(value) / HTC_PRICE).toFixed(4);
+      setHtcAmount(htcValue);
     } else {
       setHtcAmount('');
     }
@@ -19,7 +21,9 @@ const BuyTokenComponent = ({ onBack }) => {
   const handleHtcChange = (value) => {
     setHtcAmount(value);
     if (value && !isNaN(value)) {
-      setTonAmount((parseFloat(value) * HTC_PRICE).toFixed(2));
+      // Calculate TON amount: HTC × 0.35 = TON
+      const tonValue = (parseFloat(value) * HTC_PRICE).toFixed(4);
+      setTonAmount(tonValue);
     } else {
       setTonAmount('');
     }
@@ -30,8 +34,8 @@ const BuyTokenComponent = ({ onBack }) => {
       return {
         tonLabel: 'Enter amount in TON',
         htcLabel: 'Amount in $HTC',
-        tonPlaceholder: '0.0',
-        htcPlaceholder: '0.0',
+        tonPlaceholder: '4.57',
+        htcPlaceholder: '13.0571',
         tonSuffix: 'TON',
         htcSuffix: '$HTC',
       };
@@ -49,8 +53,8 @@ const BuyTokenComponent = ({ onBack }) => {
   };
 
   const handleBuy = () => {
-    console.log('Buying tokens:', { tonAmount, htcAmount }); // Log the values
-    alert(`Buying ${htcAmount} $HTC for ${tonAmount} ${activeTab === 'ton' ? 'TON' : 'Stars'}`); // Optional: Show an alert
+    console.log('Buying tokens:', { tonAmount, htcAmount }); 
+    alert(`Buying ${htcAmount} $HTC for ${tonAmount} ${activeTab === 'ton' ? 'TON' : 'Stars'}`);
   };
 
   const { tonLabel, htcLabel, tonPlaceholder, htcPlaceholder, tonSuffix, htcSuffix } = getInputLabels();
@@ -99,6 +103,7 @@ const BuyTokenComponent = ({ onBack }) => {
               onChange={(e) => handleTonChange(e.target.value)}
               style={styles.input}
               placeholder={tonPlaceholder}
+              step="0.0001"
             />
             <span style={styles.inputSuffix}>{tonSuffix}</span>
           </div>
@@ -113,6 +118,7 @@ const BuyTokenComponent = ({ onBack }) => {
               onChange={(e) => handleHtcChange(e.target.value)}
               style={styles.input}
               placeholder={htcPlaceholder}
+              step="0.0001"
             />
             <span style={styles.inputSuffix}>{htcSuffix}</span>
           </div>

@@ -16,9 +16,9 @@ const FixedLogo = ({ top = "35%" }) => {
       <style>
         {`
           .avatar-card-container {
-            position: fixed;
-            top: ${top};  /* dynamic top value */
-            z-index: 2;
+            position: absolute;
+            top: ${top};
+            z-index: -1;
           }
 
           .avatar-card {

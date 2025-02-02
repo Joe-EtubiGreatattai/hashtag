@@ -1,6 +1,6 @@
 import React from 'react';
-import homeIcon from '../assets/earn.png';
-import minIcon from '../assets/miner.png';
+import HTCFarmIcon from '../assets/miner.png';
+import minIcon from '../assets/earn.png';
 import boosterIcon from '../assets/booster.png';
 import rankIcon from '../assets/rank.png';
 import friendIcon from '../assets/friend.png';
@@ -10,21 +10,21 @@ const BottomNav = ({ activeTab, onTabClick }) => {
     <div style={styles.nav}>
       <div style={styles.tab}>
         <img
-          src={homeIcon}
-          alt="Home"
+          src={HTCFarmIcon}
+          alt="HTCFarm"
           onClick={() => onTabClick('home')}
           style={activeTab === 'home' ? { ...styles.icon, ...styles.activeIcon } : styles.icon}
         />
-        <span style={styles.text}>Earn</span>
+        <span style={styles.text}>HTCFarm</span>
       </div>
       <div style={styles.tab}>
         <img
           src={minIcon}
-          alt="Miner"
+          alt="Tasks"
           onClick={() => onTabClick('gift')}
           style={activeTab === 'gift' ? { ...styles.icon, ...styles.activeIcon } : styles.icon}
         />
-        <span style={styles.text}>Miner</span>
+        <span style={styles.text}>Tasks</span>
       </div>
       <div style={styles.tab}>
         <img
@@ -38,16 +38,16 @@ const BottomNav = ({ activeTab, onTabClick }) => {
       <div style={styles.tab}>
         <img
           src={rankIcon}
-          alt="Rank"
+          alt="Leaderboard"
           onClick={() => onTabClick('chart')}
-          style={activeTab === 'user' ? { ...styles.icon, ...styles.activeIcon } : styles.icon}
+          style={activeTab === 'chart' ? { ...styles.icon, ...styles.activeIcon } : styles.icon}
         />
         <span style={styles.text}>Rank</span>
       </div>
       <div style={styles.tab}>
         <img
           src={friendIcon}
-          alt="Friend"
+          alt="Friends"
           onClick={() => onTabClick('friend')}
           style={activeTab === 'friend' ? { ...styles.icon, ...styles.activeIcon } : styles.icon}
         />
@@ -66,9 +66,9 @@ const styles = {
     padding: '20px 0',
     backgroundColor: '#022B89',
     marginBottom: '0',
-    position:'fixed',
-    zIndex:999999,
-    bottom:'0'
+    position: 'fixed',
+    zIndex: 999999,
+    bottom: '0'
   },
   tab: {
     display: 'flex',
@@ -81,10 +81,13 @@ const styles = {
     cursor: 'pointer',
     transition: 'transform 0.3s ease, filter 0.3s ease',
     filter: 'grayscale(100%)',
+    opacity: .4,
   },
   activeIcon: {
     transform: 'scale(1.2)',
-    filter: 'grayscale(0%)',
+    tint: 'Yellow',
+    filter: 'grayscale(0%) sepia(100%) saturate(300%) brightness(100%) hue-rotate(10deg)',
+    opacity: 1,
   },
   text: {
     marginTop: '5px',

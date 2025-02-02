@@ -31,14 +31,48 @@ const TaskAreaScreen = () => {
         type: "channel",
         title: "Follow our Artist",
         subtitle: "YouTube channel.",
-        image: "https://www.svgrepo.com/show/508699/landscape-placeholder.svg", // Example image
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1024px-YouTube_full-color_icon_%282017%29.svg.png", // Example image
+        url: "https://youtube.com/@hashtagdigital-v3c?si=1R1MuNBEGykblssF", // YouTube URL
       },
       {
         type: "card",
-        image: "https://www.svgrepo.com/show/508699/landscape-placeholder.svg",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiXN9xSEe8unzPBEQOeAKXd9Q55efGHGB9BA&s",
         title: "Follow HashTag on Facebook",
         text: "Reward: +1000 $HTC",
         buttonText: "go",
+        url: "https://www.facebook.com/profile.php?id=61567774558192", // Facebook URL
+      },
+      {
+        type: "card",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_dbOUeCrOBe-mkfGD-fEjQNECJrkromWTYg&s",
+        title: "Join our Telegram Channel",
+        text: "Reward: +1000 $HTC",
+        buttonText: "go",
+        url: "https://t.me/hashtagdigitalcreatedomimate", // Telegram URL
+      },
+      {
+        type: "card",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP9zXDkNJUki9U8iYi1xQkHhxPDuV-YcP8fQ&s",
+        title: "Join our TikTok",
+        text: "Reward: +1000 $HTC",
+        buttonText: "go",
+        url: "https://www.tiktok.com/@hashtag_digital?_t=8r8qct04irQ&_r=1", // TikTok URL
+      },
+      {
+        type: "card",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/X_logo.jpg/480px-X_logo.jpg",
+        title: "Join our X (Twitter)",
+        text: "Reward: +1000 $HTC",
+        buttonText: "go",
+        url: "https://x.com/HASHTAGDIG74491?t=cKh3b4zEB0ezsmkzMwFbhw&s=09", // X (Twitter) URL
+      },
+      {
+        type: "card",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/1200px-WhatsApp.svg.png",
+        title: "Join our WhatsApp Channel",
+        text: "Reward: +1000 $HTC",
+        buttonText: "go",
+        url: "https://whatsapp.com/channel/0029Vb1eomuCHDyehw2KnI2z", // WhatsApp URL
       },
     ],
     Update: [
@@ -55,6 +89,10 @@ const TaskAreaScreen = () => {
         image: "https://www.svgrepo.com/show/508699/landscape-placeholder.svg",
       },
     ]
+  };
+
+  const handleGoButtonClick = (url) => {
+    window.open(url, "_blank");
   };
 
   return (
@@ -135,7 +173,9 @@ const TaskAreaScreen = () => {
                     <h3>{task.title}</h3>
                     <p>{task.text}</p>
                   </div>
-                  <button className="task-button">{task.buttonText}</button>
+                  <button className="task-button" onClick={() => handleGoButtonClick(task.url)}>
+                    {task.buttonText}
+                  </button>
                 </div>
               ))}
             </div>
