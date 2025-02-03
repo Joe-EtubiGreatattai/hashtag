@@ -25,7 +25,7 @@ const TaskAreaScreen = () => {
       {
         type: "video",
         title: "Videos",
-        videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+        videoUrl: "https://www.youtube.com/embed/s87eOYm3kgM?si=bTkzeSXdpJO7aNnR",
       },
       {
         type: "channel",
@@ -140,15 +140,20 @@ const TaskAreaScreen = () => {
         {activeTab === "Daily Task" && (
           <div className="daily-task-section">
             <h2 className="title-ii">Videos</h2>
-            <video className="daily-task-video" controls>
-              <source
+            {/* Updated video section with embedded YouTube iframe */}
+            <div className="video-container">
+              <iframe 
+                width="100%" 
+                height="315" 
                 src={walletData["Daily Task"][0].videoUrl}
-                type="video/mp4"
-              />
-              Your browser does not support the video tag.
-            </video>
+                title="YouTube video player" 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerPolicy="strict-origin-when-cross-origin" 
+                allowFullScreen
+              ></iframe>
+            </div>
 
-            {/* Updated YouTube Follow Section to be clickable */}
             <div 
               className="youtube-follow"
               onClick={() => handleGoButtonClick(walletData["Daily Task"][1].url)}

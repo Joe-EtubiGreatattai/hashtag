@@ -26,6 +26,14 @@
   margin: 0 auto;
 }
 
+.video-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
 .button-container {
   display: flex;
   justify-content: center;
