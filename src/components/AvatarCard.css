@@ -1,41 +1,92 @@
 .avatar-card-container {
-    position: relative;
-    height: 20vh;
+  position: relative;
+  height: 20vh; /* Base height for smaller devices */
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.avatar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+}
+
+.avatar-image {
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+  max-width: 100%;
+}
+
+.popup-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: clamp(16px, 2vw, 24px);
+  font-weight: bold;
+  animation: fadeUp 2s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
   }
-  
-  .avatar-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0;
-    cursor: pointer;
-    height: 100%; 
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
-  
-  .avatar-image {
-    width: auto;  
-    object-fit: cover;
+}
+
+/* Height-based media queries */
+@media screen and (min-height: 600px) {
+  .avatar-card-container {
+    height: 22vh;
   }
-  
-  .popup-message {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    animation: fadeUp 2s ease-out forwards;
+}
+
+@media screen and (min-height: 800px) {
+  .avatar-card-container {
+    height: 35vh;
   }
-  
-  @keyframes fadeUp {
-    from {
-      transform: translateY(20px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
+}
+
+@media screen and (min-height: 1000px) {
+  .avatar-card-container {
+    height: 35vh;
   }
+}
+
+@media screen and (min-height: 1200px) {
+  .avatar-card-container {
+    height: 40vh;
+  }
+}
+
+/* For very tall devices like foldables */
+@media screen and (min-height: 1400px) {
+  .avatar-card-container {
+    height: 45vh;
+  }
+}
+
+/* For extra tall devices */
+@media screen and (min-height: 1600px) {
+  .avatar-card-container {
+    height: 50vh;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .avatar-card-container {
+    height: 60vh; /* Larger relative height for landscape */
+  }
+}
