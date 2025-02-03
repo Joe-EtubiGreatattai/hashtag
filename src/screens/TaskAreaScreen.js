@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import "../App.css";
 import ReferralCard from "../components/ReferralCard";
 import FixedLogo from '../components/fixedLogo';
-import "../assets/styles/TaskAreaScreen.css"; // Import TaskAreaScreen-specific CSS
+import "../assets/styles/TaskAreaScreen.css";
 import BottomSpacer from '../components/BottomSpacer';
 
 const TaskAreaScreen = () => {
   const [activeTab, setActiveTab] = useState("Hashtag");
 
-  const tabs = ["Hashtag", "Partners", "Daily Task", "Update"]; // Added Update tab
+  const tabs = ["Hashtag", "Partners", "Daily Task", "Update"];
 
   const walletData = {
     Hashtag: [
@@ -25,14 +25,14 @@ const TaskAreaScreen = () => {
       {
         type: "video",
         title: "Videos",
-        videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", // Example video
+        videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
       },
       {
         type: "channel",
         title: "Follow our Artist",
         subtitle: "YouTube channel.",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1024px-YouTube_full-color_icon_%282017%29.svg.png", // Example image
-        url: "https://youtube.com/@hashtagdigital-v3c?si=1R1MuNBEGykblssF", // YouTube URL
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1024px-YouTube_full-color_icon_%282017%29.svg.png",
+        url: "https://youtube.com/@hashtagdigital-v3c?si=1R1MuNBEGykblssF",
       },
       {
         type: "card",
@@ -40,7 +40,7 @@ const TaskAreaScreen = () => {
         title: "Follow HashTag on Facebook",
         text: "Reward: +1000 $HTC",
         buttonText: "go",
-        url: "https://www.facebook.com/profile.php?id=61567774558192", // Facebook URL
+        url: "https://www.facebook.com/profile.php?id=61567774558192",
       },
       {
         type: "card",
@@ -48,7 +48,7 @@ const TaskAreaScreen = () => {
         title: "Join our Telegram Channel",
         text: "Reward: +1000 $HTC",
         buttonText: "go",
-        url: "https://t.me/hashtagdigitalcreatedomimate", // Telegram URL
+        url: "https://t.me/hashtagdigitalcreatedomimate",
       },
       {
         type: "card",
@@ -56,7 +56,7 @@ const TaskAreaScreen = () => {
         title: "Join our TikTok",
         text: "Reward: +1000 $HTC",
         buttonText: "go",
-        url: "https://www.tiktok.com/@hashtag_digital?_t=8r8qct04irQ&_r=1", // TikTok URL
+        url: "https://www.tiktok.com/@hashtag_digital?_t=8r8qct04irQ&_r=1",
       },
       {
         type: "card",
@@ -64,7 +64,7 @@ const TaskAreaScreen = () => {
         title: "Join our X (Twitter)",
         text: "Reward: +1000 $HTC",
         buttonText: "go",
-        url: "https://x.com/HASHTAGDIG74491?t=cKh3b4zEB0ezsmkzMwFbhw&s=09", // X (Twitter) URL
+        url: "https://x.com/HASHTAGDIG74491?t=cKh3b4zEB0ezsmkzMwFbhw&s=09",
       },
       {
         type: "card",
@@ -72,7 +72,7 @@ const TaskAreaScreen = () => {
         title: "Join our WhatsApp Channel",
         text: "Reward: +1000 $HTC",
         buttonText: "go",
-        url: "https://whatsapp.com/channel/0029Vb1eomuCHDyehw2KnI2z", // WhatsApp URL
+        url: "https://whatsapp.com/channel/0029Vb1eomuCHDyehw2KnI2z",
       },
     ],
     Update: [
@@ -98,13 +98,11 @@ const TaskAreaScreen = () => {
   return (
     <div className="app">
       <FixedLogo />
-      {/* Header */}
       <div className="header">
         <button className="back-button">←</button>
-        <h1 className="title">{activeTab}</h1> {/* Dynamic Title */}
+        <h1 className="title">{activeTab}</h1>
       </div>
 
-      {/* Tabs */}
       <div className="tabs-container">
         {tabs.map((tab) => (
           <button
@@ -117,7 +115,6 @@ const TaskAreaScreen = () => {
         ))}
       </div>
 
-      {/* Content */}
       <div className="content">
         {activeTab === "Hashtag" && (
           <div className="hashtag-section">
@@ -142,7 +139,6 @@ const TaskAreaScreen = () => {
 
         {activeTab === "Daily Task" && (
           <div className="daily-task-section">
-            {/* Video Section */}
             <h2 className="title-ii">Videos</h2>
             <video className="daily-task-video" controls>
               <source
@@ -152,8 +148,12 @@ const TaskAreaScreen = () => {
               Your browser does not support the video tag.
             </video>
 
-            {/* YouTube Follow Section */}
-            <div className="youtube-follow">
+            {/* Updated YouTube Follow Section to be clickable */}
+            <div 
+              className="youtube-follow"
+              onClick={() => handleGoButtonClick(walletData["Daily Task"][1].url)}
+              style={{ cursor: 'pointer' }}
+            >
               <img
                 src={walletData["Daily Task"][1].image}
                 alt="Follow us"
@@ -164,7 +164,6 @@ const TaskAreaScreen = () => {
               </div>
             </div>
 
-            {/* Task Cards */}
             <div className="task-cards">
               {walletData["Daily Task"].slice(2).map((task, index) => (
                 <div key={index} className="task-card">
@@ -197,7 +196,7 @@ const TaskAreaScreen = () => {
                 </div>
               </div>
             ))}
-            <button className="buy-button">Buy $HTC</button> {/* Buy Button */}
+            <button className="buy-button">Buy $HTC</button>
           </div>
         )}
 
@@ -214,7 +213,7 @@ const TaskAreaScreen = () => {
                 <button className="go-button">{update.buttonText}</button>
               </div>
             ))}
-            <ReferralCard /> {/* Referral Card at the bottom */}
+            <ReferralCard />
           </div>
         )}
       </div>
