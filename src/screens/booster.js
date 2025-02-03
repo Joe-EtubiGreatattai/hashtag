@@ -1,4 +1,3 @@
-// booster.js
 import React, { useState } from "react";
 import "../App.css";
 import FixedLogo from '../components/fixedLogo';
@@ -8,28 +7,31 @@ import BottomSpacer from '../components/BottomSpacer';
 import ReferralCard from './../components/ReferralCard';
 
 const BoosterScreen = () => {
-    // Updated booster data with TON prices
+    // Updated booster data with TON and Star prices
     const boosterData = [
         {
             image: require("../assets/crypto.png"),
             title: "Double Points",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me",
-            tonPrice: 0.25
+            tonPrice: 0.25,
+            starPrice: 65
         },
         {
             image: require("../assets/crypto.png"),
             title: "Speed Boost",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me",
-            tonPrice: 0.5
+            tonPrice: 0.5,
+            starPrice: 125
         },
         {
             image: require("../assets/crypto.png"),
             title: "Hot Streak",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me",
-            tonPrice: 1.0
+            tonPrice: 1.0,
+            starPrice: 250
         },
     ];
 

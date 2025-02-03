@@ -21,7 +21,7 @@ const BoostModal = ({ onClose, booster }) => {
             Boost with 50,000 $HTC
           </button>
           <button className="boost-modal-button boost-star-button">
-            Boost with 65 Stars
+            Boost with {booster?.starPrice} Stars ⭐
           </button>
           <button className="boost-modal-button boost-ton-button">
             Boost with {booster?.tonPrice} TON
