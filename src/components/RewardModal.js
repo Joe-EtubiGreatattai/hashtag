@@ -11,8 +11,10 @@ const RewardModal = ({ onClose }) => {
   });
   const [isConfettiActive, setIsConfettiActive] = useState(false);
   const [isClaimed, setIsClaimed] = useState(false);
+  const [claimMessage, setClaimMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  // Handle window resize for confetti
   useEffect(() => {
     const handleResize = () => {
       setWindowSize({
@@ -25,7 +27,6 @@ const RewardModal = ({ onClose }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Timer countdown effect
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
@@ -34,7 +35,6 @@ const RewardModal = ({ onClose }) => {
     return () => clearInterval(timer);
   }, []);
 
-  // Stop confetti after 5 seconds
   useEffect(() => {
     let confettiTimer;
     if (isConfettiActive) {
@@ -45,9 +45,60 @@ const RewardModal = ({ onClose }) => {
     return () => clearTimeout(confettiTimer);
   }, [isConfettiActive]);
 
-  const handleClaim = () => {
-    setIsClaimed(true);
-    setIsConfettiActive(true);
+  const handleClaim = async () => {
+    setIsLoading(true);
+    setError('');
+  
+    try {
+      const token = localStorage.getItem('authToken');
+      console.log('Attempting to claim reward...');
+      
+      if (!token) {
+        console.error('No auth token found in localStorage');
+        throw new Error('Please log in again to claim your reward');
+      }
+  
+      console.log('Making API request to claim reward...');
+      const response = await fetch('https://api.hashtagdigital.net/api/claim', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      const data = await response.json();
+      console.log('API Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        data: data
+      });
+  
+      if (response.status === 401) {
+        console.error('Authentication failed - token invalid or expired');
+        localStorage.removeItem('authToken'); // Clear invalid token
+        localStorage.removeItem('userData');
+        window.location.reload(); // Force re-authentication
+        throw new Error('Session expired. Please log in again.');
+      }
+  
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to claim reward');
+      }
+  
+      console.log('Claim successful:', data.message);
+      setClaimMessage(data.message);
+      
+      if (!data.message.includes('already claimed')) {
+        setIsClaimed(true);
+        setIsConfettiActive(true);
+      }
+    } catch (err) {
+      console.error('Claim error:', err);
+      setError(err.message || 'Failed to claim reward. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const formatTime = (seconds) => {
@@ -77,15 +128,18 @@ const RewardModal = ({ onClose }) => {
         <h1 className="modal-title">Your Reward</h1>
 
         <div className="claim-amount">
+          {error && <div className="error-message">{error}</div>}
+          {claimMessage && <div className="claim-message">{claimMessage}</div>}
+          
           {isClaimed ? (
             <div className="claimed-text">Claimed: +500 $HTC</div>
           ) : (
             <button 
               onClick={handleClaim}
               className="claim-button"
-              disabled={isClaimed}
+              disabled={isLoading || isClaimed}
             >
-              Claim +500 $HTC
+              {isLoading ? 'Claiming...' : 'Claim +500 $HTC'}
             </button>
           )}
         </div>
