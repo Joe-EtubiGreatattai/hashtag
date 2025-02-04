@@ -11,7 +11,7 @@ const BoosterScreen = () => {
     const boosterData = [
         {
             image: require("../assets/crypto.png"),
-            title: "Double Points",
+            title: "BoostMe",
             text: "3000 $HTC in 8hrs",
             buttonText: "Activate me",
             tonPrice: 0.25,
@@ -19,16 +19,16 @@ const BoosterScreen = () => {
         },
         {
             image: require("../assets/crypto.png"),
-            title: "Speed Boost",
-            text: "3000 $HTC in 8hrs",
+            title: "GoodVibes",
+            text: "7000 $HTC in 8hrs",
             buttonText: "Activate me",
             tonPrice: 0.5,
             starPrice: 125
         },
         {
             image: require("../assets/crypto.png"),
-            title: "Hot Streak",
-            text: "3000 $HTC in 8hrs",
+            title: "D-Entertainer",
+            text: "10000 $HTC in 8hrs",
             buttonText: "Activate me",
             tonPrice: 1.0,
             starPrice: 250
