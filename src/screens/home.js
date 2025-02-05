@@ -41,7 +41,7 @@ const App = () => {
   // Verify Telegram WebApp authentication
   const verifyTelegramWebApp = async (initData) => {
     try {
-      const response = await fetch('https://api.hashtagdigital.net/auth/telegram_webapp', {
+      const response = await fetch('https://api.hashtagdigital.net/api/auth/telegram_auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
