@@ -48,7 +48,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '10px 30px',
+    padding: '1px 20px',
     borderRadius: '8px',
   },
   profileContainer: {
