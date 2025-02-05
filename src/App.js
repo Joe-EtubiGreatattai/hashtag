@@ -1,36 +1,94 @@
-import React, { useState } from "react";
-import TelegramLoginButton from "react-telegram-login";
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import HomePage from './screens/home';
+import LoadingScreen from './screens/loading';
+import LeaderboardPage from './screens/LeaderboardPage';
+import Booster from './screens/booster';  // Import Booster page
+import FriendScreen from './screens/frends';
+import TaskAreaScreen from './screens/TaskAreaScreen';
+import BottomNav from './components/BottomNav';
 
-const TelegramAuth = () => {
-  const [error, setError] = useState(null);
+const Navigation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleTelegramResponse = (response) => {
-    console.log("User Data:", response);
+  // Handle tab clicks
+  const handleTabClick = (tab) => {
+    switch (tab) {
+      case 'home':
+        navigate('/');
+        break;
+      case 'gift':
+        navigate('/tasks');
+        break;
+      case 'chart':
+        navigate('/leaderboard');
+        break;
+      case 'user':
+        navigate('/profile');
+        break;
+      case 'friend':
+        navigate('/friends');
+        break;
+      case 'booster':  // Add booster navigation case
+        navigate('/booster');
+        break;
+      default:
+        navigate('/');
+    }
+  };
 
-    // Send user data to backend for verification
-    fetch("https://api.hashtagdigital.net/api/auth/telegram_auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(response),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log("Server Response:", data))
-      .catch((err) => {
-        console.error("Error:", err);
-        setError(err.message || "An error occurred while processing your request.");
-      });
+  // Get the active tab based on the current path
+  const getActiveTab = () => {
+    const path = location.pathname;
+    switch (path) {
+      case '/':
+        return 'home';
+      case '/tasks':
+        return 'gift';
+      case '/leaderboard':
+        return 'chart';
+      case '/profile':
+        return 'user';
+      case '/friends':
+        return 'friend';
+      case '/booster':  // Add booster tab check
+        return 'booster';
+      default:
+        return 'home';
+    }
   };
 
   return (
-    <div>
-      <h2>Login with Telegram</h2>
-      <TelegramLoginButton
-        botName="Hashtag001bot" // Replace with your bot's username
-        dataOnauth={handleTelegramResponse}
-      />
-       <p style={{ color: "red" }}>Error: {error}</p>
+    <div className="app">
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/tasks" element={<TaskAreaScreen />} />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/profile" element={<div>Profile Page (To be implemented)</div>} />
+        <Route path="/friends" element={<FriendScreen />} />
+        <Route path="/booster" element={<Booster />} />  {/* Add Booster Route */}
+      </Routes>
+      <BottomNav activeTab={getActiveTab()} onTabClick={handleTabClick} />
     </div>
   );
 };
 
-export default TelegramAuth;
+const App = () => {
+  const [loading, setLoading] = useState(true);
+
+  // Simulate loading delay
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false); // After 3 seconds, set loading to false
+    }, 3000); // Adjust this time as needed
+  }, []);
+
+  return (
+    <Router>
+      {loading ? <LoadingScreen /> : <Navigation />} {/* Show loading screen first */}
+    </Router>
+  );
+};
+
+export default App;
