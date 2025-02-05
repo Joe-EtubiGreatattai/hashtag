@@ -34,11 +34,18 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    // Fetch Telegram user data
     if (window.Telegram && window.Telegram.WebApp) {
+      // Initialize the Telegram WebApp
       window.Telegram.WebApp.ready();
+
+      // Access user data from initDataUnsafe
       const user = window.Telegram.WebApp.initDataUnsafe?.user;
       if (user) {
-        setTelegramUser(user);
+        setTelegramUser({
+          username: user.username || "User",
+          photo_url: user.photo_url || "https://via.placeholder.com/50"
+        });
       }
     } else {
       // Mock data for development environment
@@ -48,7 +55,6 @@ const App = () => {
       });
     }
   }, []);
-  
 
   const handleBuyHTCClick = () => {
     setShowBuyToken(true);
@@ -99,6 +105,7 @@ const App = () => {
 
   return (
     <div className="appII">
+      {/* Pass Telegram user data to the Header component */}
       <Header
         username={telegramUser?.username || "User"}
         level="LV 1"

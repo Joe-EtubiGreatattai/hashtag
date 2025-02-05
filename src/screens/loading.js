@@ -10,7 +10,7 @@ function LoadingScreen() {
     // Simulate loading delay
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+    }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -22,11 +22,8 @@ function LoadingScreen() {
       </video>
       <div className="content">
         <img src={logo} alt="HashTag Logo" className="logo" />
-        {isLoading ? (
-          <h1 className="loading-text">HashTag Loading...</h1>
-        ) : (
-          <h1 className="title">HashTag</h1>
-        )}
+       
+         
       </div>
       <div className="loading-bar">
         <div className="loading-progress"></div>
