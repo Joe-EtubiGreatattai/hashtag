@@ -15,10 +15,7 @@ const App = () => {
   const [farmingEndTime, setFarmingEndTime] = useState(null);
   const [farmingError, setFarmingError] = useState(null);
   const [authError, setAuthError] = useState(null);
-  const [telegramUser, setTelegramUser] = useState({
-    username: "User",
-    photo_url: "https://via.placeholder.com/50"
-  });
+  const [user, setUser] = useState(null);
 
   // Check if user is authenticated through Telegram WebApp
   useEffect(() => {
@@ -26,13 +23,17 @@ const App = () => {
       const webApp = window.Telegram.WebApp;
       webApp.expand();
       
-      const user = webApp.initDataUnsafe?.user;
-      if (user) {
-        setTelegramUser({
-          username: user.username || "User",
-          photo_url: user.photo_url || "https://via.placeholder.com/50"
-        });
-        // Verify WebApp authentication with backend
+      const webAppUser = webApp.initDataUnsafe?.user;
+      if (webAppUser) {
+        const userData = {
+          id: webAppUser.id,
+          username: webAppUser.username || `${webAppUser.first_name} ${webAppUser.last_name || ''}`.trim(),
+          first_name: webAppUser.first_name,
+          last_name: webAppUser.last_name,
+          photo_url: webAppUser.photo_url || "https://via.placeholder.com/50",
+          auth_date: webAppUser.auth_date
+        };
+        setUser(userData);
         verifyTelegramWebApp(webApp.initData);
       }
     }
@@ -51,6 +52,18 @@ const App = () => {
       
       if (!response.ok) {
         throw new Error('WebApp verification failed');
+      }
+
+      const data = await response.json();
+      if (data.user) {
+        setUser({
+          id: data.user.id,
+          username: `${data.user.first_name} ${data.user.last_name || ''}`.trim(),
+          first_name: data.user.first_name,
+          last_name: data.user.last_name,
+          photo_url: data.user.photo_url || "https://via.placeholder.com/50",
+          auth_date: data.user.auth_date
+        });
       }
     } catch (error) {
       setAuthError('Failed to verify Telegram WebApp authentication');
@@ -71,10 +84,16 @@ const App = () => {
       }
       
       const data = await result.json();
-      setTelegramUser({
-        username: data.username || response.username || "User",
-        photo_url: data.photo_url || response.photo_url || "https://via.placeholder.com/50"
-      });
+      if (data.user) {
+        setUser({
+          id: data.user.id,
+          username: `${data.user.first_name} ${data.user.last_name || ''}`.trim(),
+          first_name: data.user.first_name,
+          last_name: data.user.last_name,
+          photo_url: data.user.photo_url || "https://via.placeholder.com/50",
+          auth_date: data.user.auth_date
+        });
+      }
     } catch (error) {
       setAuthError(error.message || "Authentication failed");
     }
@@ -135,8 +154,8 @@ const App = () => {
 
   return (
     <div className="appII">
-      {/* Show Telegram login button if not authenticated through WebApp */}
-      {!window.Telegram?.WebApp && (
+      {/* Show Telegram login button if not authenticated */}
+      {!user && !window.Telegram?.WebApp && (
         <div className="text-center my-4">
           <TelegramLoginButton
             botName="Hashtag001bot"
@@ -148,42 +167,46 @@ const App = () => {
         </div>
       )}
 
-      <Header
-        username={telegramUser.username}
-        level="LV 1"
-        profilePhoto={telegramUser.photo_url}
-      />
-
-      {!showBuyToken && (
+      {user && (
         <>
-          <ClaimSection
-            onClaimClick={handleClaimClick}
-            farmingEndTime={farmingEndTime}
+          <Header
+            username={user.username}
+            level="LV 1"
+            profilePhoto={user.photo_url}
           />
-          <AvatarCard />
-          <GamifySystemCard
-            title=""
-            cardText="Claim Your"
-            buttonLabel="Daily Bonus"
-            onButtonClick={handleClaimClick}
-            button1Label={farmingError ? "Farming Active" : "Start Farming"}
-            button2Label="Buy $HTC"
-            onButton1Click={handleStartFarming}
-            onButton2Click={handleBuyHTCClick}
-          />
+
+          {!showBuyToken && (
+            <>
+              <ClaimSection
+                onClaimClick={handleClaimClick}
+                farmingEndTime={farmingEndTime}
+              />
+              <AvatarCard />
+              <GamifySystemCard
+                title=""
+                cardText="Claim Your"
+                buttonLabel="Daily Bonus"
+                onButtonClick={handleClaimClick}
+                button1Label={farmingError ? "Farming Active" : "Start Farming"}
+                button2Label="Buy $HTC"
+                onButton1Click={handleStartFarming}
+                onButton2Click={handleBuyHTCClick}
+              />
+            </>
+          )}
+
+          {farmingError && (
+            <div className="text-red-500 text-center mt-2">
+              {farmingError}
+            </div>
+          )}
+
+          {showBuyToken && <BuyTokenComponent onBack={handleBackFromBuy} />}
+          {showRewardModal && <RewardModal onClose={handleCloseRewardModal} />}
+
+          <BottomSpacer />
         </>
       )}
-
-      {farmingError && (
-        <div className="text-red-500 text-center mt-2">
-          {farmingError}
-        </div>
-      )}
-
-      {showBuyToken && <BuyTokenComponent onBack={handleBackFromBuy} />}
-      {showRewardModal && <RewardModal onClose={handleCloseRewardModal} />}
-
-      <BottomSpacer />
     </div>
   );
 };
