@@ -10,7 +10,7 @@ function LoadingScreen() {
     // Simulate loading delay
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 4000);
+    }, 6000);
     return () => clearTimeout(timer);
   }, []);
 
