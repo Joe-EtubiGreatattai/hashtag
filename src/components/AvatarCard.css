@@ -18,7 +18,7 @@
 .avatar-image {
   width: auto;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   max-width: 100%;
 }
 
@@ -48,7 +48,7 @@
 /* Height-based media queries */
 @media screen and (min-height: 600px) {
   .avatar-card-container {
-    height: 33vh;
+    height: 38vh;
   }
 }
 
@@ -60,7 +60,7 @@
 
 @media screen and (min-height: 1000px) {
   .avatar-card-container {
-    height: 35vh;
+    height: 42vh;
   }
 }
 
