@@ -13,7 +13,10 @@ const App = () => {
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [farmingEndTime, setFarmingEndTime] = useState(null);
   const [farmingError, setFarmingError] = useState(null);
-  const [telegramUser, setTelegramUser] = useState(null);
+  const [telegramUser, setTelegramUser] = useState({
+    username: "User",
+    photo_url: "https://via.placeholder.com/50"
+  });
 
   useEffect(() => {
     const checkFarmingStatus = () => {
@@ -35,15 +38,18 @@ const App = () => {
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
-      console.log(window.Telegram.WebApp.initDataUnsafe);
-      const user = window.Telegram.WebApp.initDataUnsafe?.user;
-     
+      const webApp = window.Telegram.WebApp;
+      webApp.expand(); // Expand the mini app to full screen
+      console.log("Telegram WebApp Init Data:", webApp.initDataUnsafe);
+
+      const user = webApp.initDataUnsafe?.user;
+      if (user) {
         setTelegramUser({
           username: user.username || "User",
           photo_url: user.photo_url || "https://via.placeholder.com/50"
         });
       }
-  
+    }
   }, []);
 
   const handleBuyHTCClick = () => {
@@ -97,9 +103,9 @@ const App = () => {
     <div className="appII">
       {/* Pass Telegram user data to the Header component */}
       <Header
-        username={telegramUser?.username || "User"}
+        username={telegramUser.username}
         level="LV 1"
-        profilePhoto={telegramUser?.photo_url || "https://via.placeholder.com/50"}
+        profilePhoto={telegramUser.photo_url}
       />
 
       {!showBuyToken && (
