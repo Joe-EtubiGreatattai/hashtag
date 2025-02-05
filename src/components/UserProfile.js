@@ -4,6 +4,7 @@ import { WebApp } from 'telegram-web-app';
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
+  const [telegramResponse, setTelegramResponse] = useState(null);
 
   useEffect(() => {
     // Initialize the Telegram Web App
@@ -18,39 +19,39 @@ const UserProfile = () => {
         photoUrl: userData.photo_url,
       });
     }
+
+    // Print the full response for debugging
+    setTelegramResponse(JSON.stringify(tg.initDataUnsafe, null, 2));
   }, []);
 
-  if (!user) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div style={styles.container}>
-      <img src={user.photoUrl} alt="User" style={styles.image} />
-      <h1 style={styles.name}>{`${user.firstName} ${user.lastName}`}</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      {user ? (
+        <>
+          <img
+            src={user.photoUrl}
+            alt="User"
+            className="w-24 h-24 rounded-full mb-4 shadow-lg"
+          />
+          <h1 className="text-2xl font-bold text-gray-800">
+            {`${user.firstName} ${user.lastName}`}
+          </h1>
+        </>
+      ) : (
+        <p className="text-gray-600">Loading user data...</p>
+      )}
+
+      {/* Debugging: Print the Telegram response */}
+      <div className="mt-8 p-4 bg-white rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-lg font-semibold text-gray-700 mb-2">
+          Telegram Response:
+        </h2>
+        <pre className="text-sm text-gray-600 bg-gray-50 p-2 rounded overflow-auto">
+          {telegramResponse || 'No response data available'}
+        </pre>
+      </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh',
-    backgroundColor: '#f0f0f0',
-  },
-  image: {
-    width: '100px',
-    height: '100px',
-    borderRadius: '50%',
-    marginBottom: '20px',
-  },
-  name: {
-    fontSize: '24px',
-    color: '#333',
-  },
 };
 
 export default UserProfile;
