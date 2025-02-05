@@ -13,7 +13,7 @@ const Header = ({ username, level, profilePhoto }) => {
       <div style={styles.header}>
         <div style={styles.profileContainer}>
           <img
-            src={require('../assets/user.png')}
+            src={profilePhoto}
             alt="Profile"
             style={styles.profilePhoto}
           />

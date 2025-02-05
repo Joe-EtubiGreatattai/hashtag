@@ -181,7 +181,10 @@ const App = () => {
                 onClaimClick={handleClaimClick}
                 farmingEndTime={farmingEndTime}
               />
-              <AvatarCard />
+              <AvatarCard 
+                profilePhoto={user.photo_url}
+                username={user.username}
+              />
               <GamifySystemCard
                 title=""
                 cardText="Claim Your"
