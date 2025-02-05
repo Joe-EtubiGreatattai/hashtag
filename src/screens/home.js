@@ -34,12 +34,8 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch Telegram user data
     if (window.Telegram && window.Telegram.WebApp) {
-      // Initialize the Telegram WebApp
-      window.Telegram.WebApp.ready();
-
-      // Access user data from initDataUnsafe
+      console.log(window.Telegram.WebApp.initDataUnsafe);
       const user = window.Telegram.WebApp.initDataUnsafe?.user;
       if (user) {
         setTelegramUser({
@@ -48,7 +44,6 @@ const App = () => {
         });
       }
     } else {
-      // Mock data for development environment
       setTelegramUser({
         username: "test_user",
         photo_url: "https://via.placeholder.com/50"
