@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import TelegramLoginButton from "react-telegram-login";
 
 const TelegramAuth = () => {
+  const [error, setError] = useState(null);
+
   const handleTelegramResponse = (response) => {
     console.log("User Data:", response);
 
@@ -13,7 +15,10 @@ const TelegramAuth = () => {
     })
       .then((res) => res.json())
       .then((data) => console.log("Server Response:", data))
-      .catch((err) => console.error("Error:", err));
+      .catch((err) => {
+        console.error("Error:", err);
+        setError(err.message || "An error occurred while processing your request.");
+      });
   };
 
   return (
@@ -23,6 +28,7 @@ const TelegramAuth = () => {
         botName="@Hashtag001bot" // Replace with your bot's username
         dataOnauth={handleTelegramResponse}
       />
+      {error && <p style={{ color: "red" }}>Error: {error}</p>}
     </div>
   );
 };
