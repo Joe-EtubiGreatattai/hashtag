@@ -37,18 +37,13 @@ const App = () => {
     if (window.Telegram && window.Telegram.WebApp) {
       console.log(window.Telegram.WebApp.initDataUnsafe);
       const user = window.Telegram.WebApp.initDataUnsafe?.user;
-      if (user) {
+     
         setTelegramUser({
           username: user.username || "User",
           photo_url: user.photo_url || "https://via.placeholder.com/50"
         });
       }
-    } else {
-      setTelegramUser({
-        username: "test_user",
-        photo_url: "https://via.placeholder.com/50"
-      });
-    }
+  
   }, []);
 
   const handleBuyHTCClick = () => {
