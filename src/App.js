@@ -8,7 +8,7 @@ const TelegramAuth = () => {
     console.log("User Data:", response);
 
     // Send user data to backend for verification
-    fetch("https://api.hashtagdigital.net/auth/telegram_auth", {
+    fetch("https://api.hashtagdigital.net/api/auth/telegram_auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(response),
