@@ -60,7 +60,7 @@ const App = () => {
   // Handle standalone Telegram login button response
   const handleTelegramResponse = async (response) => {
     try {
-      const result = await fetch("https://api.hashtagdigital.net/auth/telegram_auth", {
+      const result = await fetch("https://api.hashtagdigital.net/api/auth/telegram_auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(response),
