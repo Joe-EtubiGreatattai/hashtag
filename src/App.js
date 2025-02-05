@@ -28,7 +28,7 @@ const TelegramAuth = () => {
         botName="@Hashtag001bot" // Replace with your bot's username
         dataOnauth={handleTelegramResponse}
       />
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+       <p style={{ color: "red" }}>Error: {error}</p>
     </div>
   );
 };
