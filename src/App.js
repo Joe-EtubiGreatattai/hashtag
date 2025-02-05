@@ -25,7 +25,7 @@ const TelegramAuth = () => {
     <div>
       <h2>Login with Telegram</h2>
       <TelegramLoginButton
-        botName="@Hashtag001bot" // Replace with your bot's username
+        botName="Hashtag001bot" // Replace with your bot's username
         dataOnauth={handleTelegramResponse}
       />
        <p style={{ color: "red" }}>Error: {error}</p>
