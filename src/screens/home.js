@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../App.css';
+import TelegramLoginButton from 'react-telegram-login';
 import Header from '../components/Header';
 import AvatarCard from '../components/AvatarCard';
 import RewardModal from '../components/RewardModal';
@@ -13,12 +13,52 @@ const App = () => {
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [farmingEndTime, setFarmingEndTime] = useState(null);
   const [farmingError, setFarmingError] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [telegramUser, setTelegramUser] = useState({
     username: "User",
     photo_url: "https://via.placeholder.com/50"
   });
 
+  const handleTelegramResponse = async (response) => {
+    try {
+      const serverResponse = await fetch('https://api.hashtagdigital.net/api/auth/telegram', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(response)
+      });
+
+      const data = await serverResponse.json();
+
+      if (serverResponse.ok) {
+        setIsAuthenticated(true);
+        setTelegramUser({
+          username: response.username || "User",
+          photo_url: response.photo_url || "https://via.placeholder.com/50"
+        });
+        // Store auth token or user data in localStorage if needed
+        localStorage.setItem('telegramAuth', JSON.stringify(response));
+      } else {
+        console.error('Authentication failed:', data.message);
+      }
+    } catch (error) {
+      console.error('Error during authentication:', error);
+    }
+  };
+
   useEffect(() => {
+    // Check for existing authentication
+    const storedAuth = localStorage.getItem('telegramAuth');
+    if (storedAuth) {
+      const authData = JSON.parse(storedAuth);
+      setIsAuthenticated(true);
+      setTelegramUser({
+        username: authData.username || "User",
+        photo_url: authData.photo_url || "https://via.placeholder.com/50"
+      });
+    }
+
     const checkFarmingStatus = () => {
       const storedEndTime = localStorage.getItem('farmingEndTime');
       if (storedEndTime) {
@@ -39,34 +79,19 @@ const App = () => {
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
       const webApp = window.Telegram.WebApp;
-      webApp.expand(); // Expand the mini app to full screen
+      webApp.expand();
       console.log("Telegram WebApp Init Data:", webApp.initDataUnsafe);
 
-      const user = webApp.initDataUnsafe?.user;
-      if (user) {
-        setTelegramUser({
-          username: user.username || "User",
-          photo_url: user.photo_url || "https://via.placeholder.com/50"
-        });
+      if (webApp.initDataUnsafe?.user) {
+        handleTelegramResponse(webApp.initDataUnsafe.user);
       }
     }
   }, []);
 
-  const handleBuyHTCClick = () => {
-    setShowBuyToken(true);
-  };
-
-  const handleClaimClick = () => {
-    setShowRewardModal(true);
-  };
-
-  const handleBackFromBuy = () => {
-    setShowBuyToken(false);
-  };
-
-  const handleCloseRewardModal = () => {
-    setShowRewardModal(false);
-  };
+  const handleBuyHTCClick = () => setShowBuyToken(true);
+  const handleClaimClick = () => setShowRewardModal(true);
+  const handleBackFromBuy = () => setShowBuyToken(false);
+  const handleCloseRewardModal = () => setShowRewardModal(false);
 
   const handleStartFarming = async () => {
     try {
@@ -90,7 +115,6 @@ const App = () => {
         return;
       }
 
-      console.log('Farming started:', data);
       setFarmingEndTime(data.farmingEndTime);
       localStorage.setItem('farmingEndTime', data.farmingEndTime);
     } catch (error) {
@@ -99,9 +123,24 @@ const App = () => {
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="p-8 bg-white rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold mb-6 text-center">Login with Telegram</h2>
+          <TelegramLoginButton
+            botName="@Hashtag001bot"
+            dataOnauth={handleTelegramResponse}
+            buttonSize="large"
+            cornerRadius={8}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="appII">
-      {/* Pass Telegram user data to the Header component */}
       <Header
         username={telegramUser.username}
         level="LV 1"
@@ -127,6 +166,7 @@ const App = () => {
           />
         </>
       )}
+      
       {farmingError && (
         <div className="text-red-500 text-center mt-2">
           {farmingError}
