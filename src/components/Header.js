@@ -34,7 +34,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '20px', // Space between logo and header
+    gap: '0px', // Space between logo and header
   },
   logoContainer: {
     textAlign: 'center',

@@ -7,7 +7,7 @@ const AvatarCard = ({ onClaim }) => {
       {/* Avatar Card */}
       <div className="avatar-card">
         <img
-          src={require("../assets/bg-2.png")}
+          src={require("../assets/logo-2.png")}
           alt="Avatar"
           className="avatar-image"
         />

@@ -1,47 +1,85 @@
 .claim-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding: 1rem; /* Default padding */
+}
+
+/* Heading */
+.heading {
+  text-align: center;
+  font-size: 1.8rem; /* Default text-3xl */
+  font-weight: bold;
+  background: linear-gradient(86.92deg, #FFCFF1 19.67%, #00F2EA 96.33%);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Timer text */
+.time-text {
+  text-align: center;
+  font-size: 1rem; /* Default text-lg */
+  color: #FBBF24;
+}
+
+/* Button container */
+.button-container {
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+/* Claim button */
+.claim-button {
+  background-color: black;
+  color: white;
+  padding: 0.5rem 1rem; /* Default padding */
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.claim-button:hover {
+  background-color: #3B82F6;
+}
+
+/* Highlighted text */
+.highlight {
+  color: #FBBF24;
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 640px) { 
+  .claim-section {
+    padding: 1.5rem; /* Increase padding */
   }
-  
   .heading {
-    text-align: center;
-    font-size: 2.25rem; /* Equivalent to text-4xl */
-    font-weight: bold;
-    background: linear-gradient(86.92deg, #FFCFF1 19.67%, #00F2EA 96.33%);
-    -webkit-background-clip: text;
-    color: transparent;
+    font-size: 2.2rem; /* Larger text */
   }
-  
   .time-text {
-    text-align: center;
-    font-size: 1.25rem; /* Equivalent to text-xl */
-    margin-top: 0.5rem;
-    color: #FBBF24; /* Equivalent to text-yellow-400 */
+    font-size: 1.25rem;
   }
-  
-  .button-container {
-    text-align: center;
-  }
-  
   .claim-button {
-    margin-top: 1rem;
-    background-color: black;
-    color: white;
     padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem; /* Equivalent to rounded-lg */
-    font-size: 1.125rem; /* Equivalent to text-lg */
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 1.125rem; /* Slightly bigger button */
   }
-  
-  .claim-button:hover {
-    background-color: #3B82F6; /* Equivalent to hover:bg-blue-600 */
+}
+
+/* Small screens (mobile) */
+@media (max-width: 480px) { 
+  .claim-section {
+    padding: 0.8rem; /* Reduce padding */
   }
-  
-  .highlight {
-    color: #FBBF24; /* Equivalent to text-yellow-500 */
+  .heading {
+    font-size: 1.5rem;
   }
-  
+  .time-text {
+    font-size: 0.9rem;
+  }
+  .claim-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.875rem;
+  }
+}
