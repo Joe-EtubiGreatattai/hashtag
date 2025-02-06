@@ -55,15 +55,20 @@ const App = () => {
       }
 
       const data = await response.json();
-      if (data.user) {
-        setUser({
+      if (data.message === "User Authenticated successfully") {
+        const userData = {
           id: data.user.id,
-          username: `${data.user.first_name} ${data.user.last_name || ''}`.trim(),
+          username: data.user.username,
           first_name: data.user.first_name,
           last_name: data.user.last_name,
-          photo_url: data.user.photo_url || "https://via.placeholder.com/50",
-          auth_date: data.user.auth_date
-        });
+          photo_url: data.user.photoURL || "https://via.placeholder.com/50",
+          token: data.token,
+          auth_date: new Date()
+        };
+
+        // Save the token to localStorage
+        localStorage.setItem('authToken', data.token);
+        setUser(userData);
       }
     } catch (error) {
       setAuthError('Failed to verify Telegram WebApp authentication');
@@ -84,15 +89,20 @@ const App = () => {
       }
       
       const data = await result.json();
-      if (data.user) {
-        setUser({
+      if (data.message === "User Authenticated successfully") {
+        const userData = {
           id: data.user.id,
-          username: `${data.user.first_name} ${data.user.last_name || ''}`.trim(),
+          username: data.user.username,
           first_name: data.user.first_name,
           last_name: data.user.last_name,
-          photo_url: data.user.photo_url || "https://via.placeholder.com/50",
-          auth_date: data.user.auth_date
-        });
+          photo_url: data.user.photoURL || "https://via.placeholder.com/50",
+          token: data.token,
+          auth_date: new Date()
+        };
+
+        // Save the token to localStorage
+        localStorage.setItem('authToken', data.token);
+        setUser(userData);
       }
     } catch (error) {
       setAuthError(error.message || "Authentication failed");
@@ -129,6 +139,7 @@ const App = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Add token to headers
         },
         body: JSON.stringify({ duration: 480 })
       });
