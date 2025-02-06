@@ -17,6 +17,16 @@ const App = () => {
   const [authError, setAuthError] = useState(null);
   const [user, setUser] = useState(null);
 
+  // Load user data from localStorage if available
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    const storedToken = localStorage.getItem('token');
+    if (storedUser && storedToken) {
+      setUser(JSON.parse(storedUser));
+      window.localStorage.setItem('token', storedToken); // Ensure token is still in localStorage
+    }
+  }, []);
+
   // Check if user is authenticated through Telegram WebApp
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -55,20 +65,17 @@ const App = () => {
       }
 
       const data = await response.json();
-      if (data.message === "User Authenticated successfully") {
-        const userData = {
+      if (data.user) {
+        setUser({
           id: data.user.id,
-          username: data.user.username,
+          username: `${data.user.first_name} ${data.user.last_name || ''}`.trim(),
           first_name: data.user.first_name,
           last_name: data.user.last_name,
-          photo_url: data.user.photoURL || "https://via.placeholder.com/50",
-          token: data.token,
-          auth_date: new Date()
-        };
-
-        // Save the token to localStorage
-        localStorage.setItem('authToken', data.token);
-        setUser(userData);
+          photo_url: data.user.photo_url || "https://via.placeholder.com/50",
+          auth_date: data.user.auth_date
+        });
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('token', data.token);
       }
     } catch (error) {
       setAuthError('Failed to verify Telegram WebApp authentication');
@@ -89,20 +96,17 @@ const App = () => {
       }
       
       const data = await result.json();
-      if (data.message === "User Authenticated successfully") {
-        const userData = {
+      if (data.user) {
+        setUser({
           id: data.user.id,
-          username: data.user.username,
+          username: `${data.user.first_name} ${data.user.last_name || ''}`.trim(),
           first_name: data.user.first_name,
           last_name: data.user.last_name,
-          photo_url: data.user.photoURL || "https://via.placeholder.com/50",
-          token: data.token,
-          auth_date: new Date()
-        };
-
-        // Save the token to localStorage
-        localStorage.setItem('authToken', data.token);
-        setUser(userData);
+          photo_url: data.user.photo_url || "https://via.placeholder.com/50",
+          auth_date: data.user.auth_date
+        });
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('token', data.token);
       }
     } catch (error) {
       setAuthError(error.message || "Authentication failed");
@@ -139,7 +143,6 @@ const App = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Add token to headers
         },
         body: JSON.stringify({ duration: 480 })
       });
