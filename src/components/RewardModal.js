@@ -50,7 +50,7 @@ const RewardModal = ({ onClose }) => {
     setError('');
   
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('token');
       console.log('Attempting to claim reward...');
       
       if (!token) {
@@ -76,7 +76,7 @@ const RewardModal = ({ onClose }) => {
   
       if (response.status === 401) {
         console.error('Authentication failed - token invalid or expired');
-        localStorage.removeItem('authToken'); // Clear invalid token
+        localStorage.removeItem('token'); // Clear invalid token
         localStorage.removeItem('userData');
         window.location.reload(); // Force re-authentication
         throw new Error('Session expired. Please log in again.');

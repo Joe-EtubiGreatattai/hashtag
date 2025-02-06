@@ -55,7 +55,7 @@ const AuthComponent = ({ onSuccess }) => {
 
       // Store token in localStorage
       if (data.token) {
-        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('token', data.token);
       }
 
     } catch (err) {
