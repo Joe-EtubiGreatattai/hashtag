@@ -40,7 +40,7 @@ const App = () => {
           username: webAppUser.username || `${webAppUser.first_name} ${webAppUser.last_name || ''}`.trim(),
           first_name: webAppUser.first_name,
           last_name: webAppUser.last_name,
-          photo_url: webAppUser.photo_url || "https://via.placeholder.com/50",
+          photo_url: webAppUser.photo_url || "https://via.placeholder.com/50", // default image if none is available
           auth_date: webAppUser.auth_date
         };
         setUser(userData);
@@ -71,7 +71,7 @@ const App = () => {
           username: `${data.user.first_name} ${data.user.last_name || ''}`.trim(),
           first_name: data.user.first_name,
           last_name: data.user.last_name,
-          photo_url: data.user.photo_url || "https://via.placeholder.com/50",
+          photo_url: data.user.photo_url || "https://via.placeholder.com/50", // Default photo URL if none
           auth_date: data.user.auth_date
         });
         localStorage.setItem('user', JSON.stringify(data.user));
@@ -102,7 +102,7 @@ const App = () => {
           username: `${data.user.first_name} ${data.user.last_name || ''}`.trim(),
           first_name: data.user.first_name,
           last_name: data.user.last_name,
-          photo_url: data.user.photo_url || "https://via.placeholder.com/50",
+          photo_url: data.user.photo_url || "https://via.placeholder.com/50", // Default photo URL if none
           auth_date: data.user.auth_date
         });
         localStorage.setItem('user', JSON.stringify(data.user));
@@ -186,7 +186,7 @@ const App = () => {
           <Header
             username={user.username}
             level="LV 1"
-            profilePhoto={user.photo_url}
+            profilePhoto={user.photo_url} // Ensure the photo_url is passed correctly here
           />
 
           {!showBuyToken && (
@@ -196,7 +196,7 @@ const App = () => {
                 farmingEndTime={farmingEndTime}
               />
               <AvatarCard 
-                profilePhoto={user.photo_url}
+                profilePhoto={user.photo_url} // Ensure this prop is passed correctly
                 username={user.username}
               />
               <GamifySystemCard
