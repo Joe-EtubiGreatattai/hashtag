@@ -22,7 +22,9 @@ const App = () => {
     const storedUser = localStorage.getItem('user');
     const storedToken = localStorage.getItem('token');
     if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      console.log("Loaded user from localStorage:", parsedUser); // Log user from localStorage
+      setUser(parsedUser);
       window.localStorage.setItem('token', storedToken); // Ensure token is still in localStorage
     }
   }, []);
@@ -43,6 +45,7 @@ const App = () => {
           photo_url: webAppUser.photo_url || "https://via.placeholder.com/50", // default image if none is available
           auth_date: webAppUser.auth_date
         };
+        console.log("User data from WebApp:", userData); // Log user data from Telegram WebApp
         setUser(userData);
         verifyTelegramWebApp(webApp.initData);
       }
@@ -52,6 +55,7 @@ const App = () => {
   // Verify Telegram WebApp authentication
   const verifyTelegramWebApp = async (initData) => {
     try {
+      console.log("Verifying Telegram WebApp with initData:", initData);
       const response = await fetch('https://api.hashtagdigital.net/api/auth/telegram_auth', {
         method: 'POST',
         headers: {
@@ -59,25 +63,28 @@ const App = () => {
         },
         body: JSON.stringify({ initData }),
       });
-      
+
       if (!response.ok) {
         throw new Error('WebApp verification failed');
       }
 
       const data = await response.json();
+      console.log("Verification response data:", data); // Log response from server
       if (data.user) {
-        setUser({
+        const userData = {
           id: data.user.id,
           username: `${data.user.first_name} ${data.user.last_name || ''}`.trim(),
           first_name: data.user.first_name,
           last_name: data.user.last_name,
           photo_url: data.user.photo_url || "https://via.placeholder.com/50", // Default photo URL if none
           auth_date: data.user.auth_date
-        });
+        };
+        setUser(userData);
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('token', data.token);
       }
     } catch (error) {
+      console.error('Error verifying Telegram WebApp:', error);
       setAuthError('Failed to verify Telegram WebApp authentication');
     }
   };
@@ -85,30 +92,34 @@ const App = () => {
   // Handle standalone Telegram login button response
   const handleTelegramResponse = async (response) => {
     try {
+      console.log("Telegram login response:", response); // Log Telegram login response
       const result = await fetch("https://api.hashtagdigital.net/api/auth/telegram_auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(response),
       });
-      
+
       if (!result.ok) {
         throw new Error('Authentication failed');
       }
-      
+
       const data = await result.json();
+      console.log("Authentication response data:", data); // Log authentication response data
       if (data.user) {
-        setUser({
+        const userData = {
           id: data.user.id,
           username: `${data.user.first_name} ${data.user.last_name || ''}`.trim(),
           first_name: data.user.first_name,
           last_name: data.user.last_name,
           photo_url: data.user.photo_url || "https://via.placeholder.com/50", // Default photo URL if none
           auth_date: data.user.auth_date
-        });
+        };
+        setUser(userData);
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('token', data.token);
       }
     } catch (error) {
+      console.error('Error during Telegram login:', error);
       setAuthError(error.message || "Authentication failed");
     }
   };
@@ -116,6 +127,7 @@ const App = () => {
   useEffect(() => {
     const checkFarmingStatus = () => {
       const storedEndTime = localStorage.getItem('farmingEndTime');
+      console.log("Farming end time from localStorage:", storedEndTime); // Log farming end time from localStorage
       if (storedEndTime) {
         const endTime = new Date(storedEndTime);
         const now = new Date();
@@ -139,6 +151,7 @@ const App = () => {
   const handleStartFarming = async () => {
     try {
       setFarmingError(null);
+      console.log("Starting farming...");
       const response = await fetch('https://api.hashtagdigital.net/api/start-farming', {
         method: 'POST',
         headers: {
@@ -148,6 +161,7 @@ const App = () => {
       });
 
       const data = await response.json();
+      console.log("Farming start response:", data); // Log farming start response
 
       if (!response.ok) {
         if (data.message === "Farming is already active") {
