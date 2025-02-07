@@ -4,6 +4,22 @@ import './../assets/styles/ClaimSection.css';
 function ClaimSection({ onClaimClick, farmingStatus }) {
   const [timeLeft, setTimeLeft] = useState('');
   const [canClaim, setCanClaim] = useState(false);
+  const [totalHTC, setTotalHTC] = useState(0);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await fetch('/api/history');
+        const data = await response.json();
+        const total = data.transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+        setTotalHTC(total);
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      }
+    };
+    
+    fetchTransactions();
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -45,7 +61,7 @@ function ClaimSection({ onClaimClick, farmingStatus }) {
     <div className="claim-section">
       <div className="text-center">
         <h1 className="heading">
-          450,000 $HTC
+          {totalHTC} $HTC
         </h1>
         <p className="time-text">{timeLeft}</p>
         {farmingStatus.isActive && (
