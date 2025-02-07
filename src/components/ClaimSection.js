@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './../assets/styles/ClaimSection.css';
 
-function ClaimSection({ onClaimClick, farmingStatus }) {
+function ClaimSection({ farmingStatus }) {
   const [timeLeft, setTimeLeft] = useState('');
   const [canClaim, setCanClaim] = useState(false);
   const [totalHTC, setTotalHTC] = useState(0);
@@ -26,14 +26,14 @@ function ClaimSection({ onClaimClick, farmingStatus }) {
     
     const updateTimer = () => {
       if (!farmingStatus.startTime || !farmingStatus.isActive) {
-        setTimeLeft('8H:00M:00s');
+        setTimeLeft('0H:01M:00s');
         setCanClaim(false);
         return;
       }
 
       const startTime = new Date(farmingStatus.startTime);
       const now = new Date();
-      const farmingDuration = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
+      const farmingDuration = 1 * 60 * 1000; // 1 minute in milliseconds
       const endTime = new Date(startTime.getTime() + farmingDuration);
       const diff = endTime - now;
 
@@ -43,11 +43,10 @@ function ClaimSection({ onClaimClick, farmingStatus }) {
         return;
       }
 
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const minutes = Math.floor(diff / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      setTimeLeft(`${hours}H:${minutes.toString().padStart(2, '0')}M:${seconds.toString().padStart(2, '0')}s`);
+      setTimeLeft(`0H:${minutes.toString().padStart(2, '0')}M:${seconds.toString().padStart(2, '0')}s`);
       setCanClaim(false);
     };
 
@@ -56,6 +55,30 @@ function ClaimSection({ onClaimClick, farmingStatus }) {
 
     return () => clearInterval(timer);
   }, [farmingStatus]);
+
+  const handleClaim = async () => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const authToken = storedUser?.token;
+      
+      if (!authToken) throw new Error('No auth token found');
+      
+      const response = await fetch('/claim-farming-rewards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to claim rewards');
+      const data = await response.json();
+      alert(`Successfully claimed ${data.amount} $HTC`);
+      setCanClaim(false);
+    } catch (error) {
+      console.error('Error claiming rewards:', error);
+      alert('Failed to claim rewards');
+    }
+  };
 
   return (
     <div className="claim-section">
@@ -73,7 +96,7 @@ function ClaimSection({ onClaimClick, farmingStatus }) {
         <div className="button-container">
           <button 
             className="claim-button" 
-            onClick={onClaimClick}
+            onClick={handleClaim}
           >
             Claim $HTC Now: <span className="highlight">1000</span>
           </button>
