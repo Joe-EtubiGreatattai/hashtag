@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import Confetti from 'react-confetti';
 import './../assets/styles/ClaimSection.css';
 
 function ClaimSection({ farmingStatus }) {
   const [timeLeft, setTimeLeft] = useState('');
   const [canClaim, setCanClaim] = useState(false);
   const [totalHTC, setTotalHTC] = useState(0);
+  const [claimedAmount, setClaimedAmount] = useState(0);
+  const [showReward, setShowReward] = useState(false);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -63,8 +66,6 @@ function ClaimSection({ farmingStatus }) {
       
       if (!authToken) throw new Error('No auth token found');
   
-      console.log('User Token:', authToken); // Print the token to the console
-  
       const response = await fetch('https://api.hashtagdigital.net/api/claim-farming-rewards', {
         method: 'POST',
         headers: {
@@ -80,22 +81,38 @@ function ClaimSection({ farmingStatus }) {
   
       const data = await response.json();
       
-      // Extract the claimed amount from the transaction object
-      const claimedAmount = data?.transaction?.amount || 0;
-  
-      alert(`Farming rewards claimed successfully! You received ${claimedAmount} $HTC`);
+      const amount = data?.transaction?.amount || 1000;
+      setClaimedAmount(amount);
+      setShowReward(true);
       setCanClaim(false);
+
+      // Hide reward after 3 seconds
+      setTimeout(() => {
+        setShowReward(false);
+      }, 3000);
+
     } catch (error) {
       console.error('Error claiming rewards:', error);
       alert(`Failed to claim rewards: ${error.message}`);
     }
   };
-  
-  
-  
 
   return (
     <div className="claim-section">
+      {showReward && (
+        <>
+          <Confetti 
+            width={window.innerWidth} 
+            height={window.innerHeight} 
+            recycle={false} 
+            numberOfPieces={200}
+          />
+          <div className="reward-popup animate-bounce">
+            +{claimedAmount} $HTC
+          </div>
+        </>
+      )}
+
       <div className="text-center">
         <h1 className="heading">
           {totalHTC} $HTC
