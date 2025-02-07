@@ -9,7 +9,7 @@ import GamifySystemCard from "../components/GamifySystemCard";
 import BuyTokenComponent from '../components/BuyTokenComponent';
 import BottomSpacer from '../components/BottomSpacer';
 import ConnectWallet from '../components/ConnectWallet';
-import { getAuthToken, setAuthToken, removeAuthToken , resetAllAuthData} from '../config';
+import { getAuthToken, setAuthToken, removeAuthToken, resetAllAuthData } from '../config';
 
 
 const DEFAULT_USER = {
@@ -19,6 +19,11 @@ const DEFAULT_USER = {
   last_name: '',
   photo_url: "https://via.placeholder.com/50",
   auth_date: null
+};
+
+
+const clearLocalStorage = () => {
+  localStorage.clear();
 };
 
 const App = () => {
@@ -44,13 +49,11 @@ const App = () => {
         setUser(parsedUser);
       } catch (error) {
         console.error('Error parsing stored user data:', error);
-        // If there's an error parsing user data, reset everything
-        resetAllAuthData();
+        clearLocalStorage(); // Clear all local storage if there's an error
         setUser(DEFAULT_USER);
       }
     }
   }, []);
-
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -87,7 +90,7 @@ const App = () => {
       });
 
       if (!response.ok) throw new Error('Failed to fetch farming status');
-      
+
       const data = await response.json();
       setFarmingStatus({
         isActive: data.status,
@@ -146,7 +149,7 @@ const App = () => {
       });
 
       const data = await response.json();
-      
+
       if (data.message === "Farming is already active") {
         setFarmingStatus({
           isActive: true,
@@ -174,13 +177,17 @@ const App = () => {
 
   return (
     <div className="appII">
-      <Header 
-        username={user.username} 
-        level="LV 1" 
+      <Header
+        username={user.username}
+        level="LV 1"
         profilePhoto={user.photo_url}
         onConnectWallet={() => setShowConnectWallet(true)}
         walletConnected={walletConnected}
       />
+
+      <button onClick={clearLocalStorage} className="clear-button">
+        Clear Local Storage
+      </button>
       {user.id === 'guest' && (
         <div className="text-center my-4">
           <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} />
@@ -197,8 +204,8 @@ const App = () => {
       )}
       {!showBuyToken && (
         <>
-          <ClaimSection 
-            onClaimClick={() => setShowRewardModal(true)} 
+          <ClaimSection
+            onClaimClick={() => setShowRewardModal(true)}
             farmingStatus={farmingStatus}
           />
           <AvatarCard profilePhoto={user.photo_url} username={user.username} />
