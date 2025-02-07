@@ -14,9 +14,7 @@ const TaskAreaScreen = () => {
     Hashtag: [
       { type: "referral" },
       { name: "Connect TON Wallet", hashtags: "49,000 Hashtags", buttonText: 'Go' },
-      { name: "Connect Doge Wallet", hashtags: "49,000 Hashtags", buttonText: 'Claim' },
-      { name: "Connect Doge Wallet", hashtags: "49,000 Hashtags", buttonText: 'Claim' },
-    ],
+     ],
     Partners: [
       { icon: "₿", name: "BTC", hashtags: "49,000 Hashtags" },
       { icon: "🔴", name: "RubyCoin", hashtags: "49,000 Hashtags" },
@@ -76,18 +74,8 @@ const TaskAreaScreen = () => {
       },
     ],
     Update: [
-      {
-        title: "Connect TON Wallet",
-        content: "49,000 Hashtags",
-        buttonText: "Coming soon",
-        image: "https://www.svgrepo.com/show/508699/landscape-placeholder.svg",
-      },
-      {
-        title: "Connect Doge Wallet",
-        content: "49,000 Hashtags",
-        buttonText: "Coming soon",
-        image: "https://www.svgrepo.com/show/508699/landscape-placeholder.svg",
-      },
+     
+     
     ]
   };
 

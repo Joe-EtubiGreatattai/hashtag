@@ -1,19 +1,17 @@
 import React from 'react';
-import logo from '../assets/logo.png'; // Import the logo image
+import logo from '../assets/logo.png';
 
-const Header = ({ username, level, profilePhoto }) => {
+const Header = ({ username, level, profilePhoto, onConnectWallet, walletConnected }) => {
   return (
     <div style={styles.container}>
-      {/* Logo */}
       <div style={styles.logoContainer}>
         <img src={logo} alt="Logo" style={styles.logo} />
       </div>
 
-      {/* Header */}
       <div style={styles.header}>
         <div style={styles.profileContainer}>
           <img
-           src={require('../assets/user.png')}
+            src={require('../assets/user.png')}
             alt="Profile"
             style={styles.profilePhoto}
           />
@@ -22,11 +20,17 @@ const Header = ({ username, level, profilePhoto }) => {
           </div>
         </div>
 
-        <button style={styles.connect}>Connect Wallet</button>
+        <button 
+          style={styles.connect} 
+          onClick={onConnectWallet}
+        >
+          {walletConnected ? 'Wallet Connected' : 'Connect Wallet'}
+        </button>
       </div>
     </div>
   );
 };
+
 
 const styles = {
   container: {
@@ -79,6 +83,17 @@ const styles = {
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
   },
+  connect: {
+    fontSize: '14px',
+    color: '#fff',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
+    padding: '8px 16px',
+    borderRadius: '4px',
+    border: 'none',
+    backgroundColor: 'transparent',
+  },
+
 };
 
 export default Header;

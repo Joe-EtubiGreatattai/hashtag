@@ -7,34 +7,38 @@ import BottomSpacer from '../components/BottomSpacer';
 import ReferralCard from './../components/ReferralCard';
 
 const BoosterScreen = () => {
-    // Updated booster data with TON and Star prices
+    // Updated booster data with increased HTC values (500x)
     const boosterData = [
         {
             image: require("../assets/crypto.png"),
             title: "BoostMe",
-            text: "3000 $HTC in 8hrs",
+            text: "3000 $HTC in 8hrs", // Increased from 3000
             buttonText: "Activate me",
             tonPrice: 0.25,
-            starPrice: 65
+            starPrice: 65,
+            htc:50000
         },
         {
             image: require("../assets/crypto.png"),
             title: "GoodVibes",
-            text: "7000 $HTC in 8hrs",
+            text: "70000 $HTC in 8hrs", // Increased from 7000
             buttonText: "Activate me",
             tonPrice: 0.5,
-            starPrice: 125
+            starPrice: 125,
+            htc:100000
         },
         {
             image: require("../assets/crypto.png"),
             title: "D-Entertainer",
-            text: "10000 $HTC in 8hrs",
+            text: "10000 $HTC in 8hrs", // Increased from 10000
             buttonText: "Activate me",
             tonPrice: 1.0,
-            starPrice: 250
+            starPrice: 250,
+            htc:200000
         },
     ];
 
+    // Rest of the component remains the same
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBooster, setSelectedBooster] = useState(null);
 
