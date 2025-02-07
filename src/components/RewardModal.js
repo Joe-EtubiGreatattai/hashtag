@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import Confetti from 'react-confetti';
 import '../assets/styles/RewardModal.css';
+import { getAuthToken, removeAuthToken } from '../config';
 
 const RewardModal = ({ onClose }) => {
   const [timeLeft, setTimeLeft] = useState(86397);
@@ -45,16 +46,17 @@ const RewardModal = ({ onClose }) => {
     return () => clearTimeout(confettiTimer);
   }, [isConfettiActive]);
 
+
   const handleClaim = async () => {
     setIsLoading(true);
     setError('');
   
     try {
-      const token = localStorage.getItem('token');
+      const token = getAuthToken();
       console.log('Attempting to claim reward...');
       
       if (!token) {
-        console.error('No auth token found in localStorage');
+        console.error('No auth token found');
         throw new Error('Please log in again to claim your reward');
       }
   
@@ -76,7 +78,7 @@ const RewardModal = ({ onClose }) => {
   
       if (response.status === 401) {
         console.error('Authentication failed - token invalid or expired');
-        localStorage.removeItem('token');
+        removeAuthToken();
         localStorage.removeItem('userData');
         window.location.reload();
         throw new Error('Session expired. Please log in again.');

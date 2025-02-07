@@ -9,6 +9,8 @@ import GamifySystemCard from "../components/GamifySystemCard";
 import BuyTokenComponent from '../components/BuyTokenComponent';
 import BottomSpacer from '../components/BottomSpacer';
 import ConnectWallet from '../components/ConnectWallet';
+import { getAuthToken, setAuthToken, removeAuthToken , resetAllAuthData} from '../config';
+
 
 const DEFAULT_USER = {
   id: 'guest',
@@ -35,13 +37,20 @@ const App = () => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
-    if (storedUser && storedToken) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      window.localStorage.setItem('token', storedToken);
+    const token = getAuthToken();
+    if (storedUser && token) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error('Error parsing stored user data:', error);
+        // If there's an error parsing user data, reset everything
+        resetAllAuthData();
+        setUser(DEFAULT_USER);
+      }
     }
   }, []);
+
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -59,7 +68,8 @@ const App = () => {
         };
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
-        localStorage.setItem('token', webApp.initData);
+        // Using new token key
+        setAuthToken(webApp.initData);
         verifyTelegramWebApp(webApp.initData);
       }
     }
@@ -67,7 +77,7 @@ const App = () => {
 
   const fetchFarmingStatus = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getAuthToken();
       if (!token) return;
 
       const response = await fetch('https://api.hashtagdigital.net/api/fetch-farming-status', {
@@ -88,6 +98,7 @@ const App = () => {
       console.error('Error fetching farming status:', error);
     }
   };
+
 
   useEffect(() => {
     fetchFarmingStatus(); // Initial fetch
@@ -111,7 +122,7 @@ const App = () => {
       if (data.user) {
         setUser(data.user);
         localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('token', data.token);
+        setAuthToken(data.token);
       }
     } catch (error) {
       setAuthError('Failed to verify Telegram WebApp authentication');
@@ -125,7 +136,7 @@ const App = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = getAuthToken();
       const response = await fetch('https://api.hashtagdigital.net/api/start-farming', {
         method: 'POST',
         headers: {
@@ -143,7 +154,7 @@ const App = () => {
         });
         setFarming(true);
       } else {
-        await fetchFarmingStatus(); // Fetch updated status
+        await fetchFarmingStatus();
       }
     } catch (error) {
       setFarmingError("Failed to start farming");
