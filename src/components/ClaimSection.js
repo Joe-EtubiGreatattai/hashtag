@@ -26,14 +26,14 @@ function ClaimSection({ farmingStatus }) {
     
     const updateTimer = () => {
       if (!farmingStatus.startTime || !farmingStatus.isActive) {
-        setTimeLeft('0H:01M:00s');
+        setTimeLeft('8H:00M:00s');
         setCanClaim(false);
         return;
       }
 
       const startTime = new Date(farmingStatus.startTime);
       const now = new Date();
-      const farmingDuration = 1 * 60 * 1000; // 1 minute in milliseconds
+      const farmingDuration = 8 * 60 * 60 * 1000; 
       const endTime = new Date(startTime.getTime() + farmingDuration);
       const diff = endTime - now;
 
@@ -43,10 +43,11 @@ function ClaimSection({ farmingStatus }) {
         return;
       }
 
-      const minutes = Math.floor(diff / (1000 * 60));
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      setTimeLeft(`0H:${minutes.toString().padStart(2, '0')}M:${seconds.toString().padStart(2, '0')}s`);
+      setTimeLeft(`${hours}H:${minutes.toString().padStart(2, '0')}M:${seconds.toString().padStart(2, '0')}s`);
       setCanClaim(false);
     };
 
