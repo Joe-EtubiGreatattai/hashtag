@@ -187,11 +187,32 @@ const App = () => {
       />
 
       <button onClick={clearLocalStorage} className="clear-button">
-       Logout
+        Logout
       </button>
       {user.id === 'guest' && (
         <div className="text-center my-4">
-          <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} />
+          {/* <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} /> */}
+          <button
+            onClick={() => {
+              const botUsername = "Hashtag001bot";
+              const telegramAuthUrl = `https://t.me/${botUsername}?start=auth`;
+              const telegramDeepLink = `tg://resolve?domain=${botUsername}&start=auth`;
+
+              // Try deep linking first (for iOS/Android apps)
+              window.location.href = telegramDeepLink;
+
+              // Fallback to web login after a short delay if deep linking fails
+              setTimeout(() => {
+                if (document.visibilityState === "visible") {
+                  window.location.href = telegramAuthUrl;
+                }
+              }, 1500);
+            }}
+            className="telegram-login-button"
+          >
+            Login with Telegram
+          </button>
+
           {authError && <p className="text-red-500 mt-2">{authError}</p>}
         </div>
       )}
