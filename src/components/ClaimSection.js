@@ -62,15 +62,19 @@ function ClaimSection({ farmingStatus }) {
       const authToken = storedUser?.token;
       
       if (!authToken) throw new Error('No auth token found');
-      
-      const response = await fetch('/claim-farming-rewards', {
+  
+      console.log('User Token:', authToken); // Print the token to the console
+  
+      const response = await fetch('/api/claim-farming-rewards', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${authToken}`
         }
       });
+  
       if (!response.ok) throw new Error('Failed to claim rewards');
+  
       const data = await response.json();
       alert(`Successfully claimed ${data.amount} $HTC`);
       setCanClaim(false);
@@ -79,6 +83,7 @@ function ClaimSection({ farmingStatus }) {
       alert('Failed to claim rewards');
     }
   };
+  
 
   return (
     <div className="claim-section">
