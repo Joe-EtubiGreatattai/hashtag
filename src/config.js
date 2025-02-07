@@ -20,9 +20,7 @@ const migrateOldToken = () => {
 migrateOldToken();
 
 export const getAuthToken = () => {
-  if (isDevelopment) {
-    return DEV_TOKEN;
-  }
+
   
   // Try to get token with new key first
   const token = localStorage.getItem('token');
