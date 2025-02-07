@@ -137,14 +137,14 @@ function ClaimSection({ farmingStatus }) {
             numberOfPieces={200}
           />
           <div className="reward-popup animate-bounce">
-            +{claimedAmount} $HTC
+            +{claimedAmount.toLocaleString()} $HTC
           </div>
         </>
       )}
 
       <div className="text-center">
         <h1 className="heading">
-          {totalHTC} $HTC
+          {totalHTC.toLocaleString()} $HTC
         </h1>
         <p className="time-text">{timeLeft}</p>
         {farmingStatus.isActive && (
@@ -158,7 +158,7 @@ function ClaimSection({ farmingStatus }) {
             className="claim-button" 
             onClick={handleClaim}
           >
-            Claim $HTC Now: <span className="highlight">1000</span>
+            Claim $HTC Now: <span className="highlight">1,000</span>
           </button>
         </div>
       )}
