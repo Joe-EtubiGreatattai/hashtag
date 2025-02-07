@@ -15,6 +15,44 @@ const RewardModal = ({ onClose }) => {
   const [claimMessage, setClaimMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [lastClaimDate, setLastClaimDate] = useState(null);
+
+  useEffect(() => {
+    const fetchLastClaimDate = async () => {
+      try {
+        const token = getAuthToken();
+        if (!token) {
+          throw new Error('No auth token found');
+        }
+
+        const response = await fetch('https://api.hashtagdigital.net/api/fetch-last-daily-bonus', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.status === 401) {
+          removeAuthToken();
+          localStorage.removeItem('userData');
+          window.location.reload();
+          throw new Error('Session expired. Please log in again.');
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch last claim date');
+        }
+
+        const data = await response.json();
+        setLastClaimDate(new Date(data.lastDate));
+      } catch (err) {
+        console.error('Error fetching last claim date:', err);
+        setError(err.message);
+      }
+    };
+
+    fetchLastClaimDate();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,12 +67,29 @@ const RewardModal = ({ onClose }) => {
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
+    if (!lastClaimDate) return;
+
+    const updateTimeLeft = () => {
+      const now = new Date();
+      const nextClaimTime = new Date(lastClaimDate);
+      nextClaimTime.setHours(nextClaimTime.getHours() + 24); // Set next claim time to 24 hours after last claim
+
+      const diffInSeconds = Math.floor((nextClaimTime - now) / 1000);
+      
+      if (diffInSeconds <= 0) {
+        setTimeLeft(0);
+        setIsClaimed(false);
+      } else {
+        setTimeLeft(diffInSeconds);
+        setIsClaimed(true);
+      }
+    };
+
+    const timer = setInterval(updateTimeLeft, 1000);
+    updateTimeLeft(); // Initial call
 
     return () => clearInterval(timer);
-  }, []);
+  }, [lastClaimDate]);
 
   useEffect(() => {
     let confettiTimer;
@@ -46,21 +101,17 @@ const RewardModal = ({ onClose }) => {
     return () => clearTimeout(confettiTimer);
   }, [isConfettiActive]);
 
-
   const handleClaim = async () => {
     setIsLoading(true);
     setError('');
   
     try {
       const token = getAuthToken();
-      console.log('Attempting to claim reward...');
       
       if (!token) {
-        console.error('No auth token found');
         throw new Error('Please log in again to claim your reward');
       }
   
-      console.log('Making API request to claim reward...');
       const response = await fetch('https://api.hashtagdigital.net/api/claim', {
         method: 'POST',
         headers: {
@@ -70,14 +121,8 @@ const RewardModal = ({ onClose }) => {
       });
   
       const data = await response.json();
-      console.log('API Response:', {
-        status: response.status,
-        statusText: response.statusText,
-        data: data
-      });
   
       if (response.status === 401) {
-        console.error('Authentication failed - token invalid or expired');
         removeAuthToken();
         localStorage.removeItem('userData');
         window.location.reload();
@@ -88,13 +133,11 @@ const RewardModal = ({ onClose }) => {
         throw new Error(data.message || 'Failed to claim reward');
       }
   
-      console.log('Claim successful:', data.message);
       setClaimMessage(data.message);
+      setLastClaimDate(new Date(data.currentDate)); // Update last claim date
+      setIsClaimed(true);
+      setIsConfettiActive(true);
       
-      if (!data.message.includes('already claimed')) {
-        setIsClaimed(true);
-        setIsConfettiActive(true);
-      }
     } catch (err) {
       console.error('Claim error:', err);
       setError(err.message || 'Failed to claim reward. Please try again.');
@@ -133,16 +176,16 @@ const RewardModal = ({ onClose }) => {
           {error && <div className="error-message">{error}</div>}
           {claimMessage && <div className="claim-message">{claimMessage}</div>}
           
-          {isClaimed ? (
-            <div className="claimed-text">Claimed: +500 $HTC</div>
-          ) : (
+          {timeLeft === 0 ? (
             <button 
               onClick={handleClaim}
               className="claim-button"
-              disabled={isLoading || isClaimed}
+              disabled={isLoading}
             >
               {isLoading ? 'Claiming...' : 'Claim +500 $HTC'}
             </button>
+          ) : (
+            <div className="claimed-text">Claimed: +500 $HTC</div>
           )}
         </div>
 
