@@ -65,7 +65,7 @@ function ClaimSection({ farmingStatus }) {
   
       console.log('User Token:', authToken); // Print the token to the console
   
-      const response = await fetch('/api/claim-farming-rewards', {
+      const response = await fetch('https://api.hashtagdigital.net/api/claim-farming-rewards', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,16 +73,20 @@ function ClaimSection({ farmingStatus }) {
         }
       });
   
-      if (!response.ok) throw new Error('Failed to claim rewards');
+      if (!response.ok) {
+        const errorResponse = await response.json(); // Attempt to parse error message
+        throw new Error(errorResponse.message || 'Failed to claim rewards');
+      }
   
       const data = await response.json();
       alert(`Successfully claimed ${data.amount} $HTC`);
       setCanClaim(false);
     } catch (error) {
       console.error('Error claiming rewards:', error);
-      alert('Failed to claim rewards');
+      alert(`Failed to claim rewards: ${error.message}`);
     }
   };
+  
   
 
   return (
