@@ -74,18 +74,23 @@ function ClaimSection({ farmingStatus }) {
       });
   
       if (!response.ok) {
-        const errorResponse = await response.json(); // Attempt to parse error message
+        const errorResponse = await response.json();
         throw new Error(errorResponse.message || 'Failed to claim rewards');
       }
   
       const data = await response.json();
-      alert(`Successfully claimed ${data.amount} $HTC`);
+      
+      // Extract the claimed amount from the transaction object
+      const claimedAmount = data?.transaction?.amount || 0;
+  
+      alert(`Farming rewards claimed successfully! You received ${claimedAmount} $HTC`);
       setCanClaim(false);
     } catch (error) {
       console.error('Error claiming rewards:', error);
       alert(`Failed to claim rewards: ${error.message}`);
     }
   };
+  
   
   
 
