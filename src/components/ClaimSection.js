@@ -52,7 +52,7 @@ function ClaimSection({ onClaimClick, farmingEndTime }) {
         )}
       </div>
 
-      <div className="button-container">
+      {/* <div className="button-container">
         <button 
           className="claim-button" 
           onClick={onClaimClick}
@@ -60,7 +60,7 @@ function ClaimSection({ onClaimClick, farmingEndTime }) {
         >
           Claim $HTC Now: <span className="highlight">1000</span>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
