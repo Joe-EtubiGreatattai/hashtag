@@ -1,44 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './../assets/styles/ClaimSection.css';
 
-function ClaimSection({ onClaimClick, farmingEndTime }) {
-  const [timeLeft, setTimeLeft] = React.useState('');
-  const [isFarmingActive, setIsFarmingActive] = React.useState(false);
+function ClaimSection({ onClaimClick, farmingStatus }) {
+  const [timeLeft, setTimeLeft] = useState('');
+  const [canClaim, setCanClaim] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let timer;
     
     const updateTimer = () => {
-      if (!farmingEndTime) {
+      if (!farmingStatus.startTime || !farmingStatus.isActive) {
         setTimeLeft('8H:00M:00s');
-        setIsFarmingActive(false);
+        setCanClaim(false);
         return;
       }
 
-      const end = new Date(farmingEndTime);
+      const startTime = new Date(farmingStatus.startTime);
       const now = new Date();
-      const diff = end - now;
+      const farmingDuration = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
+      const endTime = new Date(startTime.getTime() + farmingDuration);
+      const diff = endTime - now;
 
       if (diff <= 0) {
         setTimeLeft('0H:00M:00s');
-        setIsFarmingActive(false);
-        localStorage.removeItem('farmingEndTime');
+        setCanClaim(true);
         return;
       }
 
-      setIsFarmingActive(true);
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
       setTimeLeft(`${hours}H:${minutes.toString().padStart(2, '0')}M:${seconds.toString().padStart(2, '0')}s`);
+      setCanClaim(false);
     };
 
     timer = setInterval(updateTimer, 1000);
     updateTimer(); // Initial call
 
     return () => clearInterval(timer);
-  }, [farmingEndTime]);
+  }, [farmingStatus]);
 
   return (
     <div className="claim-section">
@@ -47,20 +48,21 @@ function ClaimSection({ onClaimClick, farmingEndTime }) {
           450,000 $HTC
         </h1>
         <p className="time-text">{timeLeft}</p>
-        {isFarmingActive && (
+        {farmingStatus.isActive && (
           <p className="text-green-500 text-sm mt-1">Farming in progress...</p>
         )}
       </div>
 
-      {/* <div className="button-container">
-        <button 
-          className="claim-button" 
-          onClick={onClaimClick}
-          disabled={!isFarmingActive}
-        >
-          Claim $HTC Now: <span className="highlight">1000</span>
-        </button>
-      </div> */}
+      {canClaim && (
+        <div className="button-container">
+          <button 
+            className="claim-button" 
+            onClick={onClaimClick}
+          >
+            Claim $HTC Now: <span className="highlight">1000</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -76,9 +76,9 @@ const RewardModal = ({ onClose }) => {
   
       if (response.status === 401) {
         console.error('Authentication failed - token invalid or expired');
-        localStorage.removeItem('token'); // Clear invalid token
+        localStorage.removeItem('token');
         localStorage.removeItem('userData');
-        window.location.reload(); // Force re-authentication
+        window.location.reload();
         throw new Error('Session expired. Please log in again.');
       }
   

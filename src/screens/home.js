@@ -22,13 +22,16 @@ const DEFAULT_USER = {
 const App = () => {
   const [showBuyToken, setShowBuyToken] = useState(false);
   const [showRewardModal, setShowRewardModal] = useState(false);
-  const [farmingEndTime, setFarmingEndTime] = useState(null);
   const [farmingError, setFarmingError] = useState(null);
   const [authError, setAuthError] = useState(null);
   const [user, setUser] = useState(DEFAULT_USER);
   const [walletConnected, setWalletConnected] = useState(false);
   const [showConnectWallet, setShowConnectWallet] = useState(false);
   const [farming, setFarming] = useState(false);
+  const [farmingStatus, setFarmingStatus] = useState({
+    isActive: false,
+    startTime: null
+  });
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -62,6 +65,40 @@ const App = () => {
     }
   }, []);
 
+  const fetchFarmingStatus = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch('https://api.hashtagdigital.net/api/fetch-farming-status', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch farming status');
+      
+      const data = await response.json();
+      setFarmingStatus({
+        isActive: data.status,
+        startTime: data.startTime ? new Date(data.startTime) : null
+      });
+      setFarming(data.status);
+    } catch (error) {
+      console.error('Error fetching farming status:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFarmingStatus(); // Initial fetch
+
+    const intervalId = setInterval(() => {
+      fetchFarmingStatus();
+    }, 30000); // Fetch every 30 seconds
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   const verifyTelegramWebApp = async (initData) => {
     try {
       const response = await fetch('https://api.hashtagdigital.net/api/auth/telegram_auth', {
@@ -81,15 +118,37 @@ const App = () => {
     }
   };
 
-  const handleStartFarming = () => {
+  const handleStartFarming = async () => {
     if (farming) {
       setFarmingError("Farming is already active");
       return;
     }
-    setFarming(true);
-    const endTime = new Date();
-    endTime.setHours(endTime.getHours() + 24);
-    setFarmingEndTime(endTime);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('https://api.hashtagdigital.net/api/start-farming', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+      
+      if (data.message === "Farming is already active") {
+        setFarmingStatus({
+          isActive: true,
+          startTime: new Date(data.startTime)
+        });
+        setFarming(true);
+      } else {
+        await fetchFarmingStatus(); // Fetch updated status
+      }
+    } catch (error) {
+      setFarmingError("Failed to start farming");
+      console.error('Error starting farming:', error);
+    }
   };
 
   const handleWalletConnect = (account) => {
@@ -127,7 +186,10 @@ const App = () => {
       )}
       {!showBuyToken && (
         <>
-          <ClaimSection onClaimClick={() => setShowRewardModal(true)} farmingEndTime={farmingEndTime} />
+          <ClaimSection 
+            onClaimClick={() => setShowRewardModal(true)} 
+            farmingStatus={farmingStatus}
+          />
           <AvatarCard profilePhoto={user.photo_url} username={user.username} />
           <GamifySystemCard
             title=""
