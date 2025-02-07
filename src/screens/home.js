@@ -191,29 +191,7 @@ const App = () => {
       </button>
       {user.id === 'guest' && (
         <div className="text-center my-4">
-          {/* <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} /> */}
-          <button
-            onClick={() => {
-              const botUsername = "Hashtag001bot"; // Your bot's username
-
-              // Detect if inside Telegram WebView
-              const isInsideTelegram = window.Telegram?.WebApp?.initData;
-
-              if (isInsideTelegram) {
-                // Authenticate using Telegram WebApp data
-                verifyTelegramWebApp(window.Telegram.WebApp.initData);
-              } else {
-                // Redirect to Telegram OAuth login
-                window.location.href = `https://telegram.me/${botUsername}?start=auth`;
-              }
-            }}
-            className="telegram-login-button"
-          >
-            Login with Telegram
-          </button>
-
-
-
+          <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} />
           {authError && <p className="text-red-500 mt-2">{authError}</p>}
         </div>
       )}
