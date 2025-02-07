@@ -187,7 +187,7 @@ const App = () => {
       />
 
       <button onClick={clearLocalStorage} className="clear-button">
-        Clear Local Storage
+       Logout
       </button>
       {user.id === 'guest' && (
         <div className="text-center my-4">
