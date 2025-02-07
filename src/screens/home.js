@@ -74,6 +74,7 @@ const App = () => {
         // Using new token key
         setAuthToken(webApp.initData);
         verifyTelegramWebApp(webApp.initData);
+        console.log('Telegram WebApp user data:', webApp.initData);
       }
     }
   }, []);
@@ -125,7 +126,7 @@ const App = () => {
       if (data.user) {
         setUser(data.user);
         localStorage.setItem('user', JSON.stringify(data.user));
-        setAuthToken(data.token);
+        setAuthToken(data.user.token);
       }
     } catch (error) {
       setAuthError('Failed to verify Telegram WebApp authentication');
