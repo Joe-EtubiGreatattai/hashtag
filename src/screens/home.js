@@ -193,25 +193,25 @@ const App = () => {
         <div className="text-center my-4">
           {/* <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} /> */}
           <button
-            onClick={() => {
-              const botUsername = "Hashtag001bot";
-              const telegramAuthUrl = `https://t.me/${botUsername}?start=auth`;
-              const telegramDeepLink = `tg://resolve?domain=${botUsername}&start=auth`;
+  onClick={() => {
+    const botUsername = "Hashtag001bot";
 
-              // Try deep linking first (for iOS/Android apps)
-              window.location.href = telegramDeepLink;
+    // Detect if inside Telegram WebView
+    const isInsideTelegram = window.Telegram?.WebApp?.initData;
 
-              // Fallback to web login after a short delay if deep linking fails
-              setTimeout(() => {
-                if (document.visibilityState === "visible") {
-                  window.location.href = telegramAuthUrl;
-                }
-              }, 1500);
-            }}
-            className="telegram-login-button"
-          >
-            Login with Telegram
-          </button>
+    if (isInsideTelegram) {
+      // Authenticate using Telegram WebApp data
+      verifyTelegramWebApp(window.Telegram.WebApp.initData);
+    } else {
+      // Redirect to Telegram Auth page
+      window.location.href = `https://oauth.telegram.org/auth?bot_id=${botUsername}&origin=${encodeURIComponent(window.location.origin)}`;
+    }
+  }}
+  className="telegram-login-button"
+>
+  Login with Telegram
+</button>
+
 
           {authError && <p className="text-red-500 mt-2">{authError}</p>}
         </div>
