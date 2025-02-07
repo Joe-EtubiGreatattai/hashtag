@@ -16,7 +16,7 @@ function ClaimSection({ farmingStatus }) {
 
         if (!authToken) throw new Error('No auth token found');
 
-        const response = await fetch('https://api.hashtagdigital.net/api/history', {
+        const response = await fetch('https://api.hashtagdigital.net/api/transaction-history', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
