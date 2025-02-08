@@ -13,6 +13,10 @@ const LeaderboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const truncateUsername = (username) => {
+    return username.length > 6 ? `${username.substring(0, 6)}...` : username;
+  };
+
   // Fetch user data from localStorage or Telegram WebApp
   useEffect(() => {
     const fetchUserData = () => {
@@ -20,14 +24,14 @@ const LeaderboardPage = () => {
       if (storedUser) {
         const user = JSON.parse(storedUser);
         setUserData({
-          username: user.username || `${user.first_name} ${user.last_name || ''}`.trim(),
+          username: truncateUsername(user.username || `${user.first_name} ${user.last_name || ''}`.trim()),
           photo_url: user.photo_url || "https://via.placeholder.com/50"
         });
       } else if (window.Telegram?.WebApp) {
         const webAppUser = window.Telegram.WebApp.initDataUnsafe?.user;
         if (webAppUser) {
           setUserData({
-            username: webAppUser.username || `${webAppUser.first_name} ${webAppUser.last_name || ''}`.trim(),
+            username: truncateUsername(webAppUser.username || `${webAppUser.first_name} ${webAppUser.last_name || ''}`.trim()),
             photo_url: webAppUser.photo_url || "https://via.placeholder.com/50"
           });
         }
@@ -79,12 +83,13 @@ const LeaderboardPage = () => {
           .sort((a, b) => b.htcWalletBalance - a.htcWalletBalance)
           .map((user, index) => ({
             ...user,
+            username: truncateUsername(user.username),
             rank: index + 1
           }))
           .slice(0, 3); // Get top 3 users
 
         setRankings(sortedRankings);
-        setTotalUsers(totalUsersData.userCount); // Updated to use userCount instead of count
+        setTotalUsers(totalUsersData.userCount);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching data:', err);
