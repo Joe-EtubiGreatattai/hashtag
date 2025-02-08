@@ -37,12 +37,13 @@ const Leaderboard = ({ data = [] }) => {
             <div className="leader-info">
               <p className="leader-name">{leader.name}</p>
               <div className="leader-score">
-                <img
+                {/* <img
                   src={require('../assets/ninja-coin.png')}
                   alt="Golden Coin"
                   style={{ width: '20px', marginRight: '8px' }}
-                />
-                {leader.score}
+                /> */}
+
+                $HTC{leader.score}
               </div>
             </div>
           </div>
