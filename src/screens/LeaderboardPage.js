@@ -43,6 +43,11 @@ const LeaderboardPage = () => {
       try {
         setLoading(true);
         const token = getAuthToken();
+        
+        if (!token) {
+          throw new Error('No authentication token found');
+        }
+
         const headers = {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -64,6 +69,10 @@ const LeaderboardPage = () => {
 
         const rankingsData = await rankingsResponse.json();
         const totalUsersData = await totalUsersResponse.json();
+
+        if (!rankingsData.rankings) {
+          throw new Error('Invalid rankings data structure');
+        }
         
         // Sort rankings by htcWalletBalance in descending order and add rank
         const sortedRankings = rankingsData.rankings
@@ -75,9 +84,10 @@ const LeaderboardPage = () => {
           .slice(0, 3); // Get top 3 users
 
         setRankings(sortedRankings);
-        setTotalUsers(totalUsersData.count);
+        setTotalUsers(totalUsersData.userCount); // Updated to use userCount instead of count
         setLoading(false);
       } catch (err) {
+        console.error('Error fetching data:', err);
         setError(err.message);
         setLoading(false);
       }
