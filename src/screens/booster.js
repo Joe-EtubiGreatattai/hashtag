@@ -153,30 +153,6 @@ const BoosterScreen = () => {
                 <h1 className="title">Boosters</h1>
             </div>
 
-            {activeBoosters.length > 0 && (
-                <div className="active-boosters-container">
-                    <h2 className="active-boosters-title">Active Boosters</h2>
-                    <div className="active-boosters-list">
-                        {activeBoosters.map((activeBooster) => {
-                            const boosterDetails = boosters.find(b => b.id === activeBooster.boosterID);
-                            return boosterDetails ? (
-                                <div key={activeBooster.id} className="active-booster-card">
-                                    <img 
-                                        src={require("../assets/crypto.png")} 
-                                        alt={boosterDetails.title} 
-                                        className="booster-icon-small" 
-                                    />
-                                    <div className="active-booster-info">
-                                        <h4>{boosterDetails.title}</h4>
-                                        <p>Activated: {formatActivationTime(activeBooster.createdAt)}</p>
-                                    </div>
-                                </div>
-                            ) : null;
-                        })}
-                    </div>
-                </div>
-            )}
-
             <div className="booster-cards-container">
                 <h2 className="booster-title-header">Boost To Earn More Points</h2>
                 {boosters.map((booster) => {
