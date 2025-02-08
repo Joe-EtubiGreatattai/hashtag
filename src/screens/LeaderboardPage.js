@@ -36,20 +36,28 @@ const LeaderboardPage = () => {
     fetchUserData();
   }, []);
 
-  // Fetch rankings data
+  // Fetch rankings and total user count
   useEffect(() => {
-    const fetchRankings = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://api.hashtagdigital.net/api/global');
-        if (!response.ok) {
-          throw new Error('Failed to fetch rankings');
-        }
-        const data = await response.json();
         
-        // Sort rankings by stars in descending order and add rank
-        const sortedRankings = data.rankings
-          .sort((a, b) => b.stars - a.stars)
+        // Fetch rankings and total users count in parallel
+        const [rankingsResponse, totalUsersResponse] = await Promise.all([
+          fetch('https://api.hashtagdigital.net/api/global'),
+          fetch('https://api.hashtagdigital.net/api/leader-count')
+        ]);
+
+        if (!rankingsResponse.ok || !totalUsersResponse.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
+        const rankingsData = await rankingsResponse.json();
+        const totalUsersData = await totalUsersResponse.json();
+        
+        // Sort rankings by htcWalletBalance in descending order and add rank
+        const sortedRankings = rankingsData.rankings
+          .sort((a, b) => b.htcWalletBalance - a.htcWalletBalance)
           .map((user, index) => ({
             ...user,
             rank: index + 1
@@ -57,7 +65,7 @@ const LeaderboardPage = () => {
           .slice(0, 3); // Get top 3 users
 
         setRankings(sortedRankings);
-        setTotalUsers(data.rankings.length);
+        setTotalUsers(totalUsersData.count); // Assuming the API returns { count: number }
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -65,7 +73,7 @@ const LeaderboardPage = () => {
       }
     };
 
-    fetchRankings();
+    fetchData();
   }, []);
 
   if (loading) {
@@ -88,17 +96,17 @@ const LeaderboardPage = () => {
   const leaderboardData = rankings.map(user => ({
     id: user.rank,
     name: user.username,
-    score: user.stars.toLocaleString(),
+    score: user.htcWalletBalance.toLocaleString(),
     position: user.rank === 1 ? 'center' : user.rank === 2 ? 'left' : 'right',
-    image: require('../assets/user.png') // You can map different images based on rank if needed
+    image: user.photoURL || require('../assets/user.png')
   }));
 
   // Transform rankings data for the list view
   const listData = rankings.map(user => ({
     rank: user.rank,
     username: user.username,
-    hashtags: user.stars,
-    image: require('../assets/user.png') // You can map different images based on rank if needed
+    hashtags: user.htcWalletBalance,
+    image: user.photoURL || require('../assets/user.png')
   }));
 
   return (
