@@ -165,7 +165,7 @@ const RewardModal = ({ onClose }) => {
         />
       )}
       
-      <div className="modal-container">
+      <div className="modal-container-reward">
         <button onClick={onClose} className="close-button">
           <X className="close-icon" />
         </button>
