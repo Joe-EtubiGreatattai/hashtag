@@ -13,8 +13,9 @@ const LeaderboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const truncateUsername = (username) => {
-    return username.length > 6 ? `${username.substring(0, 6)}...` : username;
+  // Modified truncateUsername function to accept a length parameter
+  const truncateUsername = (username, length) => {
+    return username.length > length ? `${username.substring(0, length)}...` : username;
   };
 
   // Fetch user data from localStorage or Telegram WebApp
@@ -24,14 +25,14 @@ const LeaderboardPage = () => {
       if (storedUser) {
         const user = JSON.parse(storedUser);
         setUserData({
-          username: truncateUsername(user.username || `${user.first_name} ${user.last_name || ''}`.trim()),
+          username: truncateUsername(user.username || `${user.first_name} ${user.last_name || ''}`.trim(), 15),
           photo_url: user.photo_url || "https://via.placeholder.com/50"
         });
       } else if (window.Telegram?.WebApp) {
         const webAppUser = window.Telegram.WebApp.initDataUnsafe?.user;
         if (webAppUser) {
           setUserData({
-            username: truncateUsername(webAppUser.username || `${webAppUser.first_name} ${webAppUser.last_name || ''}`.trim()),
+            username: truncateUsername(webAppUser.username || `${webAppUser.first_name} ${webAppUser.last_name || ''}`.trim(), 15),
             photo_url: webAppUser.photo_url || "https://via.placeholder.com/50"
           });
         }
@@ -83,7 +84,7 @@ const LeaderboardPage = () => {
           .sort((a, b) => b.htcWalletBalance - a.htcWalletBalance)
           .map((user, index) => ({
             ...user,
-            username: truncateUsername(user.username),
+            username: truncateUsername(user.username, 15), // Truncate to 15 characters for all users
             rank: index + 1
           }))
           .slice(0, 200); // Get top 200 users
@@ -120,7 +121,7 @@ const LeaderboardPage = () => {
   // Transform top 3 rankings data for the Leaderboard component
   const leaderboardData = rankings.slice(0, 3).map(user => ({
     id: user.rank,
-    name: user.username,
+    name: truncateUsername(user.username, 6), // Truncate to 6 characters for top 3 users
     score: user.htcWalletBalance.toLocaleString(),
     position: user.rank === 1 ? 'center' : user.rank === 2 ? 'left' : 'right',
     image: user.photoURL || require('../assets/user.png')
