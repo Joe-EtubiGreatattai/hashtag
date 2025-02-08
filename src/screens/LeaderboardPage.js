@@ -4,6 +4,7 @@ import "../App.css";
 import Leaderboard from "../components/Leaderboard";
 import "../assets/styles/LeaderboardPage.css";
 import BottomSpacer from '../components/BottomSpacer';
+import { getAuthToken } from '../config';
 
 const LeaderboardPage = () => {
   const [rankings, setRankings] = useState([]);
@@ -41,11 +42,20 @@ const LeaderboardPage = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        const token = getAuthToken();
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        };
         
         // Fetch rankings and total users count in parallel
         const [rankingsResponse, totalUsersResponse] = await Promise.all([
-          fetch('https://api.hashtagdigital.net/api/global'),
-          fetch('https://api.hashtagdigital.net/api/leader-count')
+          fetch('https://api.hashtagdigital.net/api/global', {
+            headers
+          }),
+          fetch('https://api.hashtagdigital.net/api/leader-count', {
+            headers
+          })
         ]);
 
         if (!rankingsResponse.ok || !totalUsersResponse.ok) {
@@ -65,7 +75,7 @@ const LeaderboardPage = () => {
           .slice(0, 3); // Get top 3 users
 
         setRankings(sortedRankings);
-        setTotalUsers(totalUsersData.count); // Assuming the API returns { count: number }
+        setTotalUsers(totalUsersData.count);
         setLoading(false);
       } catch (err) {
         setError(err.message);
