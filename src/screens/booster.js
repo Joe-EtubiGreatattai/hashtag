@@ -13,6 +13,7 @@ const BoosterScreen = () => {
     const [selectedBooster, setSelectedBooster] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [activating, setActivating] = useState(false);
 
     useEffect(() => {
         const fetchBoosters = async () => {
@@ -36,7 +37,6 @@ const BoosterScreen = () => {
                 }
 
                 const data = await response.json();
-                // Sort boosters by order property
                 const sortedBoosters = data.boosters.sort((a, b) => 
                     parseInt(a.order) - parseInt(b.order)
                 );
@@ -51,6 +51,43 @@ const BoosterScreen = () => {
 
         fetchBoosters();
     }, []);
+
+    const activateBooster = async (boosterId, paymentMethod) => {
+        setActivating(true);
+        try {
+            const token = getAuthToken();
+            if (!token) {
+                throw new Error("Authentication token not found");
+            }
+
+            const response = await fetch('https://api.hashtagdigital.net/api/activate-booster-package', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    paymentMethod: paymentMethod,
+                    boosterID: boosterId
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to activate booster');
+            }
+
+            setIsModalOpen(false);
+            return { success: true, message: data.message };
+
+        } catch (error) {
+            console.error('Error activating booster:', error);
+            return { success: false, message: error.message };
+        } finally {
+            setActivating(false);
+        }
+    };
 
     const handleModalOpen = (booster) => {
         setSelectedBooster({
@@ -113,6 +150,8 @@ const BoosterScreen = () => {
                 <BoostModal
                     onClose={handleModalClose}
                     booster={selectedBooster}
+                    onActivate={activateBooster}
+                    isActivating={activating}
                 />
             )}
 
