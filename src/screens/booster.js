@@ -36,7 +36,11 @@ const BoosterScreen = () => {
                 }
 
                 const data = await response.json();
-                setBoosters(data.boosters);
+                // Sort boosters by order property
+                const sortedBoosters = data.boosters.sort((a, b) => 
+                    parseInt(a.order) - parseInt(b.order)
+                );
+                setBoosters(sortedBoosters);
             } catch (error) {
                 setError(error.message);
                 console.error('Error fetching boosters:', error);
