@@ -1,49 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../App.css";
 import FixedLogo from '../components/fixedLogo';
 import "../assets/styles/TaskAreaScreen.css"; 
 import BoostModal from './../components/BoostModal';
 import BottomSpacer from '../components/BottomSpacer';
 import ReferralCard from './../components/ReferralCard';
+import { getAuthToken } from '../config';
 
 const BoosterScreen = () => {
-    // Updated booster data with increased HTC values (500x)
-    const boosterData = [
-        {
-            image: require("../assets/crypto.png"),
-            title: "BoostMe",
-            text: "3000 $HTC in 8hrs", // Increased from 3000
-            buttonText: "Activate me",
-            tonPrice: 0.25,
-            starPrice: 65,
-            htc:50000
-        },
-        {
-            image: require("../assets/crypto.png"),
-            title: "GoodVibes",
-            text: "70000 $HTC in 8hrs", // Increased from 7000
-            buttonText: "Activate me",
-            tonPrice: 0.5,
-            starPrice: 125,
-            htc:100000
-        },
-        {
-            image: require("../assets/crypto.png"),
-            title: "D-Entertainer",
-            text: "10000 $HTC in 8hrs", // Increased from 10000
-            buttonText: "Activate me",
-            tonPrice: 1.0,
-            starPrice: 250,
-            htc:200000
-        },
-    ];
-
-    // Rest of the component remains the same
+    const [boosters, setBoosters] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBooster, setSelectedBooster] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchBoosters = async () => {
+            try {
+                const token = getAuthToken();
+                if (!token) {
+                    setError("Authentication token not found");
+                    setLoading(false);
+                    return;
+                }
+
+                const response = await fetch('https://api.hashtagdigital.net/api/fetch-booster', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch boosters');
+                }
+
+                const data = await response.json();
+                setBoosters(data.boosters);
+            } catch (error) {
+                setError(error.message);
+                console.error('Error fetching boosters:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBoosters();
+    }, []);
 
     const handleModalOpen = (booster) => {
-        setSelectedBooster(booster);
+        setSelectedBooster({
+            ...booster,
+            tonPrice: booster.tonAmount,
+            starPrice: booster.starAmount,
+            htc: booster.htcAmount
+        });
         setIsModalOpen(true);
     };
 
@@ -51,6 +62,14 @@ const BoosterScreen = () => {
         setIsModalOpen(false);
         setSelectedBooster(null);
     };
+
+    if (loading) {
+        return <div className="loading">Loading boosters...</div>;
+    }
+
+    if (error) {
+        return <div className="error">Error: {error}</div>;
+    }
 
     return (
         <div className="app">
@@ -61,15 +80,22 @@ const BoosterScreen = () => {
 
             <div className="booster-cards-container">
                 <h2 className="booster-title-header">Boost To Earn More Points</h2>
-                {boosterData.map((booster, index) => (
-                    <div key={index} className="booster-card">
-                        <img src={booster.image} alt={booster.title} className="booster-icon" />
+                {boosters.map((booster) => (
+                    <div key={booster.id} className="booster-card">
+                        <img 
+                            src={require("../assets/crypto.png")} 
+                            alt={booster.title} 
+                            className="booster-icon" 
+                        />
                         <div className="booster-card-header">
                             <h3 className="booster-title">{booster.title}</h3>
                             <p className="booster-text">{booster.text}</p>
                         </div>
-                        <button className="booster-button" onClick={() => handleModalOpen(booster)}>
-                            {booster.buttonText}
+                        <button 
+                            className="booster-button" 
+                            onClick={() => handleModalOpen(booster)}
+                        >
+                            Activate me
                         </button>
                     </div>
                 ))}
@@ -79,7 +105,7 @@ const BoosterScreen = () => {
                 <ReferralCard showHeader={false} />
             </div>
 
-            {isModalOpen && (
+            {isModalOpen && selectedBooster && (
                 <BoostModal
                     onClose={handleModalClose}
                     booster={selectedBooster}
