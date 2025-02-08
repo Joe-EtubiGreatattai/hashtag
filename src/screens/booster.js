@@ -9,6 +9,7 @@ import { getAuthToken } from '../config';
 
 const BoosterScreen = () => {
     const [boosters, setBoosters] = useState([]);
+    const [activeBoosters, setActiveBoosters] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBooster, setSelectedBooster] = useState(null);
     const [error, setError] = useState(null);
@@ -16,7 +17,7 @@ const BoosterScreen = () => {
     const [activating, setActivating] = useState(false);
 
     useEffect(() => {
-        const fetchBoosters = async () => {
+        const fetchData = async () => {
             try {
                 const token = getAuthToken();
                 if (!token) {
@@ -25,32 +26,51 @@ const BoosterScreen = () => {
                     return;
                 }
 
-                const response = await fetch('https://api.hashtagdigital.net/api/fetch-booster', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
+                const headers = {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                };
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch boosters');
+                // Fetch both boosters and active boosters in parallel
+                const [boostersResponse, activeBoostersResponse] = await Promise.all([
+                    fetch('https://api.hashtagdigital.net/api/fetch-booster', { headers }),
+                    fetch('https://api.hashtagdigital.net/api/fetch-active-boosters', { headers })
+                ]);
+
+                if (!boostersResponse.ok || !activeBoostersResponse.ok) {
+                    throw new Error('Failed to fetch booster data');
                 }
 
-                const data = await response.json();
-                const sortedBoosters = data.boosters.sort((a, b) => 
+                const [boostersData, activeBoostersData] = await Promise.all([
+                    boostersResponse.json(),
+                    activeBoostersResponse.json()
+                ]);
+
+                const sortedBoosters = boostersData.boosters.sort((a, b) => 
                     parseInt(a.order) - parseInt(b.order)
                 );
+
                 setBoosters(sortedBoosters);
+                setActiveBoosters(activeBoostersData.activeBoosters);
             } catch (error) {
                 setError(error.message);
-                console.error('Error fetching boosters:', error);
+                console.error('Error fetching data:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchBoosters();
+        fetchData();
     }, []);
+
+    const isBoosterActive = (boosterId) => {
+        return activeBoosters.some(activeBooster => activeBooster.boosterID === boosterId);
+    };
+
+    const getBoosterActivationTime = (boosterId) => {
+        const activeBooster = activeBoosters.find(booster => booster.boosterID === boosterId);
+        return activeBooster ? new Date(activeBooster.createdAt) : null;
+    };
 
     const activateBooster = async (boosterId, paymentMethod) => {
         setActivating(true);
@@ -78,6 +98,16 @@ const BoosterScreen = () => {
                 throw new Error(data.message || 'Failed to activate booster');
             }
 
+            // Refresh active boosters after successful activation
+            const activeBoostersResponse = await fetch('https://api.hashtagdigital.net/api/fetch-active-boosters', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            const activeBoostersData = await activeBoostersResponse.json();
+            setActiveBoosters(activeBoostersData.activeBoosters);
+
             setIsModalOpen(false);
             return { success: true, message: data.message };
 
@@ -104,6 +134,10 @@ const BoosterScreen = () => {
         setSelectedBooster(null);
     };
 
+    const formatActivationTime = (date) => {
+        return new Date(date).toLocaleString();
+    };
+
     if (loading) {
         return <div className="loading">Loading boosters...</div>;
     }
@@ -119,27 +153,60 @@ const BoosterScreen = () => {
                 <h1 className="title">Boosters</h1>
             </div>
 
+            {activeBoosters.length > 0 && (
+                <div className="active-boosters-container">
+                    <h2 className="active-boosters-title">Active Boosters</h2>
+                    <div className="active-boosters-list">
+                        {activeBoosters.map((activeBooster) => {
+                            const boosterDetails = boosters.find(b => b.id === activeBooster.boosterID);
+                            return boosterDetails ? (
+                                <div key={activeBooster.id} className="active-booster-card">
+                                    <img 
+                                        src={require("../assets/crypto.png")} 
+                                        alt={boosterDetails.title} 
+                                        className="booster-icon-small" 
+                                    />
+                                    <div className="active-booster-info">
+                                        <h4>{boosterDetails.title}</h4>
+                                        <p>Activated: {formatActivationTime(activeBooster.createdAt)}</p>
+                                    </div>
+                                </div>
+                            ) : null;
+                        })}
+                    </div>
+                </div>
+            )}
+
             <div className="booster-cards-container">
                 <h2 className="booster-title-header">Boost To Earn More Points</h2>
-                {boosters.map((booster) => (
-                    <div key={booster.id} className="booster-card">
-                        <img 
-                            src={require("../assets/crypto.png")} 
-                            alt={booster.title} 
-                            className="booster-icon" 
-                        />
-                        <div className="booster-card-header">
-                            <h3 className="booster-title">{booster.title}</h3>
-                            <p className="booster-text">{booster.text}</p>
+                {boosters.map((booster) => {
+                    const isActive = isBoosterActive(booster.id);
+                    return (
+                        <div key={booster.id} className={`booster-card ${isActive ? 'active' : ''}`}>
+                            <img 
+                                src={require("../assets/crypto.png")} 
+                                alt={booster.title} 
+                                className="booster-icon" 
+                            />
+                            <div className="booster-card-header">
+                                <h3 className="booster-title">{booster.title}</h3>
+                                <p className="booster-text">{booster.text}</p>
+                                {isActive && (
+                                    <p className="activation-time">
+                                        Active since: {formatActivationTime(getBoosterActivationTime(booster.id))}
+                                    </p>
+                                )}
+                            </div>
+                            <button 
+                                className={`booster-button ${isActive ? 'active' : ''}`}
+                                onClick={() => !isActive && handleModalOpen(booster)}
+                                disabled={isActive}
+                            >
+                                {isActive ? 'Active' : 'Activate me'}
+                            </button>
                         </div>
-                        <button 
-                            className="booster-button" 
-                            onClick={() => handleModalOpen(booster)}
-                        >
-                            Activate me
-                        </button>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             <div className="referral-section">
