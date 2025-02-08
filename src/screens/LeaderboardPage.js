@@ -86,7 +86,7 @@ const LeaderboardPage = () => {
             username: truncateUsername(user.username),
             rank: index + 1
           }))
-          .slice(0, 3); // Get top 3 users
+          .slice(0, 200); // Get top 200 users
 
         setRankings(sortedRankings);
         setTotalUsers(totalUsersData.userCount);
@@ -117,20 +117,12 @@ const LeaderboardPage = () => {
     );
   }
 
-  // Transform rankings data for the Leaderboard component
-  const leaderboardData = rankings.map(user => ({
+  // Transform top 3 rankings data for the Leaderboard component
+  const leaderboardData = rankings.slice(0, 3).map(user => ({
     id: user.rank,
     name: user.username,
     score: user.htcWalletBalance.toLocaleString(),
     position: user.rank === 1 ? 'center' : user.rank === 2 ? 'left' : 'right',
-    image: user.photoURL || require('../assets/user.png')
-  }));
-
-  // Transform rankings data for the list view
-  const listData = rankings.map(user => ({
-    rank: user.rank,
-    username: user.username,
-    hashtags: user.htcWalletBalance,
     image: user.photoURL || require('../assets/user.png')
   }));
 
@@ -151,19 +143,19 @@ const LeaderboardPage = () => {
             <div className="leaderboard-title">{totalUsers.toLocaleString()} users</div>
           </div>
           <div className="leaderboard-list">
-            {listData.map((user, index) => (
+            {rankings.map((user, index) => (
               <div key={index} className="leaderboard-item">
                 <div className="leaderboard-item-info">
                   <div className="user-avatar">
                     <img
                       className="avatar-image"
-                      src={user.image}
+                      src={user.photoURL || require('../assets/user.png')}
                       alt={user.username}
                     />
                   </div>
                   <div className="user-details">
                     <div className="username">{user.username}</div>
-                    <div className="hashtags">{user.hashtags.toLocaleString()} HTC</div>
+                    <div className="hashtags">{user.htcWalletBalance.toLocaleString()} HTC</div>
                   </div>
                 </div>
                 <span className="user-rank">#{user.rank}</span>
