@@ -130,7 +130,7 @@ const LeaderboardPage = () => {
                   </div>
                   <div className="user-details">
                     <div className="username">{user.username}</div>
-                    <div className="hashtags">{user.hashtags.toLocaleString()} Stars</div>
+                    <div className="hashtags">{user.hashtags.toLocaleString()} HTC</div>
                   </div>
                 </div>
                 <span className="user-rank">#{user.rank}</span>

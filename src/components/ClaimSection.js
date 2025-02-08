@@ -129,10 +129,10 @@ function ClaimSection({ farmingStatus }) {
         <h1 className="heading">
           {totalHTC.toLocaleString()} $HTC
         </h1>
-        <p className="time-text">{timeLeft}</p>
+        {/* <p className="time-text">{timeLeft}</p>
         {farmingStatus.isActive && (
           <p className="text-green-500 text-sm mt-1">Farming in progress...</p>
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -186,9 +186,9 @@ const App = () => {
         walletConnected={walletConnected}
       />
 
-      <button onClick={clearLocalStorage} className="clear-button">
+      {/* <button onClick={clearLocalStorage} className="clear-button">
         Logout
-      </button>
+      </button> */}
       {user.id === 'guest' && (
         <div className="text-center my-4">
           <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} />
