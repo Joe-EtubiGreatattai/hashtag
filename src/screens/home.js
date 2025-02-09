@@ -10,6 +10,7 @@ import BuyTokenComponent from '../components/BuyTokenComponent';
 import BottomSpacer from '../components/BottomSpacer';
 import ConnectWallet from '../components/ConnectWallet';
 import { getAuthToken, setAuthToken, removeAuthToken, resetAllAuthData } from '../config';
+import { useTelegram } from "../hooks/useTelegram";
 
 
 const DEFAULT_USER = {
@@ -39,6 +40,7 @@ const App = () => {
     isActive: false,
     startTime: null
   });
+  const { tg, theme, close, expand, showMainButton } = useTelegram();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -54,6 +56,16 @@ const App = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (tg) {
+      tg.ready();
+      expand();
+      showMainButton("Submit", () => alert("Main Button Clicked!"));
+    }
+  }, []);
+
+
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -185,6 +197,15 @@ const App = () => {
         onConnectWallet={() => setShowConnectWallet(true)}
         walletConnected={walletConnected}
       />
+      <div style={{ padding: "20px", background: theme === "dark" ? "#222" : "#fff", color: theme === "dark" ? "#fff" : "#000" }}>
+        <h2>Welcome, {user?.first_name || "Guest"} 👋</h2>
+        <p>User ID: {user?.id}</p>
+        <p>Theme: {theme}</p>
+        <button onClick={close} style={{ marginTop: "10px", padding: "10px" }}>
+          Close App
+        </button>
+      </div>
+
 
       {/* <button onClick={clearLocalStorage} className="clear-button">
         Logout
