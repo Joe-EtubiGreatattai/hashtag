@@ -1,26 +1,28 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function useTelegram() {
-    const tg = typeof window !== "undefined" && window.Telegram ? window.Telegram.WebApp : null;
+    const [tg, setTg] = useState(null);
 
     useEffect(() => {
-        if (tg) {
-            tg.ready(); // Ensure Telegram WebApp is initialized
+        if (typeof window !== "undefined" && window.Telegram?.WebApp) {
+            const webApp = window.Telegram.WebApp;
+            webApp.ready();
+            setTg(webApp);
         }
-    }, [tg]);
+    }, []);
 
     return {
         tg,
         theme: tg ? tg.colorScheme : "light",
-        close: tg ? tg.close : () => console.warn("Telegram WebApp not available"),
-        expand: tg ? tg.expand : () => console.warn("Telegram WebApp not available"),
+        close: () => tg?.close(),
+        expand: () => tg?.expand(),
         showMainButton: (text, onClick) => {
-            if (tg) {
+            if (tg?.MainButton) {
                 tg.MainButton.setText(text);
                 tg.MainButton.show();
                 tg.MainButton.onClick(onClick);
             } else {
-                console.warn("Telegram WebApp not available");
+                console.warn("Telegram WebApp MainButton not available");
             }
         },
     };
