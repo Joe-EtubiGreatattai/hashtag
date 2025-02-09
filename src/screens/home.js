@@ -10,8 +10,6 @@ import BuyTokenComponent from '../components/BuyTokenComponent';
 import BottomSpacer from '../components/BottomSpacer';
 import ConnectWallet from '../components/ConnectWallet';
 import { getAuthToken, setAuthToken, removeAuthToken, resetAllAuthData } from '../config';
-import { useTelegram } from "../hooks/useTelegram";
-
 
 const DEFAULT_USER = {
   id: 'guest',
@@ -21,7 +19,6 @@ const DEFAULT_USER = {
   photo_url: "https://via.placeholder.com/50",
   auth_date: null
 };
-
 
 const clearLocalStorage = () => {
   localStorage.clear();
@@ -40,7 +37,6 @@ const App = () => {
     isActive: false,
     startTime: null
   });
-  const { tg, theme, close, expand, showMainButton } = useTelegram();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -51,27 +47,18 @@ const App = () => {
         setUser(parsedUser);
       } catch (error) {
         console.error('Error parsing stored user data:', error);
-        clearLocalStorage(); // Clear all local storage if there's an error
+        clearLocalStorage();
         setUser(DEFAULT_USER);
       }
     }
   }, []);
 
   useEffect(() => {
-    if (tg) {
-      tg.ready();
-      expand();
-      showMainButton("Submit", () => alert("Main Button Clicked!"));
-    }
-  }, []);
-
-
-
-  useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
       const webApp = window.Telegram.WebApp;
       webApp.expand();
       const webAppUser = webApp.initDataUnsafe?.user;
+
       if (webAppUser) {
         const userData = {
           id: webAppUser.id,
@@ -81,12 +68,21 @@ const App = () => {
           photo_url: webAppUser.photo_url || DEFAULT_USER.photo_url,
           auth_date: webAppUser.auth_date
         };
+
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
-        // Using new token key
+
+        // Extract referral code from `start_param`
+        const startParam = webApp.initDataUnsafe.start_param;
+        if (startParam) {
+          localStorage.setItem('referralCode', startParam);
+          console.log(`Referral Code Found: ${startParam}`);
+        } else {
+          console.log("No referral code found.");
+        }
+
         setAuthToken(webApp.initData);
         verifyTelegramWebApp(webApp.initData);
-        console.log('Telegram WebApp user data:', webApp.initData);
       }
     }
   }, []);
@@ -115,13 +111,11 @@ const App = () => {
     }
   };
 
-
   useEffect(() => {
-    fetchFarmingStatus(); // Initial fetch
-
+    fetchFarmingStatus();
     const intervalId = setInterval(() => {
       fetchFarmingStatus();
-    }, 30000); // Fetch every 30 seconds
+    }, 30000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -133,7 +127,9 @@ const App = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ initData }),
       });
+
       if (!response.ok) throw new Error('WebApp verification failed');
+
       const data = await response.json();
       if (data.user) {
         setUser(data.user);
@@ -197,19 +193,7 @@ const App = () => {
         onConnectWallet={() => setShowConnectWallet(true)}
         walletConnected={walletConnected}
       />
-      <div style={{ padding: "20px", background: theme === "dark" ? "#222" : "#fff", color: theme === "dark" ? "#fff" : "#000" }}>
-        <h2>Welcome, {user?.first_name || "Guest"} 👋</h2>
-        <p>User ID: {user?.id}</p>
-        <p>Theme: {theme}</p>
-        <button onClick={close} style={{ marginTop: "10px", padding: "10px" }}>
-          Close App
-        </button>
-      </div>
 
-
-      {/* <button onClick={clearLocalStorage} className="clear-button">
-        Logout
-      </button> */}
       {user.id === 'guest' && (
         <div className="text-center my-4">
           <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} />
