@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useTelegram } from "../hooks/useTelegram";
 import TelegramLoginButton from "react-telegram-login";
 import "../App.css";
 import Header from "../components/Header";
@@ -10,170 +9,239 @@ import GamifySystemCard from "../components/GamifySystemCard";
 import BuyTokenComponent from "../components/BuyTokenComponent";
 import BottomSpacer from "../components/BottomSpacer";
 import ConnectWallet from "../components/ConnectWallet";
-import { getAuthToken, setAuthToken, removeAuthToken } from "../config";
+import { getAuthToken, setAuthToken, removeAuthToken, resetAllAuthData } from "../config";
 
 const DEFAULT_USER = {
-    id: "guest",
-    username: "Guest User",
-    first_name: "Guest",
-    last_name: "",
-    photo_url: "https://via.placeholder.com/50",
+  id: "guest",
+  username: "Guest User",
+  first_name: "Guest",
+  last_name: "",
+  photo_url: "https://via.placeholder.com/50",
+  auth_date: null,
+};
+
+const clearLocalStorage = () => {
+  localStorage.clear();
 };
 
 const App = () => {
-    const { user, theme, startParam, expand, close, showMainButton } = useTelegram();
-    const [showBuyToken, setShowBuyToken] = useState(false);
-    const [showRewardModal, setShowRewardModal] = useState(false);
-    const [walletConnected, setWalletConnected] = useState(false);
-    const [showConnectWallet, setShowConnectWallet] = useState(false);
-    const [farming, setFarming] = useState(false);
-    const [farmingStatus, setFarmingStatus] = useState({
-        isActive: false,
-        startTime: null,
-    });
+  const [showBuyToken, setShowBuyToken] = useState(false);
+  const [showRewardModal, setShowRewardModal] = useState(false);
+  const [farmingError, setFarmingError] = useState(null);
+  const [authError, setAuthError] = useState(null);
+  const [user, setUser] = useState(DEFAULT_USER);
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [showConnectWallet, setShowConnectWallet] = useState(false);
+  const [farming, setFarming] = useState(false);
+  const [farmingStatus, setFarmingStatus] = useState({
+    isActive: false,
+    startTime: null,
+  });
+  const [theme, setTheme] = useState("light");
 
-    useEffect(() => {
-        expand(); // Expand app
-        showMainButton("Submit", () => alert("Main Button Clicked!"));
-        fetchFarmingStatus();
-        const intervalId = setInterval(fetchFarmingStatus, 30000);
-        return () => clearInterval(intervalId);
-    }, []);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const token = getAuthToken();
+    if (storedUser && token) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Error parsing stored user data:", error);
+        clearLocalStorage();
+        setUser(DEFAULT_USER);
+      }
+    }
+  }, []);
 
-    // Fetch farming status from API
-    const fetchFarmingStatus = async () => {
-        try {
-            const token = getAuthToken();
-            if (!token) return;
+  useEffect(() => {
+    if (window.Telegram && window.Telegram.WebApp) {
+      const webApp = window.Telegram.WebApp;
+      webApp.expand(); // Expand app to full screen
 
-            const response = await fetch("https://api.hashtagdigital.net/api/fetch-farming-status", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+      // Detect dark/light mode
+      setTheme(webApp.colorScheme);
+      webApp.onEvent("themeChanged", () => {
+        setTheme(webApp.colorScheme);
+      });
 
-            if (!response.ok) throw new Error("Failed to fetch farming status");
+      const webAppUser = webApp.initDataUnsafe?.user;
 
-            const data = await response.json();
-            setFarmingStatus({
-                isActive: data.status,
-                startTime: data.startTime ? new Date(data.startTime) : null,
-            });
-            setFarming(data.status);
-        } catch (error) {
-            console.error("Error fetching farming status:", error);
+      if (webAppUser) {
+        const userData = {
+          id: webAppUser.id,
+          username: webAppUser.username || `${webAppUser.first_name} ${webAppUser.last_name || ""}`.trim(),
+          first_name: webAppUser.first_name,
+          last_name: webAppUser.last_name,
+          photo_url: webAppUser.photo_url || DEFAULT_USER.photo_url,
+          auth_date: webAppUser.auth_date,
+        };
+
+        setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
+
+        // Extract referral code from `start_param`
+        const startParam = webApp.initDataUnsafe.start_param;
+        if (startParam) {
+          localStorage.setItem("referralCode", startParam);
+          console.log(`Referral Code Found: ${startParam}`);
+        } else {
+          console.log("No referral code found.");
         }
-    };
 
-    // Handle Telegram WebApp authentication
-    const verifyTelegramWebApp = async (initData) => {
-        try {
-            const response = await fetch("https://api.hashtagdigital.net/api/auth/telegram_auth", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ initData }),
-            });
+        setAuthToken(webApp.initData);
+        verifyTelegramWebApp(webApp.initData);
+      }
+    }
+  }, []);
 
-            if (!response.ok) throw new Error("WebApp verification failed");
+  const fetchFarmingStatus = async () => {
+    try {
+      const token = getAuthToken();
+      if (!token) return;
 
-            const data = await response.json();
-            if (data.user) {
-                localStorage.setItem("user", JSON.stringify(data.user));
-                setAuthToken(data.user.token);
-            }
-        } catch (error) {
-            console.error("Failed to verify Telegram WebApp authentication");
-        }
-    };
+      const response = await fetch("https://api.hashtagdigital.net/api/fetch-farming-status", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const handleStartFarming = async () => {
-        if (farming) return;
+      if (!response.ok) throw new Error("Failed to fetch farming status");
 
-        try {
-            const token = getAuthToken();
-            const response = await fetch("https://api.hashtagdigital.net/api/start-farming", {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-            });
+      const data = await response.json();
+      setFarmingStatus({
+        isActive: data.status,
+        startTime: data.startTime ? new Date(data.startTime) : null,
+      });
+      setFarming(data.status);
+    } catch (error) {
+      console.error("Error fetching farming status:", error);
+    }
+  };
 
-            const data = await response.json();
+  useEffect(() => {
+    fetchFarmingStatus();
+    const intervalId = setInterval(() => {
+      fetchFarmingStatus();
+    }, 30000);
 
-            if (data.message === "Farming is already active") {
-                setFarmingStatus({ isActive: true, startTime: new Date(data.startTime) });
-                setFarming(true);
-            } else {
-                await fetchFarmingStatus();
-            }
-        } catch (error) {
-            console.error("Error starting farming:", error);
-        }
-    };
+    return () => clearInterval(intervalId);
+  }, []);
 
-    const handleWalletConnect = (account) => {
-        setWalletConnected(true);
-        setShowConnectWallet(false);
-        console.log("Wallet connected:", account);
-    };
+  const verifyTelegramWebApp = async (initData) => {
+    try {
+      const response = await fetch("https://api.hashtagdigital.net/api/auth/telegram_auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ initData }),
+      });
 
-    const handleBuyToken = () => {
-        setShowBuyToken(true);
-    };
+      if (!response.ok) throw new Error("WebApp verification failed");
 
-    return (
-        <div className={`appII ${theme === "dark" ? "dark-mode" : ""}`}>
-            <Header
-                username={user?.username || "Guest"}
-                level="LV 1"
-                profilePhoto={user?.photo_url}
-                onConnectWallet={() => setShowConnectWallet(true)}
-                walletConnected={walletConnected}
-            />
+      const data = await response.json();
+      if (data.user) {
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setAuthToken(data.user.token);
+      }
+    } catch (error) {
+      setAuthError("Failed to verify Telegram WebApp authentication");
+    }
+  };
 
-            {/* Show Telegram login button if user is not authenticated */}
-            {!user?.id && (
-                <div className="text-center my-4">
-                    <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} />
-                </div>
-            )}
+  const handleStartFarming = async () => {
+    if (farming) {
+      setFarmingError("Farming is already active");
+      return;
+    }
 
-            {/* Wallet connection modal */}
-            {showConnectWallet && !walletConnected && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg">
-                        <ConnectWallet onConnect={handleWalletConnect} />
-                        <button onClick={() => setShowConnectWallet(false)} className="mt-4 text-gray-500 hover:text-gray-700">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            )}
+    try {
+      const token = getAuthToken();
+      const response = await fetch("https://api.hashtagdigital.net/api/start-farming", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-            {/* Main App UI */}
-            {!showBuyToken && (
-                <>
-                    <ClaimSection onClaimClick={() => setShowRewardModal(true)} />
-                    <AvatarCard profilePhoto={user?.photo_url} username={user?.username || "Guest"} />
-                    <GamifySystemCard
-                        title=""
-                        cardText="Claim Your "
-                        buttonLabel="Daily Bonus"
-                        onButtonClick={() => setShowRewardModal(true)}
-                        button1Label={farming ? "Farming Active" : "Start Farming"}
-                        button2Label="Buy $HTC"
-                        onButton1Click={handleStartFarming}
-                        onButton2Click={handleBuyToken}
-                        additionalStats={{ XP: "120", Rank: "Gold", Streak: "5 Days" }}
-                    />
-                </>
-            )}
+      const data = await response.json();
 
-            {/* Show Reward Modal */}
-            {showRewardModal && <RewardModal onClose={() => setShowRewardModal(false)} />}
+      if (data.message === "Farming is already active") {
+        setFarmingStatus({
+          isActive: true,
+          startTime: new Date(data.startTime),
+        });
+        setFarming(true);
+      } else {
+        await fetchFarmingStatus();
+      }
+    } catch (error) {
+      setFarmingError("Failed to start farming");
+      console.error("Error starting farming:", error);
+    }
+  };
 
-            {/* Show Buy Token Component */}
-            {showBuyToken && <BuyTokenComponent onBack={() => setShowBuyToken(false)} />}
+  const handleWalletConnect = (account) => {
+    setWalletConnected(true);
+    setShowConnectWallet(false);
+    console.log("Wallet connected:", account);
+  };
 
-            <BottomSpacer />
+  const handleBuyToken = () => {
+    setShowBuyToken(true);
+  };
+
+  return (
+    <div className={`appII ${theme === "dark" ? "dark-mode" : ""}`}>
+      <Header
+        username={user.username}
+        level="LV 1"
+        profilePhoto={user.photo_url}
+        onConnectWallet={() => setShowConnectWallet(true)}
+        walletConnected={walletConnected}
+      />
+
+      {user.id === "guest" && (
+        <div className="text-center my-4">
+          <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} />
+          {authError && <p className="text-red-500 mt-2">{authError}</p>}
         </div>
-    );
+      )}
+
+      {showConnectWallet && !walletConnected && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg">
+            <ConnectWallet onConnect={handleWalletConnect} />
+            <button onClick={() => setShowConnectWallet(false)} className="mt-4 text-gray-500 hover:text-gray-700">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!showBuyToken && (
+        <>
+          <ClaimSection onClaimClick={() => setShowRewardModal(true)} farmingStatus={farmingStatus} />
+          <AvatarCard profilePhoto={user.photo_url} username={user.username} />
+          <GamifySystemCard
+            title=""
+            cardText="Claim Your "
+            buttonLabel="Daily Bonus"
+            onButtonClick={() => setShowRewardModal(true)}
+            button1Label={farming ? "Farming Active" : "Start Farming"}
+            button2Label="Buy $HTC"
+            onButton1Click={handleStartFarming}
+            onButton2Click={handleBuyToken}
+          />
+        </>
+      )}
+
+      {showBuyToken && <BuyTokenComponent onBack={() => setShowBuyToken(false)} />}
+      {showRewardModal && <RewardModal onClose={() => setShowRewardModal(false)} />}
+      <BottomSpacer />
+    </div>
+  );
 };
 
 export default App;
