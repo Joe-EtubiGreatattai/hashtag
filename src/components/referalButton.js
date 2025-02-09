@@ -7,18 +7,18 @@ const ReferralComponent = ({ referralCode }) => {
   const [referralCount, setReferralCount] = useState(0);
 
   useEffect(() => {
-    // Generate the referral link
-    const baseUrl = "https://t.me/Hashtag001bot/"; // Replace with your app's signup URL
-    const link = `${baseUrl}?ref=${referralCode}`;
+    // Encode referral code to avoid URL-related issues
+    const baseUrl = "https://t.me/Hashtag001bot/";
+    const link = `${baseUrl}?start=${encodeURIComponent(referralCode)}`;
     setReferralLink(link);
 
-    // Fetch the referral count from the backend
+    // Fetch referral count
     fetchReferralCount();
   }, [referralCode]);
 
   const fetchReferralCount = async () => {
     try {
-      const response = await fetch("/referral-count");
+      const response = await fetch(`/api/referrals/count?code=${referralCode}`);
       const data = await response.json();
       setReferralCount(data.count);
     } catch (error) {
@@ -29,7 +29,7 @@ const ReferralComponent = ({ referralCode }) => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink).then(() => {
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
     });
   };
 
