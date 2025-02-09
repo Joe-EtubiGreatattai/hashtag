@@ -11,7 +11,6 @@ import BottomSpacer from '../components/BottomSpacer';
 import ConnectWallet from '../components/ConnectWallet';
 import { getAuthToken, setAuthToken, removeAuthToken, resetAllAuthData } from '../config';
 
-
 const DEFAULT_USER = {
   id: 'guest',
   username: 'Guest User',
@@ -20,7 +19,6 @@ const DEFAULT_USER = {
   photo_url: "https://via.placeholder.com/50",
   auth_date: null
 };
-
 
 const clearLocalStorage = () => {
   localStorage.clear();
@@ -49,7 +47,7 @@ const App = () => {
         setUser(parsedUser);
       } catch (error) {
         console.error('Error parsing stored user data:', error);
-        clearLocalStorage(); // Clear all local storage if there's an error
+        clearLocalStorage();
         setUser(DEFAULT_USER);
       }
     }
@@ -60,6 +58,7 @@ const App = () => {
       const webApp = window.Telegram.WebApp;
       webApp.expand();
       const webAppUser = webApp.initDataUnsafe?.user;
+
       if (webAppUser) {
         const userData = {
           id: webAppUser.id,
@@ -69,12 +68,21 @@ const App = () => {
           photo_url: webAppUser.photo_url || DEFAULT_USER.photo_url,
           auth_date: webAppUser.auth_date
         };
+
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
-        // Using new token key
+
+        // Extract referral code from `start_param`
+        const startParam = webApp.initDataUnsafe.start_param;
+        if (startParam) {
+          localStorage.setItem('referralCode', startParam);
+          console.log(`Referral Code Found: ${startParam}`);
+        } else {
+          console.log("No referral code found.");
+        }
+
         setAuthToken(webApp.initData);
         verifyTelegramWebApp(webApp.initData);
-        console.log('Telegram WebApp user data:', webApp.initData);
       }
     }
   }, []);
@@ -103,13 +111,11 @@ const App = () => {
     }
   };
 
-
   useEffect(() => {
-    fetchFarmingStatus(); // Initial fetch
-
+    fetchFarmingStatus();
     const intervalId = setInterval(() => {
       fetchFarmingStatus();
-    }, 30000); // Fetch every 30 seconds
+    }, 30000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -121,7 +127,9 @@ const App = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ initData }),
       });
+
       if (!response.ok) throw new Error('WebApp verification failed');
+
       const data = await response.json();
       if (data.user) {
         setUser(data.user);
@@ -186,9 +194,6 @@ const App = () => {
         walletConnected={walletConnected}
       />
 
-      {/* <button onClick={clearLocalStorage} className="clear-button">
-        Logout
-      </button> */}
       {user.id === 'guest' && (
         <div className="text-center my-4">
           <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} />

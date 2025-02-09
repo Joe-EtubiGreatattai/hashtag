@@ -5,12 +5,8 @@ import BottomSpacer from '../components/BottomSpacer';
 import ReferralComponent from "../components/referalButton";
 
 const FriendScreen = () => {
-  // Assuming the user's referral code is stored in localStorage or fetched from the backend
-  const referralCode = localStorage.getItem("referralCode") || "defaultCode";
-
   return (
     <div className="app">
-      {/* Header */}
       <div className="header">
         <button className="back-button">←</button>
         <h1 className="title">Friends</h1>
@@ -22,12 +18,15 @@ const FriendScreen = () => {
 
       <div className="button-container">
         <button className="price-button">+1000 $HTC</button>
-        <button className="price-button">+10K $HTC  with Telegram Premium</button>
+        <button className="price-button">+10K $HTC with Telegram Premium</button>
       </div>
-      <ReferralComponent referralCode={referralCode} />
+
+      <ReferralComponent />
+
       <p className="friend-bottom">
         Every invite increases your $HTC points, making you ahead on the leaderboard. More invites, more TGE rewards.
       </p>
+
       <BottomSpacer />
     </div>
   );
