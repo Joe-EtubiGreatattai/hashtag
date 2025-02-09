@@ -77,8 +77,8 @@ const App = () => {
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
 
-        // Extract referral code from `start_param`
-        const startParam = webApp.initDataUnsafe.start_param;
+        // Extract referral code from `start`
+        const startParam = webApp.initDataUnsafe.start;
         if (startParam) {
           setReferralCode(startParam);
           localStorage.setItem('referralCode', startParam);
