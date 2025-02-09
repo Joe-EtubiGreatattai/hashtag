@@ -36,32 +36,19 @@ const App = () => {
   });
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const token = getAuthToken();
-    if (storedUser && token) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error('Error parsing stored user data:', error);
-        localStorage.clear();
-        setUser(DEFAULT_USER);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
       const webApp = window.Telegram.WebApp;
       
       // ✅ Fully expand the Telegram Mini App
       webApp.expand();
 
-      // ✅ Extract the start payload (referral code)
+      // ✅ Extract referral code (if any)
       const initData = webApp.initDataUnsafe;
       if (initData?.start_param) {
         setReferralCode(initData.start_param);
-        console.log("Referral Code from Telegram:", initData.start_param);
+        console.log(`Referral Code Used: ${initData.start_param}`); // ✅ Log referral code to console
+      } else {
+        console.log("No Referral Code Used"); // ✅ Log when no referral code is found
       }
 
       // ✅ Extract user details if available
@@ -182,7 +169,7 @@ const App = () => {
         walletConnected={walletConnected}
       />
 
-      {/* ✅ Display referral information */}
+      {/* ✅ Display referral code if available */}
       {referralCode && (
         <div className="referral-box">
           <p>Referred by: <strong>{referralCode}</strong></p>
@@ -196,15 +183,6 @@ const App = () => {
         </div>
       )}
       
-      {showConnectWallet && !walletConnected && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg">
-            <ConnectWallet onConnect={handleWalletConnect} />
-            <button onClick={() => setShowConnectWallet(false)} className="mt-4 text-gray-500 hover:text-gray-700">Cancel</button>
-          </div>
-        </div>
-      )}
-
       {!showBuyToken && (
         <>
           <ClaimSection onClaimClick={() => setShowRewardModal(true)} farmingStatus={farmingStatus} />
