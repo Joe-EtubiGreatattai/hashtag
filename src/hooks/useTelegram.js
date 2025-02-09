@@ -1,36 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export function useTelegram() {
-    const tg = window.Telegram.WebApp;
-
-    const [user, setUser] = useState(null);
-    const [theme, setTheme] = useState(tg.colorScheme);
+    const tg = typeof window !== "undefined" && window.Telegram ? window.Telegram.WebApp : null;
 
     useEffect(() => {
-        tg.ready(); // Initialize Telegram WebApp
-
-        // Get user info
-        setUser(tg.initDataUnsafe.user || null);
-
-        // Listen for theme change
-        const handleThemeChange = () => setTheme(tg.colorScheme);
-        tg.onEvent("themeChanged", handleThemeChange);
-
-        return () => {
-            tg.offEvent("themeChanged", handleThemeChange);
-        };
-    }, []);
+        if (tg) {
+            tg.ready(); // Ensure Telegram WebApp is initialized
+        }
+    }, [tg]);
 
     return {
         tg,
-        user,
-        theme,
-        close: tg.close,
-        expand: tg.expand,
+        theme: tg ? tg.colorScheme : "light",
+        close: tg ? tg.close : () => console.warn("Telegram WebApp not available"),
+        expand: tg ? tg.expand : () => console.warn("Telegram WebApp not available"),
         showMainButton: (text, onClick) => {
-            tg.MainButton.setText(text);
-            tg.MainButton.show();
-            tg.MainButton.onClick(onClick);
+            if (tg) {
+                tg.MainButton.setText(text);
+                tg.MainButton.show();
+                tg.MainButton.onClick(onClick);
+            } else {
+                console.warn("Telegram WebApp not available");
+            }
         },
     };
 }
