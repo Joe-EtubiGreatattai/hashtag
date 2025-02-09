@@ -11,7 +11,6 @@ import BottomSpacer from '../components/BottomSpacer';
 import ConnectWallet from '../components/ConnectWallet';
 import { getAuthToken, setAuthToken, removeAuthToken, resetAllAuthData } from '../config';
 
-
 const DEFAULT_USER = {
   id: 'guest',
   username: 'Guest User',
@@ -21,17 +20,13 @@ const DEFAULT_USER = {
   auth_date: null
 };
 
-
-const clearLocalStorage = () => {
-  localStorage.clear();
-};
-
 const App = () => {
   const [showBuyToken, setShowBuyToken] = useState(false);
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [farmingError, setFarmingError] = useState(null);
   const [authError, setAuthError] = useState(null);
   const [user, setUser] = useState(DEFAULT_USER);
+  const [referralCode, setReferralCode] = useState(""); // Store referral code
   const [walletConnected, setWalletConnected] = useState(false);
   const [showConnectWallet, setShowConnectWallet] = useState(false);
   const [farming, setFarming] = useState(false);
@@ -49,7 +44,7 @@ const App = () => {
         setUser(parsedUser);
       } catch (error) {
         console.error('Error parsing stored user data:', error);
-        clearLocalStorage(); // Clear all local storage if there's an error
+        localStorage.clear();
         setUser(DEFAULT_USER);
       }
     }
@@ -58,23 +53,29 @@ const App = () => {
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
       const webApp = window.Telegram.WebApp;
+      
+      // ✅ Fully expand the Telegram Mini App
       webApp.expand();
-      const webAppUser = webApp.initDataUnsafe?.user;
-      if (webAppUser) {
+
+      // ✅ Extract the start payload (referral code)
+      const initData = webApp.initDataUnsafe;
+      if (initData?.start_param) {
+        setReferralCode(initData.start_param);
+        console.log("Referral Code from Telegram:", initData.start_param);
+      }
+
+      // ✅ Extract user details if available
+      if (initData?.user) {
         const userData = {
-          id: webAppUser.id,
-          username: webAppUser.username || `${webAppUser.first_name} ${webAppUser.last_name || ''}`.trim(),
-          first_name: webAppUser.first_name,
-          last_name: webAppUser.last_name,
-          photo_url: webAppUser.photo_url || DEFAULT_USER.photo_url,
-          auth_date: webAppUser.auth_date
+          id: initData.user.id,
+          username: initData.user.username || `${initData.user.first_name} ${initData.user.last_name || ''}`.trim(),
+          first_name: initData.user.first_name,
+          last_name: initData.user.last_name,
+          photo_url: initData.user.photo_url || DEFAULT_USER.photo_url,
+          auth_date: initData.auth_date
         };
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
-        // Using new token key
-        setAuthToken(webApp.initData);
-        verifyTelegramWebApp(webApp.initData);
-        console.log('Telegram WebApp user data:', webApp.initData);
       }
     }
   }, []);
@@ -103,14 +104,9 @@ const App = () => {
     }
   };
 
-
   useEffect(() => {
-    fetchFarmingStatus(); // Initial fetch
-
-    const intervalId = setInterval(() => {
-      fetchFarmingStatus();
-    }, 30000); // Fetch every 30 seconds
-
+    fetchFarmingStatus();
+    const intervalId = setInterval(fetchFarmingStatus, 30000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -186,15 +182,20 @@ const App = () => {
         walletConnected={walletConnected}
       />
 
-      {/* <button onClick={clearLocalStorage} className="clear-button">
-        Logout
-      </button> */}
+      {/* ✅ Display referral information */}
+      {referralCode && (
+        <div className="referral-box">
+          <p>Referred by: <strong>{referralCode}</strong></p>
+        </div>
+      )}
+
       {user.id === 'guest' && (
         <div className="text-center my-4">
           <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} />
           {authError && <p className="text-red-500 mt-2">{authError}</p>}
         </div>
       )}
+      
       {showConnectWallet && !walletConnected && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg">
@@ -203,12 +204,10 @@ const App = () => {
           </div>
         </div>
       )}
+
       {!showBuyToken && (
         <>
-          <ClaimSection
-            onClaimClick={() => setShowRewardModal(true)}
-            farmingStatus={farmingStatus}
-          />
+          <ClaimSection onClaimClick={() => setShowRewardModal(true)} farmingStatus={farmingStatus} />
           <AvatarCard profilePhoto={user.photo_url} username={user.username} />
           <GamifySystemCard
             title=""
@@ -219,13 +218,10 @@ const App = () => {
             button2Label="Buy $HTC"
             onButton1Click={handleStartFarming}
             onButton2Click={handleBuyToken}
-            additionalStats={{ XP: "120", Rank: "Gold", Streak: "5 Days" }}
           />
         </>
       )}
-      {farmingError && <div className="text-red-500 text-center mt-2">{farmingError}</div>}
-      {showBuyToken && <BuyTokenComponent onBack={() => setShowBuyToken(false)} />}
-      {showRewardModal && <RewardModal onClose={() => setShowRewardModal(false)} />}
+
       <BottomSpacer />
     </div>
   );
