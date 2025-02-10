@@ -72,7 +72,6 @@ const TaskAreaScreen = () => {
 
     return (
       <div className="daily-task-section" style={{ alignItems: 'flex-start' }}>
-        <h2 className="title-ii">Daily Tasks</h2>
         <div className="task-cards" style={{ justifyContent: 'flex-start' }}>
           {tasks.map((task) => (
             <div key={task.id} className="task-container">
