@@ -88,14 +88,22 @@ const TaskAreaScreen = () => {
                 GO
               </button>
               {completedTasks[task.id] !== undefined && (
-                <div className="verification-section">
+                <div className="verification-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px', width: '100%' }}>
                   <input 
                     type="text" 
+                    className="verification-input"
                     placeholder="Enter verification code" 
                     value={completedTasks[task.id]} 
                     onChange={(e) => setCompletedTasks(prev => ({ ...prev, [task.id]: e.target.value }))}
+                    style={{ padding: '8px', width: '80%', borderRadius: '5px', border: '1px solid #ccc', marginBottom: '8px' }}
                   />
-                  <button onClick={() => handleCodeSubmit(task.id)}>Submit</button>
+                  <button 
+                    className="verification-button" 
+                    onClick={() => handleCodeSubmit(task.id)}
+                    style={{ backgroundColor: '#002681', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+                  >
+                    Submit
+                  </button>
                 </div>
               )}
             </div>
