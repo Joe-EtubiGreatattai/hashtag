@@ -5,14 +5,16 @@ import FixedLogo from '../components/fixedLogo';
 import "../assets/styles/TaskAreaScreen.css";
 import BottomSpacer from '../components/BottomSpacer';
 import { getAuthToken } from '../config';
-import placeholderImage from '../assets/logo-2 (1).png';
+import placeholderImage from '../assets/user.png';
 
 const TaskAreaScreen = () => {
   const [activeTab, setActiveTab] = useState("Hashtag");
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [completedTasks, setCompletedTasks] = useState({});
+  const [completedTasks, setCompletedTasks] = useState(() => {
+    return JSON.parse(localStorage.getItem("completedTasks")) || {};
+  });
 
   const tabs = ["Hashtag", "Partners", "Daily Task", "Update"];
 
@@ -21,6 +23,10 @@ const TaskAreaScreen = () => {
       fetchTasks();
     }
   }, [activeTab]);
+
+  useEffect(() => {
+    localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
+  }, [completedTasks]);
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -66,7 +72,8 @@ const TaskAreaScreen = () => {
 
     return (
       <div className="daily-task-section" style={{ alignItems: 'flex-start' }}>
-        <div className="task-cards">
+        <h2 className="title-ii">Daily Tasks</h2>
+        <div className="task-cards" style={{ justifyContent: 'flex-start' }}>
           {tasks.map((task) => (
             <div key={task.id} className="task-card">
               <img src={placeholderImage} alt="Task" className="task-image" />
