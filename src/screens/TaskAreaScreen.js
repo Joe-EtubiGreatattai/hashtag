@@ -5,12 +5,14 @@ import FixedLogo from '../components/fixedLogo';
 import "../assets/styles/TaskAreaScreen.css";
 import BottomSpacer from '../components/BottomSpacer';
 import { getAuthToken } from '../config';
+import placeholderImage from '../assets/user.png';
 
 const TaskAreaScreen = () => {
   const [activeTab, setActiveTab] = useState("Hashtag");
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [completedTasks, setCompletedTasks] = useState({});
 
   const tabs = ["Hashtag", "Partners", "Daily Task", "Update"];
 
@@ -44,8 +46,13 @@ const TaskAreaScreen = () => {
     }
   };
 
-  const handleGoButtonClick = (url) => {
+  const handleGoButtonClick = (taskId, url) => {
     window.open(url, "_blank");
+    setCompletedTasks(prev => ({ ...prev, [taskId]: "" }));
+  };
+
+  const handleCodeSubmit = (taskId) => {
+    console.log(`Code submitted for task ${taskId}:`, completedTasks[taskId]);
   };
 
   const renderDailyTaskSection = () => {
@@ -58,21 +65,33 @@ const TaskAreaScreen = () => {
     }
 
     return (
-      <div className="daily-task-section">
+      <div className="daily-task-section" style={{ alignItems: 'flex-start' }}>
         <h2 className="title-ii">Daily Tasks</h2>
         <div className="task-cards">
           {tasks.map((task) => (
             <div key={task.id} className="task-card">
+              <img src={placeholderImage} alt="Task" className="task-image" />
               <div className="task-text">
                 <h3>{task.name}</h3>
                 <p className="task-reward">Reward: +{task.reward} $HTC</p>
               </div>
               <button 
                 className="task-button" 
-                onClick={() => handleGoButtonClick(task.link)}
+                onClick={() => handleGoButtonClick(task.id, task.link)}
               >
                 GO
               </button>
+              {completedTasks[task.id] !== undefined && (
+                <div className="verification-section">
+                  <input 
+                    type="text" 
+                    placeholder="Enter verification code" 
+                    value={completedTasks[task.id]} 
+                    onChange={(e) => setCompletedTasks(prev => ({ ...prev, [task.id]: e.target.value }))}
+                  />
+                  <button onClick={() => handleCodeSubmit(task.id)}>Submit</button>
+                </div>
+              )}
             </div>
           ))}
         </div>
