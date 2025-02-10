@@ -58,7 +58,27 @@ const TaskAreaScreen = () => {
       { icon: "🔴", name: "RubyCoin", hashtags: "49,000 Hashtags" },
     ],
     "Daily Task": [
-     
+      {
+        type: "video",
+        title: "Videos",
+        videoUrl: "https://www.youtube.com/embed/s87eOYm3kgM?si=bTkzeSXdpJO7aNnR",
+      },
+      {
+        type: "channel",
+        title: "Follow our Artist",
+        subtitle: "YouTube channel.",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1024px-YouTube_full-color_icon_%282017%29.svg.png",
+        url: "https://youtube.com/@hashtagdigital-v3c?si=1R1MuNBEGykblssF",
+      },
+      {
+        type: "card",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiXN9xSEe8unzPBEQOeAKXd9Q55efGHGB9BA&s",
+        title: "Follow HashTag on Facebook",
+        text: "Reward: +1000 $HTC",
+        buttonText: "go",
+        url: "https://www.facebook.com/profile.php?id=61567774558192",
+      },
+      // ... other existing social media cards ...
     ],
     Update: []
   };
