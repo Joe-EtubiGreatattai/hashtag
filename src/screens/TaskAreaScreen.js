@@ -75,32 +75,32 @@ const TaskAreaScreen = () => {
         <h2 className="title-ii">Daily Tasks</h2>
         <div className="task-cards" style={{ justifyContent: 'flex-start' }}>
           {tasks.map((task) => (
-            <div key={task.id} className="task-card">
-              <img src={placeholderImage} alt="Task" className="task-image" />
-              <div className="task-text">
-                <h3>{task.name}</h3>
-                <p className="task-reward">Reward: +{task.reward} $HTC</p>
+            <div key={task.id} className="task-container">
+              <div className="task-card">
+                <img src={placeholderImage} alt="Task" className="task-image" />
+                <div className="task-text">
+                  <h3>{task.name}</h3>
+                  <p className="task-reward">Reward: +{task.reward} $HTC</p>
+                </div>
+                <button 
+                  className="task-button" 
+                  onClick={() => handleGoButtonClick(task.id, task.link)}
+                >
+                  GO
+                </button>
               </div>
-              <button 
-                className="task-button" 
-                onClick={() => handleGoButtonClick(task.id, task.link)}
-              >
-                GO
-              </button>
               {completedTasks[task.id] !== undefined && (
-                <div className="verification-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px', width: '100%' }}>
+                <div className="verification-section">
                   <input 
                     type="text" 
                     className="verification-input"
                     placeholder="Enter verification code" 
                     value={completedTasks[task.id]} 
                     onChange={(e) => setCompletedTasks(prev => ({ ...prev, [task.id]: e.target.value }))}
-                    style={{ padding: '8px', width: '80%', borderRadius: '5px', border: '1px solid #ccc', marginBottom: '8px' }}
                   />
                   <button 
                     className="verification-button" 
                     onClick={() => handleCodeSubmit(task.id)}
-                    style={{ backgroundColor: '#002681', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
                   >
                     Submit
                   </button>
