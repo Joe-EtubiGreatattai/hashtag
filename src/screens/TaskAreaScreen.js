@@ -5,7 +5,7 @@ import FixedLogo from '../components/fixedLogo';
 import "../assets/styles/TaskAreaScreen.css";
 import BottomSpacer from '../components/BottomSpacer';
 import { getAuthToken } from '../config';
-import placeholderImage from '../assets/user.png';
+import placeholderImage from '../assets/logo-2 (1).png';
 
 const TaskAreaScreen = () => {
   const [activeTab, setActiveTab] = useState("Hashtag");
@@ -66,7 +66,6 @@ const TaskAreaScreen = () => {
 
     return (
       <div className="daily-task-section" style={{ alignItems: 'flex-start' }}>
-        <h2 className="title-ii">Daily Tasks</h2>
         <div className="task-cards">
           {tasks.map((task) => (
             <div key={task.id} className="task-card">
