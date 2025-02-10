@@ -129,9 +129,9 @@ const TaskAreaScreen = () => {
             <div key={task.id} className="task-card">
               <div className="task-text">
                 <h3>{task.name}</h3>
-                <p>{task.description}</p>
+                {/* <p>{task.description}</p> */}
                 <p className="task-reward">Reward: +{task.reward} $HTC</p>
-                <p className="task-code">Code: {task.code}</p>
+                {/* <p className="task-code">Code: {task.code}</p> */}
               </div>
               <button 
                 className="task-button" 
