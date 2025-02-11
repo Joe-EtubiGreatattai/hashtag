@@ -1,8 +1,10 @@
+// ConnectWallet.js
 import React, { useEffect, useState } from 'react';
 import { TonConnect } from '@tonconnect/sdk';
 
 const tonConnect = new TonConnect({
   manifestUrl: 'https://hashtag-weld.vercel.app/tonconnect-manifest.json', // Update with your hosted manifest
+  walletsListUrl: 'https://ton.org/wallets-list.json', // Alternative wallet list URL
 });
 
 const ConnectWallet = ({ onConnect }) => {
@@ -40,7 +42,7 @@ const ConnectWallet = ({ onConnect }) => {
     const transaction = {
       messages: [
         {
-          address: 'UQBGkp2FPQcMq0hjxct1Zn9DpOsQKx_FIr70QYUk7DuoTH1X', // Replace with your TON wallet address
+          address: 'EQDSF8K7...', // Replace with your TON wallet address
           amount: (amountTon * 1e9).toString(), // Convert TON to nanotons
         }
       ]
