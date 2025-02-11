@@ -2,6 +2,12 @@ import React from 'react';
 import logo from '../assets/logo.png';
 
 const Header = ({ username, level, profilePhoto, onConnectWallet, walletConnected }) => {
+  const disconnectWallet = () => {
+    localStorage.removeItem('connectedWallet');
+    setWalletConnected(false);
+  };
+
+
   return (
     <div style={styles.container}>
       <div style={styles.logoContainer}>
@@ -20,12 +26,13 @@ const Header = ({ username, level, profilePhoto, onConnectWallet, walletConnecte
           </div>
         </div>
 
-        <button 
-          style={styles.connect} 
-          onClick={onConnectWallet}
+        <button
+          style={styles.connect}
+          onClick={walletConnected ? disconnectWallet : onConnectWallet}
         >
-          {walletConnected ? 'Wallet Connected' : 'Connect Wallet'}
+          {walletConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
         </button>
+
       </div>
     </div>
   );

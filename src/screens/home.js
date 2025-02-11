@@ -172,6 +172,14 @@ const App = () => {
     console.log('Wallet connected:', account);
   };
 
+  useEffect(() => {
+    const storedWallet = localStorage.getItem('connectedWallet');
+    if (storedWallet) {
+      setWalletConnected(true);
+    }
+  }, []);
+
+
   const handleBuyToken = () => {
     setShowBuyToken(true);
   };
@@ -185,6 +193,7 @@ const App = () => {
         onConnectWallet={() => setShowConnectWallet(true)}
         walletConnected={walletConnected}
       />
+
 
       {/* <button onClick={clearLocalStorage} className="clear-button">
         Logout

@@ -46,12 +46,15 @@ const ConnectWallet = ({ onConnect }) => {
     try {
       setLoading(true);
       setError(null);
-      
+  
       tonConnect.onStatusChange(
         (wallet) => {
           if (wallet) {
             console.log('Connected wallet:', wallet);
             onConnect(wallet);
+  
+            // Store wallet in localStorage
+            localStorage.setItem('connectedWallet', JSON.stringify(wallet));
           }
         },
         (error) => {
@@ -66,6 +69,7 @@ const ConnectWallet = ({ onConnect }) => {
       setLoading(false);
     }
   };
+  
 
   const handleWalletSelect = async (wallet) => {
     try {
