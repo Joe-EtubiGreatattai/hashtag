@@ -12,21 +12,38 @@ const TaskAreaScreen = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [completedTasks, setCompletedTasks] = useState(() => {
-    return JSON.parse(localStorage.getItem("completedTasks")) || {};
-  });
+  const [completedTasks, setCompletedTasks] = useState([]);
+  const [verificationInputs, setVerificationInputs] = useState({});
+  const [submissionStatus, setSubmissionStatus] = useState({});
 
   const tabs = ["Hashtag", "Partners", "Daily Task", "Update"];
 
   useEffect(() => {
     if (activeTab === "Daily Task") {
       fetchTasks();
+      fetchCompletedTasks();
     }
   }, [activeTab]);
 
-  useEffect(() => {
-    localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
-  }, [completedTasks]);
+  const fetchCompletedTasks = async () => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch('https://api.hashtagdigital.net/api/fetch-completed-task', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch completed tasks');
+      }
+
+      const data = await response.json();
+      setCompletedTasks(data.completedTask || []);
+    } catch (err) {
+      console.error('Error fetching completed tasks:', err);
+    }
+  };
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -54,11 +71,46 @@ const TaskAreaScreen = () => {
 
   const handleGoButtonClick = (taskId, url) => {
     window.open(url, "_blank");
-    setCompletedTasks(prev => ({ ...prev, [taskId]: "" }));
   };
 
-  const handleCodeSubmit = (taskId) => {
-    console.log(`Code submitted for task ${taskId}:`, completedTasks[taskId]);
+  const handleCodeSubmit = async (taskId) => {
+    const code = verificationInputs[taskId];
+    if (!code) return;
+
+    setSubmissionStatus(prev => ({ ...prev, [taskId]: 'submitting' }));
+
+    try {
+      const token = getAuthToken();
+      const response = await fetch('https://api.hashtagdigital.net/api/complete-task', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          taskID: taskId.toString(),
+          code: code
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmissionStatus(prev => ({ ...prev, [taskId]: 'success' }));
+        // Clear the input
+        setVerificationInputs(prev => ({ ...prev, [taskId]: '' }));
+        // Refresh completed tasks
+        fetchCompletedTasks();
+      } else {
+        setSubmissionStatus(prev => ({ ...prev, [taskId]: 'error' }));
+      }
+    } catch (err) {
+      setSubmissionStatus(prev => ({ ...prev, [taskId]: 'error' }));
+    }
+  };
+
+  const isTaskCompleted = (taskId) => {
+    return completedTasks.some(task => task.taskID === taskId);
   };
 
   const renderDailyTaskSection = () => {
@@ -71,42 +123,58 @@ const TaskAreaScreen = () => {
     }
 
     return (
-      <div className="daily-task-section" style={{ alignItems: 'flex-start' }}>
-        <div className="task-cards" style={{ justifyContent: 'flex-start' }}>
-          {tasks.map((task) => (
-            <div key={task.id} className="task-container">
-              <div className="task-card">
-                <img src={placeholderImage} alt="Task" className="task-image" />
-                <div className="task-text">
-                  <h3>{task.name}</h3>
-                  <p className="task-reward">Reward: +{task.reward} $HTC</p>
+      <div className="daily-task-section">
+        <div className="task-cards">
+          {tasks.map((task) => {
+            const taskCompleted = isTaskCompleted(task.id);
+            const status = submissionStatus[task.id];
+
+            return (
+              <div key={task.id} className={`task-container ${taskCompleted ? 'completed' : ''}`}>
+                <div className="task-card">
+                  <img src={placeholderImage} alt="Task" className="task-image" />
+                  <div className="task-text">
+                    <h3>{task.name}</h3>
+                    <p className="task-reward">Reward: +{task.reward} $HTC</p>
+                  </div>
+                  {!taskCompleted && (
+                    <button 
+                      className="task-button" 
+                      onClick={() => handleGoButtonClick(task.id, task.link)}
+                    >
+                      GO
+                    </button>
+                  )}
+                  {taskCompleted && (
+                    <div className="completed-badge">
+                      ✓ Completed
+                    </div>
+                  )}
                 </div>
-                <button 
-                  className="task-button" 
-                  onClick={() => handleGoButtonClick(task.id, task.link)}
-                >
-                  GO
-                </button>
+                {!taskCompleted && (
+                  <div className="verification-section">
+                    <input 
+                      type="text" 
+                      className={`verification-input ${status === 'error' ? 'error' : ''}`}
+                      placeholder="Enter verification code" 
+                      value={verificationInputs[task.id] || ''} 
+                      onChange={(e) => setVerificationInputs(prev => ({ 
+                        ...prev, 
+                        [task.id]: e.target.value 
+                      }))}
+                    />
+                    <button 
+                      className={`verification-button ${status === 'submitting' ? 'submitting' : ''}`}
+                      onClick={() => handleCodeSubmit(task.id)}
+                      disabled={status === 'submitting'}
+                    >
+                      {status === 'submitting' ? 'Submitting...' : 'Submit'}
+                    </button>
+                  </div>
+                )}
               </div>
-              {completedTasks[task.id] !== undefined && (
-                <div className="verification-section">
-                  <input 
-                    type="text" 
-                    className="verification-input"
-                    placeholder="Enter verification code" 
-                    value={completedTasks[task.id]} 
-                    onChange={(e) => setCompletedTasks(prev => ({ ...prev, [task.id]: e.target.value }))}
-                  />
-                  <button 
-                    className="verification-button" 
-                    onClick={() => handleCodeSubmit(task.id)}
-                  >
-                    Submit
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     );
