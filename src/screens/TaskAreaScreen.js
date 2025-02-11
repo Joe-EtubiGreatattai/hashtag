@@ -147,7 +147,7 @@ const TaskAreaScreen = () => {
                   )}
                   {taskCompleted && (
                     <div className="completed-badge">
-                      ✓ Completed
+                      ✓
                     </div>
                   )}
                 </div>
