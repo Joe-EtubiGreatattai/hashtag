@@ -10,7 +10,11 @@ import BuyTokenComponent from '../components/BuyTokenComponent';
 import BottomSpacer from '../components/BottomSpacer';
 import ConnectWallet from '../components/ConnectWallet';
 import { getAuthToken, setAuthToken, removeAuthToken, resetAllAuthData } from '../config';
+import { TonConnect } from '@tonconnect/sdk';
 
+const tonConnect = new TonConnect({
+  manifestUrl: 'https://api.hashtagdigital.net/tonconnect-manifest.json',
+});
 
 const DEFAULT_USER = {
   id: 'guest',
@@ -20,7 +24,6 @@ const DEFAULT_USER = {
   photo_url: "https://via.placeholder.com/50",
   auth_date: null
 };
-
 
 const clearLocalStorage = () => {
   localStorage.clear();
@@ -33,6 +36,7 @@ const App = () => {
   const [authError, setAuthError] = useState(null);
   const [user, setUser] = useState(DEFAULT_USER);
   const [walletConnected, setWalletConnected] = useState(false);
+  const [walletInfo, setWalletInfo] = useState(null);
   const [showConnectWallet, setShowConnectWallet] = useState(false);
   const [farming, setFarming] = useState(false);
   const [farmingStatus, setFarmingStatus] = useState({
@@ -49,10 +53,51 @@ const App = () => {
         setUser(parsedUser);
       } catch (error) {
         console.error('Error parsing stored user data:', error);
-        clearLocalStorage(); // Clear all local storage if there's an error
+        clearLocalStorage();
         setUser(DEFAULT_USER);
       }
     }
+  }, []);
+
+  useEffect(() => {
+    const checkWalletConnection = async () => {
+      try {
+        const isConnected = tonConnect.connected;
+        if (isConnected) {
+          const info = await tonConnect.getWalletInfo();
+          setWalletInfo(info);
+          setWalletConnected(true);
+          localStorage.setItem('connectedWallet', JSON.stringify(info));
+        } else {
+          setWalletInfo(null);
+          setWalletConnected(false);
+          localStorage.removeItem('connectedWallet');
+        }
+      } catch (error) {
+        console.error('Error checking wallet connection:', error);
+        setWalletConnected(false);
+        setWalletInfo(null);
+        localStorage.removeItem('connectedWallet');
+      }
+    };
+
+    checkWalletConnection();
+    
+    const unsubscribe = tonConnect.onStatusChange((wallet) => {
+      if (wallet) {
+        setWalletInfo(wallet);
+        setWalletConnected(true);
+        localStorage.setItem('connectedWallet', JSON.stringify(wallet));
+      } else {
+        setWalletInfo(null);
+        setWalletConnected(false);
+        localStorage.removeItem('connectedWallet');
+      }
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -71,10 +116,8 @@ const App = () => {
         };
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
-        // Using new token key
         setAuthToken(webApp.initData);
         verifyTelegramWebApp(webApp.initData);
-        console.log('Telegram WebApp user data:', webApp.initData);
       }
     }
   }, []);
@@ -103,14 +146,9 @@ const App = () => {
     }
   };
 
-
   useEffect(() => {
-    fetchFarmingStatus(); // Initial fetch
-
-    const intervalId = setInterval(() => {
-      fetchFarmingStatus();
-    }, 30000); // Fetch every 30 seconds
-
+    fetchFarmingStatus();
+    const intervalId = setInterval(fetchFarmingStatus, 30000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -166,19 +204,23 @@ const App = () => {
     }
   };
 
-  const handleWalletConnect = (account) => {
+  const handleWalletConnect = async (wallet) => {
     setWalletConnected(true);
+    setWalletInfo(wallet);
     setShowConnectWallet(false);
-    console.log('Wallet connected:', account);
+    localStorage.setItem('connectedWallet', JSON.stringify(wallet));
   };
 
-  useEffect(() => {
-    const storedWallet = localStorage.getItem('connectedWallet');
-    if (storedWallet) {
-      setWalletConnected(true);
+  const handleWalletDisconnect = async () => {
+    try {
+      await tonConnect.disconnect();
+      setWalletConnected(false);
+      setWalletInfo(null);
+      localStorage.removeItem('connectedWallet');
+    } catch (error) {
+      console.error('Error disconnecting wallet:', error);
     }
-  }, []);
-
+  };
 
   const handleBuyToken = () => {
     setShowBuyToken(true);
@@ -191,32 +233,32 @@ const App = () => {
         level="LV 1"
         profilePhoto={user.photo_url}
         onConnectWallet={() => setShowConnectWallet(true)}
+        onDisconnectWallet={handleWalletDisconnect}
         walletConnected={walletConnected}
-        setWalletConnected={setWalletConnected}  // Add this line
+        walletInfo={walletInfo}
       />
 
-
-
-      {/* <button onClick={clearLocalStorage} className="clear-button">
-        Logout
-      </button> */}
       {user.id === 'guest' && (
         <div className="text-center my-4">
           <TelegramLoginButton botName="Hashtag001bot" dataOnauth={verifyTelegramWebApp} />
           {authError && <p className="text-red-500 mt-2">{authError}</p>}
         </div>
       )}
+
       {showConnectWallet && !walletConnected && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg">
-            <ConnectWallet onConnect={(wallet) => {
-              setWalletConnected(true);
-              console.log('Wallet connected:', wallet);
-            }} />
-            <button onClick={() => setShowConnectWallet(false)} className="mt-4 text-gray-500 hover:text-gray-700">Cancel</button>
+            <ConnectWallet onConnect={handleWalletConnect} />
+            <button 
+              onClick={() => setShowConnectWallet(false)} 
+              className="mt-4 text-gray-500 hover:text-gray-700"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}
+
       {!showBuyToken && (
         <>
           <ClaimSection
@@ -237,6 +279,7 @@ const App = () => {
           />
         </>
       )}
+
       {farmingError && <div className="text-red-500 text-center mt-2">{farmingError}</div>}
       {showBuyToken && <BuyTokenComponent onBack={() => setShowBuyToken(false)} />}
       {showRewardModal && <RewardModal onClose={() => setShowRewardModal(false)} />}
