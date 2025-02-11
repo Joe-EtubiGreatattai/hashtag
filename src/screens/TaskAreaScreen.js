@@ -8,7 +8,7 @@ import { getAuthToken } from '../config';
 import placeholderImage from '../assets/logo-2.png';
 
 const TaskAreaScreen = () => {
-  const [activeTab, setActiveTab] = useState("Hashtag");
+  const [activeTab, setActiveTab] = useState("Hashtag/Update");
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
