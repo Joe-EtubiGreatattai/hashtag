@@ -17,6 +17,9 @@ const FriendsScreen = () => {
         <h1 className="text-2xl font-semibold">Friends</h1>
       </div>
 
+
+      <img src={require('../assets/logo-big.png')} alt='' className="friend-logo" />
+
       {/* Reward Buttons */}
       <div className="flex gap-4 mb-6">
         <button className="bg-white text-[#00205B] font-semibold rounded-xl px-4 py-2 hover:bg-white/90">
@@ -43,8 +46,8 @@ const FriendsScreen = () => {
       {/* Referral Tiers */}
       <div className="space-y-4 flex-1 overflow-auto">
         {referralTiers.map((tier, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className="bg-white/20 backdrop-blur-lg rounded-2xl p-4 flex justify-between items-center"
           >
             <div>
