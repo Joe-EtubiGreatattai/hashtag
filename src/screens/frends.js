@@ -1,4 +1,5 @@
 import React from 'react';
+import ReferralComponent from "../components/referalButton";
 
 const FriendsScreen = () => {
   const referralTiers = [
@@ -33,12 +34,7 @@ const FriendsScreen = () => {
       </div>
 
       {/* Total Referrals */}
-      <div className="bg-white/20 backdrop-blur-lg rounded-2xl p-4 flex justify-between items-center mb-6">
-        <span className="text-xl font-semibold">16 Total Referrals</span>
-        <button className="bg-[#FFB800] hover:bg-[#FFB800]/90 text-white rounded-xl px-4 py-2">
-          Copy Link
-        </button>
-      </div>
+      <ReferralComponent />
 
       {/* Info Text */}
       <p className="text-center mb-8 text-lg">
