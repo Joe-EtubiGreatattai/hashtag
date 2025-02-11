@@ -2,21 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { TonConnect } from '@tonconnect/sdk';
 import { Loader2, Smartphone, Monitor, AlertCircle } from 'lucide-react';
 
-// Fallback wallet list in case the remote fetch fails
+// Hardcoded fallback wallets (since remote fetch fails)
 const FALLBACK_WALLETS = [
   {
     name: "Tonkeeper",
     appName: "Tonkeeper",
     imageUrl: "https://tonkeeper.com/assets/tonkeeper-logo.png",
     universalUrl: "https://app.tonkeeper.com/ton-connect",
-    bridgeUrl: "https://bridge.tonapi.io/bridge"
+    bridgeUrl: "https://bridge.tonapi.io/bridge",
+    injected: false
   },
   {
     name: "MyTonWallet",
     appName: "MyTonWallet",
     imageUrl: "https://mytonwallet.io/icon-256.png",
-    universalUrl: "https://connect.mytonwallet.org",
-    bridgeUrl: "https://connect.mytonwallet.org/bridge"
+    universalUrl: "https://mytonwallet.org",
+    bridgeUrl: "https://bridge.tonapi.io/bridge",
+    injected: false
   }
 ];
 
@@ -25,7 +27,7 @@ const tonConnect = new TonConnect({
 });
 
 const ConnectWallet = ({ onConnect }) => {
-  const [wallets, setWallets] = useState([]);
+  const [wallets, setWallets] = useState(FALLBACK_WALLETS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedWallet, setSelectedWallet] = useState(null);
@@ -44,27 +46,22 @@ const ConnectWallet = ({ onConnect }) => {
     try {
       setLoading(true);
       setError(null);
-      
-      // Add timeout to the wallet fetch
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Request timed out')), 5000)
-      );
-      
-      const walletPromise = tonConnect.getWallets();
-      const availableWallets = await Promise.race([walletPromise, timeoutPromise])
-        .catch(error => {
-          console.warn('Failed to fetch wallets list, using fallback:', error);
-          return FALLBACK_WALLETS;
-        });
-
-      setWallets(availableWallets);
-      
-      tonConnect.onStatusChange((wallet) => {
-        if (wallet) {
-          console.log('Connected wallet:', wallet);
-          onConnect(wallet);
+  
+      tonConnect.onStatusChange(
+        (wallet) => {
+          if (wallet) {
+            console.log('Connected wallet:', wallet);
+            onConnect(wallet);
+  
+            // Store wallet in localStorage
+            localStorage.setItem('connectedWallet', JSON.stringify(wallet));
+          }
+        },
+        (error) => {
+          console.error('Connection status error:', error);
+          setError('Lost connection to wallet. Please try reconnecting.');
         }
-      });
+      );
     } catch (error) {
       console.error('Error connecting wallet:', error);
       setError('Failed to initialize wallet connection. Please try again.');
@@ -72,6 +69,7 @@ const ConnectWallet = ({ onConnect }) => {
       setLoading(false);
     }
   };
+  
 
   const handleWalletSelect = async (wallet) => {
     try {
@@ -80,24 +78,29 @@ const ConnectWallet = ({ onConnect }) => {
       
       const universalLink = tonConnect.connect({
         universalUrl: wallet.universalUrl,
-        bridgeUrl: wallet.bridgeUrl
+        bridgeUrl: wallet.bridgeUrl,
+        timeout: 15000
       });
-      
+
       setConnectionUrl(universalLink);
 
       if (isMobile) {
-        // For mobile, try to open the wallet app directly
         window.location.href = universalLink;
       } else if (wallet.injected) {
         try {
           await wallet.connect();
         } catch (error) {
-          setError('Failed to connect to wallet extension. Please make sure it\'s installed and try again.');
+          if (error.message?.includes('not installed')) {
+            setError('Wallet extension not detected. Please install it first.');
+          } else {
+            setError('Failed to connect to wallet extension. Please try again.');
+          }
+          setSelectedWallet(null);
         }
       }
     } catch (error) {
       console.error('Wallet connection error:', error);
-      setError('Failed to connect to wallet. Please try again.');
+      setError('Failed to connect to wallet. Try another wallet or reconnect later.');
       setSelectedWallet(null);
     }
   };
@@ -116,7 +119,7 @@ const ConnectWallet = ({ onConnect }) => {
         </div>
       )}
 
-      {!wallets.length && (
+      <div className="space-y-4">
         <button 
           onClick={connectWallet}
           disabled={loading}
@@ -125,13 +128,13 @@ const ConnectWallet = ({ onConnect }) => {
           {loading ? (
             <>
               <Loader2 className="h-5 w-5 animate-spin" />
-              Loading Wallets...
+              Loading...
             </>
           ) : (
             'Connect Wallet'
           )}
         </button>
-      )}
+      </div>
 
       {wallets.length > 0 && (
         <div className="space-y-4">
@@ -184,7 +187,7 @@ const ConnectWallet = ({ onConnect }) => {
                 {getUniversalLinkDisplay()}
               </div>
               <p className="text-sm text-gray-500 mt-2">
-                Please open this link in your wallet app or scan the QR code if available.
+                If the wallet does not open automatically, copy and paste this link manually into your wallet.
               </p>
             </div>
           )}

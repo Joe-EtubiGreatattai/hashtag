@@ -1,7 +1,22 @@
+// Header.js
 import React from 'react';
 import logo from '../assets/logo.png';
 
-const Header = ({ username, level, profilePhoto, onConnectWallet, walletConnected }) => {
+const Header = ({ 
+  username, 
+  level, 
+  profilePhoto, 
+  onConnectWallet, 
+  onDisconnectWallet,
+  walletConnected, 
+  walletInfo 
+}) => {
+  const getDisplayAddress = () => {
+    if (!walletInfo?.account?.address) return '';
+    const addr = walletInfo.account.address;
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.logoContainer}>
@@ -17,20 +32,26 @@ const Header = ({ username, level, profilePhoto, onConnectWallet, walletConnecte
           />
           <div style={styles.textContainer}>
             <span style={styles.username}>{username}</span>
+            {walletConnected && walletInfo && (
+              <span style={styles.walletAddress}>{getDisplayAddress()}</span>
+            )}
           </div>
         </div>
 
         <button 
-          style={styles.connect} 
-          onClick={onConnectWallet}
+          style={{
+            ...styles.connect,
+            backgroundColor: walletConnected ? '#dc2626' : '#2563eb',
+            transition: 'background-color 0.3s ease'
+          }} 
+          onClick={walletConnected ? onDisconnectWallet : onConnectWallet}
         >
-          {walletConnected ? 'Wallet Connected' : 'Connect Wallet'}
+          {walletConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
         </button>
       </div>
     </div>
   );
 };
-
 
 const styles = {
   container: {
@@ -38,7 +59,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '0px', // Space between logo and header
+    gap: '0px',
   },
   logoContainer: {
     textAlign: 'center',
@@ -73,27 +94,24 @@ const styles = {
     fontWeight: 'bold',
     fontSize: '16px',
   },
-  level: {
-    fontSize: '16px',
-    color: '#fff', // Gray color
+  walletAddress: {
+    fontSize: '12px',
+    color: '#666',
+    marginTop: '2px',
   },
   connect: {
     fontSize: '14px',
     color: '#fff',
     cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
-  },
-  connect: {
-    fontSize: '14px',
-    color: '#fff',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
     padding: '8px 16px',
     borderRadius: '4px',
     border: 'none',
-    backgroundColor: 'transparent',
+    outline: 'none',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    hover: {
+      opacity: 0.9,
+    }
   },
-
 };
 
 export default Header;
