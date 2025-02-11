@@ -2,43 +2,46 @@ import React, { useEffect, useState } from 'react';
 import { TonConnect } from '@tonconnect/sdk';
 
 const tonConnect = new TonConnect({
-  manifestUrl: 'https://yourapp.com/tonconnect-manifest.json',
+  manifestUrl: 'https://hashtag-weld.vercel.app/tonconnect-manifest.json', // Update with your hosted manifest
 });
 
 const ConnectWallet = ({ onConnect }) => {
-  const [account, setAccount] = useState(null);
+  const [wallet, setWallet] = useState(null);
   
   useEffect(() => {
     tonConnect.restoreConnection().then(() => {
-      setAccount(tonConnect.account);
+      setWallet(tonConnect.wallet);
+    });
+
+    tonConnect.onStatusChange((newWallet) => {
+      setWallet(newWallet);
+      if (onConnect) onConnect(newWallet);
     });
   }, []);
 
   const handleConnect = async () => {
     try {
-      await tonConnect.connectWallet();
-      setAccount(tonConnect.account);
-      if (onConnect) onConnect(tonConnect.account);
+      const wallets = await tonConnect.getWallets();
+      if (wallets.length > 0) {
+        const link = tonConnect.connect(wallets[0]);
+        window.open(link, '_blank');
+      }
     } catch (error) {
       console.error('Failed to connect wallet:', error);
     }
   };
 
-  const sendPaymentRequest = async (amountTon) => {
-    if (!account) {
+  const sendTransaction = async (amountTon) => {
+    if (!wallet) {
       console.log('User is not connected to a wallet.');
       return;
     }
 
-    const myWalletAddress = 'EQDSF8K7...'; // Replace with your TON wallet address
-    const amountNanoTon = (amountTon * 1e9).toString();
-
     const transaction = {
-      validUntil: Math.floor(Date.now() / 1000) + 300, // Expires in 5 minutes
       messages: [
         {
-          address: myWalletAddress,
-          amount: amountNanoTon,
+          address: 'UQBGkp2FPQcMq0hjxct1Zn9DpOsQKx_FIr70QYUk7DuoTH1X', // Replace with your TON wallet address
+          amount: (amountTon * 1e9).toString(), // Convert TON to nanotons
         }
       ]
     };
@@ -53,8 +56,8 @@ const ConnectWallet = ({ onConnect }) => {
 
   return (
     <div>
-      {account ? (
-        <p>Connected: {account.address}</p>
+      {wallet ? (
+        <p>Connected: {wallet.name}</p>
       ) : (
         <button onClick={handleConnect}>Connect Wallet</button>
       )}

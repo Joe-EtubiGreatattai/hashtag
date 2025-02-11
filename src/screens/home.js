@@ -198,7 +198,10 @@ const App = () => {
       {showConnectWallet && !walletConnected && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg">
-            <ConnectWallet onConnect={handleWalletConnect} />
+            <ConnectWallet onConnect={(wallet) => {
+              setWalletConnected(true);
+              console.log('Wallet connected:', wallet);
+            }} />
             <button onClick={() => setShowConnectWallet(false)} className="mt-4 text-gray-500 hover:text-gray-700">Cancel</button>
           </div>
         </div>
