@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import ReferralCard from "../components/ReferralCard";
 import FixedLogo from '../components/fixedLogo';
 import "../assets/styles/TaskAreaScreen.css";
 import BottomSpacer from '../components/BottomSpacer';
@@ -33,11 +32,9 @@ const TaskAreaScreen = () => {
           'Authorization': `Bearer ${token}`,
         }
       });
-
       if (!response.ok) {
         throw new Error('Failed to fetch completed tasks');
       }
-
       const data = await response.json();
       setCompletedTasks(data.completedTask || []);
     } catch (err) {
@@ -55,11 +52,9 @@ const TaskAreaScreen = () => {
           'Authorization': `Bearer ${token}`,
         }
       });
-
       if (!response.ok) {
         throw new Error('Failed to fetch tasks');
       }
-
       const data = await response.json();
       setTasks(data.task);
     } catch (err) {
@@ -92,14 +87,10 @@ const TaskAreaScreen = () => {
           code: code
         })
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setSubmissionStatus(prev => ({ ...prev, [taskId]: 'success' }));
-        // Clear the input
         setVerificationInputs(prev => ({ ...prev, [taskId]: '' }));
-        // Refresh completed tasks
         fetchCompletedTasks();
       } else {
         setSubmissionStatus(prev => ({ ...prev, [taskId]: 'error' }));
@@ -117,18 +108,15 @@ const TaskAreaScreen = () => {
     if (loading) {
       return <div className="loading">Loading tasks...</div>;
     }
-
     if (error) {
       return <div className="error">Error: {error}</div>;
     }
-
     return (
       <div className="daily-task-section">
         <div className="task-cards">
           {tasks.map((task) => {
             const taskCompleted = isTaskCompleted(task.id);
             const status = submissionStatus[task.id];
-
             return (
               <div key={task.id} className={`task-container ${taskCompleted ? 'completed' : ''}`}>
                 <div className="task-card">
@@ -138,36 +126,14 @@ const TaskAreaScreen = () => {
                     <p className="task-reward">Reward: +{task.reward} $HTC</p>
                   </div>
                   {!taskCompleted && (
-                    <button 
-                      className="task-button" 
-                      onClick={() => handleGoButtonClick(task.id, task.link)}
-                    >
-                      GO
-                    </button>
+                    <button className="task-button" onClick={() => handleGoButtonClick(task.id, task.link)}>GO</button>
                   )}
-                  {taskCompleted && (
-                    <div className="completed-badge">
-                      ✓
-                    </div>
-                  )}
+                  {taskCompleted && <div className="completed-badge">✓</div>}
                 </div>
                 {!taskCompleted && (
                   <div className="verification-section">
-                    <input 
-                      type="text" 
-                      className={`verification-input ${status === 'error' ? 'error' : ''}`}
-                      placeholder="Enter verification code" 
-                      value={verificationInputs[task.id] || ''} 
-                      onChange={(e) => setVerificationInputs(prev => ({ 
-                        ...prev, 
-                        [task.id]: e.target.value 
-                      }))}
-                    />
-                    <button 
-                      className={`verification-button ${status === 'submitting' ? 'submitting' : ''}`}
-                      onClick={() => handleCodeSubmit(task.id)}
-                      disabled={status === 'submitting'}
-                    >
+                    <input type="text" className={`verification-input ${status === 'error' ? 'error' : ''}`} placeholder="Enter verification code" value={verificationInputs[task.id] || ''} onChange={(e) => setVerificationInputs(prev => ({ ...prev, [task.id]: e.target.value }))} />
+                    <button className={`verification-button ${status === 'submitting' ? 'submitting' : ''}`} onClick={() => handleCodeSubmit(task.id)} disabled={status === 'submitting'}>
                       {status === 'submitting' ? 'Submitting...' : 'Submit'}
                     </button>
                   </div>
@@ -190,13 +156,7 @@ const TaskAreaScreen = () => {
 
       <div className="tabs-container">
         {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`tab ${activeTab === tab ? "active" : ""}`}
-          >
-            {tab}
-          </button>
+          <button key={tab} onClick={() => setActiveTab(tab)} className={`tab ${activeTab === tab ? "active" : ""}`}>{tab}</button>
         ))}
       </div>
 
