@@ -167,11 +167,11 @@ const BoosterScreen = () => {
                             <div className="booster-card-header">
                                 <h3 className="booster-title">{booster.title}</h3>
                                 <p className="booster-text">{booster.text}</p>
-                                {isActive && (
+                                {/* {isActive && (
                                     <p className="activation-time">
                                         Active since: {formatActivationTime(getBoosterActivationTime(booster.id))}
                                     </p>
-                                )}
+                                )} */}
                             </div>
                             <button 
                                 className={`booster-button ${isActive ? 'active' : ''}`}
@@ -185,9 +185,9 @@ const BoosterScreen = () => {
                 })}
             </div>
 
-            <div className="referral-section">
+            {/* <div className="referral-section">
                 <ReferralCard showHeader={false} />
-            </div>
+            </div> */}
 
             {isModalOpen && selectedBooster && (
                 <BoostModal
