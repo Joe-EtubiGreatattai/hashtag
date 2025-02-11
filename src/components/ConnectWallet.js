@@ -123,7 +123,7 @@ const ConnectWallet = ({ onConnect }) => {
         <button 
           onClick={connectWallet}
           disabled={loading}
-          className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded flex items-center justify-center gap-2"
+          className="w-full text-white font-bold py-3 px-4 rounded flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
