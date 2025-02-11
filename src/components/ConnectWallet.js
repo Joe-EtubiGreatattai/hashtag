@@ -2,27 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { TonConnect } from '@tonconnect/sdk';
 import { Loader2, Smartphone, Monitor, AlertCircle } from 'lucide-react';
 
-// Fallback wallet list in case the remote fetch fails
+// Fallback wallets in case remote fetch fails completely
 const FALLBACK_WALLETS = [
   {
     name: "Tonkeeper",
     appName: "Tonkeeper",
     imageUrl: "https://tonkeeper.com/assets/tonkeeper-logo.png",
     universalUrl: "https://app.tonkeeper.com/ton-connect",
-    bridgeUrl: "https://bridge.tonapi.io/bridge"
+    bridgeUrl: "https://bridge.tonapi.io/bridge",
+    injected: false
   },
   {
     name: "MyTonWallet",
     appName: "MyTonWallet",
     imageUrl: "https://mytonwallet.io/icon-256.png",
-    universalUrl: "https://connect.mytonwallet.org",
-    bridgeUrl: "https://connect.mytonwallet.org/bridge"
+    universalUrl: "https://mytonwallet.org",
+    bridgeUrl: "https://bridge.tonapi.io/bridge",
+    injected: false
   }
 ];
 
 const tonConnect = new TonConnect({
   manifestUrl: 'https://api.hashtagdigital.net/tonconnect-manifest.json',
 });
+
+// Configuration for wallet fetching
+const WALLET_FETCH_CONFIG = {
+  maxRetries: 3,
+  initialTimeout: 15000, // 15 seconds initial timeout
+  maxTimeout: 30000,     // 30 seconds maximum timeout
+  retryDelay: 5000      // 5 seconds between retries
+};
 
 const ConnectWallet = ({ onConnect }) => {
   const [wallets, setWallets] = useState([]);
@@ -31,6 +41,7 @@ const ConnectWallet = ({ onConnect }) => {
   const [selectedWallet, setSelectedWallet] = useState(null);
   const [connectionUrl, setConnectionUrl] = useState('');
   const [isMobile, setIsMobile] = useState(false);
+  const [fetchProgress, setFetchProgress] = useState(0);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -40,36 +51,89 @@ const ConnectWallet = ({ onConnect }) => {
     setIsMobile(checkMobile());
   }, []);
 
+  const fetchWalletsWithRetry = async (retryCount = 0) => {
+    const timeout = Math.min(
+      WALLET_FETCH_CONFIG.initialTimeout * Math.pow(1.5, retryCount),
+      WALLET_FETCH_CONFIG.maxTimeout
+    );
+
+    try {
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Request timed out')), timeout)
+      );
+
+      // Update progress based on current retry attempt
+      const progressBase = (retryCount / WALLET_FETCH_CONFIG.maxRetries) * 100;
+      setFetchProgress(progressBase);
+
+      const walletPromise = tonConnect.getWallets();
+      const result = await Promise.race([walletPromise, timeoutPromise]);
+
+      // If we get here, we successfully got the wallets
+      setFetchProgress(100);
+      return result;
+    } catch (error) {
+      console.warn(`Attempt ${retryCount + 1} failed:`, error);
+      
+      if (retryCount < WALLET_FETCH_CONFIG.maxRetries - 1) {
+        // Wait before retrying
+        await new Promise(resolve => setTimeout(resolve, WALLET_FETCH_CONFIG.retryDelay));
+        return fetchWalletsWithRetry(retryCount + 1);
+      }
+      
+      throw error;
+    }
+  };
+
   const connectWallet = async () => {
     try {
       setLoading(true);
       setError(null);
+      setFetchProgress(0);
       
-      // Add timeout to the wallet fetch
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Request timed out')), 5000)
-      );
-      
-      const walletPromise = tonConnect.getWallets();
-      const availableWallets = await Promise.race([walletPromise, timeoutPromise])
-        .catch(error => {
-          console.warn('Failed to fetch wallets list, using fallback:', error);
-          return FALLBACK_WALLETS;
-        });
+      let availableWallets;
+      try {
+        availableWallets = await fetchWalletsWithRetry();
+        console.log('Successfully fetched wallets:', availableWallets);
+      } catch (error) {
+        console.warn('Failed to fetch wallets list after all retries, using fallback:', error);
+        availableWallets = FALLBACK_WALLETS;
+      }
 
-      setWallets(availableWallets);
+      // Merge with fallback wallets to ensure we have the essential ones
+      const combinedWallets = [...availableWallets];
+      FALLBACK_WALLETS.forEach(fallbackWallet => {
+        if (!combinedWallets.some(w => w.name === fallbackWallet.name)) {
+          combinedWallets.push(fallbackWallet);
+        }
+      });
+
+      // Filter out wallets with invalid configurations
+      const validWallets = combinedWallets.filter(wallet => 
+        wallet.universalUrl && wallet.bridgeUrl
+      );
+
+      if (validWallets.length === 0) {
+        throw new Error('No valid wallets available');
+      }
+
+      setWallets(validWallets);
       
       tonConnect.onStatusChange((wallet) => {
         if (wallet) {
           console.log('Connected wallet:', wallet);
           onConnect(wallet);
         }
+      }, error => {
+        console.error('Connection status error:', error);
+        setError('Lost connection to wallet. Please try reconnecting.');
       });
     } catch (error) {
       console.error('Error connecting wallet:', error);
       setError('Failed to initialize wallet connection. Please try again.');
     } finally {
       setLoading(false);
+      setFetchProgress(0);
     }
   };
 
@@ -78,26 +142,41 @@ const ConnectWallet = ({ onConnect }) => {
       setSelectedWallet(wallet);
       setError(null);
       
-      const universalLink = tonConnect.connect({
-        universalUrl: wallet.universalUrl,
-        bridgeUrl: wallet.bridgeUrl
-      });
-      
+      const createConnection = async (retries = 3, delay = 1000) => {
+        try {
+          const universalLink = tonConnect.connect({
+            universalUrl: wallet.universalUrl,
+            bridgeUrl: wallet.bridgeUrl,
+            timeout: 15000 // 15 second timeout for connection attempts
+          });
+          return universalLink;
+        } catch (error) {
+          if (retries === 0) throw error;
+          await new Promise(resolve => setTimeout(resolve, delay));
+          return createConnection(retries - 1, delay * 2);
+        }
+      };
+
+      const universalLink = await createConnection();
       setConnectionUrl(universalLink);
 
       if (isMobile) {
-        // For mobile, try to open the wallet app directly
         window.location.href = universalLink;
       } else if (wallet.injected) {
         try {
           await wallet.connect();
         } catch (error) {
-          setError('Failed to connect to wallet extension. Please make sure it\'s installed and try again.');
+          if (error.message?.includes('not installed')) {
+            setError('Wallet extension not detected. Please install it first.');
+          } else {
+            setError('Failed to connect to wallet extension. Please try again.');
+          }
+          setSelectedWallet(null);
         }
       }
     } catch (error) {
       console.error('Wallet connection error:', error);
-      setError('Failed to connect to wallet. Please try again.');
+      setError('Failed to connect to wallet. Please try a different wallet or try again later.');
       setSelectedWallet(null);
     }
   };
@@ -117,20 +196,30 @@ const ConnectWallet = ({ onConnect }) => {
       )}
 
       {!wallets.length && (
-        <button 
-          onClick={connectWallet}
-          disabled={loading}
-          className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded flex items-center justify-center gap-2"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Loading Wallets...
-            </>
-          ) : (
-            'Connect Wallet'
+        <div className="space-y-4">
+          <button 
+            onClick={connectWallet}
+            disabled={loading}
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Loading Wallets {fetchProgress > 0 ? `(${Math.round(fetchProgress)}%)` : ''}
+              </>
+            ) : (
+              'Connect Wallet'
+            )}
+          </button>
+          {loading && (
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                style={{ width: `${fetchProgress}%` }}
+              />
+            </div>
           )}
-        </button>
+        </div>
       )}
 
       {wallets.length > 0 && (
