@@ -63,12 +63,25 @@ const App = () => {
     const checkWalletConnection = async () => {
       try {
         const isConnected = tonConnect.connected;
+        console.log('Wallet connection status:', isConnected);
+        
         if (isConnected) {
           const info = await tonConnect.getWalletInfo();
+          console.log('Connected wallet info:', {
+            device: info.device,
+            account: {
+              address: info.account.address,
+              chain: info.account.chain,
+              walletType: info.account.walletType,
+            },
+            connectTime: new Date().toISOString(),
+          });
+          
           setWalletInfo(info);
           setWalletConnected(true);
           localStorage.setItem('connectedWallet', JSON.stringify(info));
         } else {
+          console.log('No wallet connected');
           setWalletInfo(null);
           setWalletConnected(false);
           localStorage.removeItem('connectedWallet');
@@ -85,10 +98,21 @@ const App = () => {
     
     const unsubscribe = tonConnect.onStatusChange((wallet) => {
       if (wallet) {
+        console.log('Wallet status changed - Connected:', {
+          device: wallet.device,
+          account: {
+            address: wallet.account.address,
+            chain: wallet.account.chain,
+            walletType: wallet.account.walletType,
+          },
+          updateTime: new Date().toISOString(),
+        });
+        
         setWalletInfo(wallet);
         setWalletConnected(true);
         localStorage.setItem('connectedWallet', JSON.stringify(wallet));
       } else {
+        console.log('Wallet status changed - Disconnected');
         setWalletInfo(null);
         setWalletConnected(false);
         localStorage.removeItem('connectedWallet');
@@ -99,6 +123,7 @@ const App = () => {
       if (unsubscribe) unsubscribe();
     };
   }, []);
+
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -205,6 +230,16 @@ const App = () => {
   };
 
   const handleWalletConnect = async (wallet) => {
+    console.log('Wallet connected:', {
+      device: wallet.device,
+      account: {
+        address: wallet.account.address,
+        chain: wallet.account.chain,
+        walletType: wallet.account.walletType,
+      },
+      connectionTime: new Date().toISOString(),
+    });
+    
     setWalletConnected(true);
     setWalletInfo(wallet);
     setShowConnectWallet(false);
@@ -213,7 +248,9 @@ const App = () => {
 
   const handleWalletDisconnect = async () => {
     try {
+      console.log('Initiating wallet disconnection');
       await tonConnect.disconnect();
+      console.log('Wallet successfully disconnected');
       setWalletConnected(false);
       setWalletInfo(null);
       localStorage.removeItem('connectedWallet');
@@ -222,6 +259,23 @@ const App = () => {
     }
   };
 
+  useEffect(() => {
+    if (walletInfo) {
+      console.log('Current wallet state:', {
+        connected: walletConnected,
+        walletInfo: {
+          device: walletInfo.device,
+          account: {
+            address: walletInfo.account.address,
+            chain: walletInfo.account.chain,
+            walletType: walletInfo.account.walletType,
+          },
+          lastUpdate: new Date().toISOString(),
+        }
+      });
+    }
+  }, [walletInfo, walletConnected]);
+  
   const handleBuyToken = () => {
     setShowBuyToken(true);
   };
