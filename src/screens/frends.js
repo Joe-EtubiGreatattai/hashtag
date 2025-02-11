@@ -37,7 +37,7 @@ const FriendsScreen = () => {
       <ReferralComponent />
 
       {/* Info Text */}
-      <p className="text-center mb-8 text-lg">
+      <p className="friend-bottom">
         Every invite increases your $HTC points, making you ahead on the leaderboard. More invites, more TGE rewards.
       </p>
 
