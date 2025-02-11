@@ -16,7 +16,7 @@ const TaskAreaScreen = () => {
   const [verificationInputs, setVerificationInputs] = useState({});
   const [submissionStatus, setSubmissionStatus] = useState({});
 
-  const tabs = ["Hashtag", "Partners", "Daily Task", "Update"];
+  const tabs = ["Hashtag/Update", "Partners", "Daily Task"];
 
   useEffect(() => {
     if (activeTab === "Daily Task") {
