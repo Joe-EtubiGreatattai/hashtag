@@ -1,12 +1,12 @@
 import React from 'react';
 import logo from '../assets/logo.png';
 
-const Header = ({ username, level, profilePhoto, onConnectWallet, walletConnected }) => {
+const Header = ({ username, level, profilePhoto, onConnectWallet, walletConnected, setWalletConnected }) => {
+  
   const disconnectWallet = () => {
-    localStorage.removeItem('connectedWallet');
+    localStorage.removeItem('connectedWallet'); // Remove wallet from storage
     setWalletConnected(false);
   };
-
 
   return (
     <div style={styles.container}>
@@ -26,18 +26,17 @@ const Header = ({ username, level, profilePhoto, onConnectWallet, walletConnecte
           </div>
         </div>
 
-        <button
-          style={styles.connect}
+        {/* Wallet Connect Button */}
+        <button 
+          style={styles.connect} 
           onClick={walletConnected ? disconnectWallet : onConnectWallet}
         >
           {walletConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
         </button>
-
       </div>
     </div>
   );
 };
-
 
 const styles = {
   container: {
@@ -45,7 +44,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '0px', // Space between logo and header
+    gap: '0px',
   },
   logoContainer: {
     textAlign: 'center',
@@ -80,16 +79,6 @@ const styles = {
     fontWeight: 'bold',
     fontSize: '16px',
   },
-  level: {
-    fontSize: '16px',
-    color: '#fff', // Gray color
-  },
-  connect: {
-    fontSize: '14px',
-    color: '#fff',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
-  },
   connect: {
     fontSize: '14px',
     color: '#fff',
@@ -98,9 +87,8 @@ const styles = {
     padding: '8px 16px',
     borderRadius: '4px',
     border: 'none',
-    backgroundColor: 'transparent',
+    backgroundColor: 'blue',
   },
-
 };
 
 export default Header;

@@ -192,7 +192,9 @@ const App = () => {
         profilePhoto={user.photo_url}
         onConnectWallet={() => setShowConnectWallet(true)}
         walletConnected={walletConnected}
+        setWalletConnected={setWalletConnected}  // Add this line
       />
+
 
 
       {/* <button onClick={clearLocalStorage} className="clear-button">
