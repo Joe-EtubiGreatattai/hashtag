@@ -9,9 +9,15 @@ console.log('tonConnect:', tonConnect);
 
 const ConnectWallet = ({ onConnect }) => {
 
+  const connectWallet = () => {
+    tonConnect.getWallets().then((wallets) => {
+      console.log(wallets);
+    });
+  }
+
   return (
     <div>
-        <button >Connect Wallet</button>
+        <button onClick={connectWallet}>Connect Wallet</button>
     </div>
   );
 };
