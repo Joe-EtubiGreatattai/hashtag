@@ -5,7 +5,7 @@ import FixedLogo from '../components/fixedLogo';
 import "../assets/styles/TaskAreaScreen.css";
 import BottomSpacer from '../components/BottomSpacer';
 import { getAuthToken } from '../config';
-import placeholderImage from '../assets/user.png';
+import placeholderImage from '../assets/logo-2.png';
 
 const TaskAreaScreen = () => {
   const [activeTab, setActiveTab] = useState("Hashtag");
