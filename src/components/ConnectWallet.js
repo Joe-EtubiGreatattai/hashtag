@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TonConnect } from '@tonconnect/sdk';
-import { Loader2, Smartphone, Desktop } from 'lucide-react';
+import { Loader2, Smartphone, Monitor } from 'lucide-react';
 
 const tonConnect = new TonConnect({
   manifestUrl: 'https://api.hashtagdigital.net/tonconnect-manifest.json',
@@ -100,7 +100,7 @@ const ConnectWallet = ({ onConnect }) => {
                 Select Mobile Wallet
               </div> :
               <div className="flex items-center justify-center gap-2">
-                <Desktop className="w-5 h-5" />
+                <Monitor className="w-5 h-5" />
                 Select Desktop Wallet
               </div>
             }
