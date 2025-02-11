@@ -19,6 +19,8 @@ const FriendsScreen = () => {
 
 
       <img src={require('../assets/logo-big.png')} alt='' className="friend-logo" />
+      <h2 className="friend-title">Invite friends!</h2>
+      <p className="friend-sub">You and your friend will receive</p>
 
       {/* Reward Buttons */}
       <div className="flex gap-4 mb-6">
