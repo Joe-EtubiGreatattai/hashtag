@@ -11,12 +11,12 @@ const GamifySystemCard = ({
   onButton2Click 
 }) => {
   return (
-    <div className="w-[90%] sm:w-[80%] p-7 sm:p-9 rounded-[40px]">
+    <div className="w-[90%] sm:w-[80%] p-2 sm:p-2 rounded-[40px]">
       {/* Title */}
       <h2 className="text-white text-lg sm:text-xl font-semibold">{title}</h2>
 
       {/* Card */}
-      <div className="bg-pink-500 rounded-[40px] p-5 sm:p-7 flex items-center justify-between">
+      <div className="bg-pink-500 rounded-[40px] p-4 sm:p-4 flex items-center justify-between">
         {/* Left side with icon and text */}
         <div className="flex items-center space-x-4 sm:space-x-5 mr-4 sm:mr-5">
           <div className="text-white"></div>
